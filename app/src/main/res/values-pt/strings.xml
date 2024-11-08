@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SocialStore</string>
+    <string name="email_textfield">E-mail</string>
+    <string name="password_textfield">Palavra-passe</string>
+    <string name="login_button">Entrar</string>
+</resources>
