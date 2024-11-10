@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
-import com.kotlin.socialstore.ui.screens.loginPage
+import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.theme.SocialStoreTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             SocialStoreTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    loginPage(modifier = Modifier.padding(innerPadding))
+                    LoginPage(modifier = Modifier.padding(innerPadding))
                 }
             }
         }
