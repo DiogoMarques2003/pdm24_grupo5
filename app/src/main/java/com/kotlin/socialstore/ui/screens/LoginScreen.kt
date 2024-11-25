@@ -1,8 +1,6 @@
 package com.kotlin.socialstore.ui.screens
 
-import android.provider.Settings.Global.getString
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,15 +9,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -33,22 +27,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
-import com.kotlin.socialstore.ui.elements.PasswordTextField
-import com.kotlin.socialstore.ui.elements.buttonElement
-import com.kotlin.socialstore.ui.theme.SocialStoreTheme
 
 //DEFAULT VALUES
 val defaultPadding = 16.dp
 val itemSpacing = 8.dp
 
-@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun LoginPage(modifier: Modifier = Modifier) {
+fun LoginPage(
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
