@@ -4,6 +4,7 @@ import android.provider.Settings.Global.getString
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,6 +46,7 @@ import com.kotlin.socialstore.ui.theme.SocialStoreTheme
 //DEFAULT VALUES
 val defaultPadding = 16.dp
 val itemSpacing = 8.dp
+val imageContentSpacing = 40.dp
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
@@ -57,39 +59,52 @@ fun LoginPage(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(defaultPadding)
+            .padding(defaultPadding),
+        verticalArrangement = Arrangement.Top
     ) {
-        Column( modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally ) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
             Image(
                 painter = painterResource(R.drawable.social_store_image_no_background),
-                contentDescription = "Image"
+                contentDescription = "Image",
+                modifier = Modifier.size(250.dp)
             )
         }
-        Spacer(Modifier.height(itemSpacing))
+        Spacer(Modifier.height(imageContentSpacing))
         Column(
-            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(stringResource(R.string.app_name))
             Spacer(Modifier.height(itemSpacing))
             OutlinedTextfieldElement(
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = {},
+                onValueChange = { email = it },
                 value = email,
                 labelText = stringResource(R.string.email_textfield),
-                leadingIcon = Icons.Default.Person
+                leadingIcon = Icons.Default.Person,
+                trailingIcon = {}
             )
+            /*
             OutlinedTextfieldElement(
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = {},
+                onValueChange = { password = it },
                 value = password,
                 labelText = stringResource(R.string.password_textfield),
                 leadingIcon = Icons.Default.Lock,
+                trailingIcon = {},
                 keyboardType = KeyboardType.Password,
                 visualTransformation = PasswordVisualTransformation()
+            )*/
+            PasswordTextField(
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { password = it },
+                value = password,
+                labelText = stringResource(R.string.password_textfield)
             )
-            //PasswordTextField(value = password,  label = stringResource(R.string.password_textfield))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -103,12 +118,12 @@ fun LoginPage(modifier: Modifier = Modifier) {
                     Checkbox(
                         checked = rememberCred,
                         onCheckedChange = { rememberCred = !rememberCred })
-                    Text("Remember me")
+                    Text(stringResource(R.string.login_remember_me))
                 }
                 Row {
                     // Forgot Password
                     TextButton(onClick = {}) {
-                        Text("Forgot Password?")
+                        Text(stringResource(R.string.login_forgot_password))
                     }
                 }
             }
@@ -118,6 +133,18 @@ fun LoginPage(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(stringResource(R.string.login_button))
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 30.dp),
+                verticalArrangement = Arrangement.Bottom,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(stringResource(R.string.login_create_account_text))
+                TextButton(onClick = {}){
+                    Text(stringResource(R.string.login_create_account_button))
+                }
             }
         }
     }

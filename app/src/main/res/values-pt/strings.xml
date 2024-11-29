@@ -4,4 +4,8 @@
     <string name="email_textfield">E-mail</string>
     <string name="password_textfield">Palavra-passe</string>
     <string name="login_button">Entrar</string>
+    <string name="login_create_account_text">Não tens conta?</string>
+    <string name="login_create_account_button">Criar conta</string>
+    <string name="login_remember_me">Relemebrar</string>
+    <string name="login_forgot_password">Esqueceu-se da palavra passe?</string>
 </resources>
