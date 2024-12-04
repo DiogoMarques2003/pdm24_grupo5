@@ -7,4 +7,7 @@
     <string name="login_create_account_button">Create account</string>
     <string name="login_remember_me">Remember me</string>
     <string name="login_forgot_password">Forgot password?</string>
+    <string name="homepage_Donate">Donation</string>
+    <string name="homepage_welcome">Welcome!</string>
+
 </resources>
