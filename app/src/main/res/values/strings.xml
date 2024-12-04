@@ -3,4 +3,8 @@
     <string name="email_textfield">E-mail</string>
     <string name="password_textfield">Password</string>
     <string name="login_button">Login</string>
+    <string name="login_create_account_text">Don\'t have an account</string>
+    <string name="login_create_account_button">Create account</string>
+    <string name="login_remember_me">Remember me</string>
+    <string name="login_forgot_password">Forgot password?</string>
 </resources>

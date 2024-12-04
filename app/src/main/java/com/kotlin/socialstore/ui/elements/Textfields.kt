@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.ui.elements
 
 import android.graphics.drawable.Icon
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Settings
@@ -26,6 +27,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.kotlin.socialstore.R
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun OutlinedTextfieldElement(
@@ -34,6 +41,7 @@ fun OutlinedTextfieldElement(
     onValueChange: (String) -> Unit,
     labelText: String,
     leadingIcon: ImageVector? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
@@ -43,6 +51,7 @@ fun OutlinedTextfieldElement(
         label = { Text(labelText) },
         modifier = modifier,
         leadingIcon = { if (leadingIcon != null) Icon(imageVector = leadingIcon, null) },
+        trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
         shape = RoundedCornerShape(30)
@@ -51,11 +60,32 @@ fun OutlinedTextfieldElement(
 
 @Composable
 fun PasswordTextField(
-    value: MutableState<String>,
-    //onChange: (String) -> Unit,
-    //submit: () -> Unit,
     modifier: Modifier = Modifier,
-    label: String = R.string.password_textfield.toString(),
+    value: String,
+    onValueChange: (String) -> Unit,
+    labelText: String
 ) {
+    var passwordVisibility by remember { mutableStateOf(false) }
 
+    val icon = if (passwordVisibility)
+        painterResource(R.drawable.password_closed)
+    else
+        painterResource(R.drawable.password_open)
+
+    OutlinedTextfieldElement(
+        modifier = modifier,
+        value = value,
+        onValueChange = onValueChange,
+        labelText = labelText,
+        leadingIcon = Icons.Default.Lock,
+        trailingIcon = {
+            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                Icon(painter = icon,
+                    contentDescription = null,
+                    modifier = modifier.size(25.dp))
+            }
+        },
+        keyboardType = KeyboardType.Password,
+        visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation()
+    )
 }
