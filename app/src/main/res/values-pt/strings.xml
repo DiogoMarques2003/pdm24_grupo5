@@ -8,4 +8,8 @@
     <string name="login_create_account_button">Criar conta</string>
     <string name="login_remember_me">Relemebrar</string>
     <string name="login_forgot_password">Esqueceu-se da palavra passe?</string>
+    <string name="beneficiary">Beneficiário</string>
+    <string name="volunteer">Voluntário</string>
+    <string name="full_name_text_field">Nome Completo</string>
+    <string name="nationality_text_field">Nacionalidade</string>
 </resources>
