@@ -1,35 +1,24 @@
 package com.kotlin.socialstore.ui.elements
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import com.kotlin.socialstore.R
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -50,6 +39,7 @@ fun OutlinedTextfieldElement(
         onValueChange = onValueChange,
         label = { Text(labelText) },
         modifier = modifier,
+        singleLine = true,
         leadingIcon = { if (leadingIcon != null) Icon(imageVector = leadingIcon, null) },
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
@@ -68,9 +58,9 @@ fun PasswordTextField(
     var passwordVisibility by remember { mutableStateOf(false) }
 
     val icon = if (passwordVisibility)
-        painterResource(R.drawable.password_closed)
-    else
         painterResource(R.drawable.password_open)
+    else
+        painterResource(R.drawable.password_closed)
 
     OutlinedTextfieldElement(
         modifier = modifier,
