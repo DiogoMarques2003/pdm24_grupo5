@@ -25,13 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
+import com.kotlin.socialstore.ui.elements.PopBackButton
 
 //DEFAULT VALUES
 private val defaultPadding = 16.dp
@@ -58,7 +58,12 @@ fun LoginPage(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(Modifier.height(imageContentSpacing))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                PopBackButton(navController)
+            }
             Image(
                 painter = painterResource(R.drawable.social_store_image_no_background),
                 contentDescription = "Image",
@@ -128,7 +133,7 @@ fun LoginPage(
                 Text(stringResource(R.string.login_create_account_text))
                 Spacer(Modifier.height(itemSpacing))
                 Text(
-                    modifier = Modifier.clickable { },
+                    modifier = Modifier.clickable { navController.navigate("register_screen") },
                     text = stringResource(R.string.login_create_account_button),
                     color = MaterialTheme.colorScheme.primary,
                 )

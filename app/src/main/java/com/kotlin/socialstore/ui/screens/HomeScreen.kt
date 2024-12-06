@@ -58,7 +58,7 @@ fun HomePage(
             Spacer(Modifier.height(itemSpacing))
             ButtonElement(
                 text = stringResource(R.string.homepage_Donate),
-                onClick = {},
+                onClick = { navController.navigate("submit_donation") },
                 modifier = Modifier.fillMaxWidth()
             )
         }

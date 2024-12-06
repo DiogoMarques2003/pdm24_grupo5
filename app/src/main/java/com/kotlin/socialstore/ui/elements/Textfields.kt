@@ -39,6 +39,7 @@ fun OutlinedTextfieldElement(
         onValueChange = onValueChange,
         label = { Text(labelText) },
         modifier = modifier,
+        singleLine = true,
         leadingIcon = { if (leadingIcon != null) Icon(imageVector = leadingIcon, null) },
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
