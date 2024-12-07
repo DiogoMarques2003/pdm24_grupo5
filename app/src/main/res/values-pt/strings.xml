@@ -12,4 +12,7 @@
     <string name="volunteer">Voluntário</string>
     <string name="full_name_text_field">Nome Completo</string>
     <string name="nationality_text_field">Nacionalidade</string>
+    <string name="confirmpassword_textfield">Confirmar palavra-passe</string>
+    <string name="reference_textfield">Referência</string>
+    <string name="phoneNumber_textfield">Número de telefone</string>
 </resources>

@@ -12,10 +12,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun buttonElement(text: String, color: Color, onClick: () -> Unit) {
-    Button(modifier = Modifier.size(width = 20.dp, height = 20.dp),
+fun ButtonElement(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        modifier = modifier.size(50.dp),
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(color),
         shape = RoundedCornerShape(35)
     ) {
         Text(text = text, fontSize = 15.sp)

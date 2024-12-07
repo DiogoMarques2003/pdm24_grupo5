@@ -11,4 +11,7 @@
     <string name="volunteer">Volunteer</string>
     <string name="full_name_text_field">Full Name</string>
     <string name="nationality_text_field">Nationality</string>
+    <string name="confirmpassword_textfield">Confirm Password</string>
+    <string name="reference_textfield">Reference</string>
+    <string name="phoneNumber_textfield">Phone Number</string>
 </resources>
