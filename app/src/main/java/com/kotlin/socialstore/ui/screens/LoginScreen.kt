@@ -33,11 +33,6 @@ import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
 import com.kotlin.socialstore.ui.elements.PopBackButton
 
-//DEFAULT VALUES
-private val defaultPadding = 16.dp
-private val itemSpacing = 8.dp
-private val imageContentSpacing = 40.dp
-
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginPage(
@@ -70,12 +65,12 @@ fun LoginPage(
                 modifier = Modifier.size(270.dp)
             )
         }
-        Spacer(Modifier.height(imageContentSpacing))
+        Spacer(Modifier.height(UiConstants.imageContentSpacing))
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(Modifier.height(itemSpacing))
+            Spacer(Modifier.height(UiConstants.itemSpacing))
             OutlinedTextfieldElement(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = { email = it },
@@ -117,7 +112,7 @@ fun LoginPage(
                 }
             }
 
-            Spacer(Modifier.height(itemSpacing))
+            Spacer(Modifier.height(UiConstants.itemSpacing))
             ButtonElement(
                 onClick = { },
                 text = stringResource(R.string.login_button),
@@ -131,7 +126,7 @@ fun LoginPage(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(stringResource(R.string.login_create_account_text))
-                Spacer(Modifier.height(itemSpacing))
+                Spacer(Modifier.height(UiConstants.itemSpacing))
                 Text(
                     modifier = Modifier.clickable { navController.navigate("register_screen") },
                     text = stringResource(R.string.login_create_account_button),

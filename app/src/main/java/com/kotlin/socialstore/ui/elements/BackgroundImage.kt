@@ -16,7 +16,7 @@ import com.kotlin.socialstore.R
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun BackgroundImage () {
+fun BackgroundImageElement() {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.social_store_image_no_background),
