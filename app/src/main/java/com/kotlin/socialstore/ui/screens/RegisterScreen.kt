@@ -18,11 +18,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
-import com.kotlin.socialstore.ui.elements.BackgroundImage
+import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
-import com.kotlin.socialstore.ui.elements.RadioButton
+import com.kotlin.socialstore.ui.elements.RadioButtonElement
 import com.togitech.ccp.component.TogiCountryCodePicker
 import android.util.Patterns.*
 import androidx.compose.foundation.layout.Box
@@ -47,7 +47,7 @@ fun RegisterPage(
     var reference by remember { mutableStateOf("") }
 
     // Add backgroud image
-    BackgroundImage()
+    BackgroundImageElement()
 
     Column ( modifier = modifier.fillMaxSize(),
              verticalArrangement = Arrangement.Top) {
@@ -58,13 +58,13 @@ fun RegisterPage(
              horizontalArrangement = Arrangement.SpaceEvenly,
              verticalAlignment = Alignment.CenterVertically) {
             // Beneficiary Radio Button with label
-            RadioButton(stringResource(R.string.beneficiary), isBeneficiary) { isBeneficiary = true }
+            RadioButtonElement(stringResource(R.string.beneficiary), isBeneficiary) { isBeneficiary = true }
 
             // Volunteer Radio Button with label
-            RadioButton(stringResource(R.string.volunteer), !isBeneficiary) { isBeneficiary = false }
+            RadioButtonElement(stringResource(R.string.volunteer), !isBeneficiary) { isBeneficiary = false }
         }
 
-        Spacer(Modifier.height(itemSpacing))
+        Spacer(Modifier.height(UiConstants.itemSpacing))
 
         // Full name input
         OutlinedTextfieldElement(
@@ -75,7 +75,7 @@ fun RegisterPage(
         )
 
         if (isBeneficiary) {
-            Spacer(Modifier.height(itemSpacing))
+            Spacer(Modifier.height(UiConstants.itemSpacing))
             // Nationality input
             OutlinedTextfieldElement(
                 modifier = Modifier.fillMaxWidth(),
@@ -85,7 +85,7 @@ fun RegisterPage(
             )
         }
 
-        Spacer(Modifier.height(itemSpacing))
+        Spacer(Modifier.height(UiConstants.itemSpacing))
 
         // Phone number/Phone Country code
         TogiCountryCodePicker(
@@ -101,7 +101,7 @@ fun RegisterPage(
             initialCountryIsoCode = "PT",
         )
 
-        Spacer(Modifier.height(itemSpacing))
+        Spacer(Modifier.height(UiConstants.itemSpacing))
 
         // Email
         OutlinedTextfieldElement(
@@ -116,7 +116,7 @@ fun RegisterPage(
             isError = if (email == "") false else !isEmailValid
         )
 
-        Spacer(Modifier.height(itemSpacing))
+        Spacer(Modifier.height(UiConstants.itemSpacing))
 
         // Password
         PasswordTextField(
@@ -127,7 +127,7 @@ fun RegisterPage(
             labelText = stringResource(R.string.password_textfield)
         )
 
-        Spacer(Modifier.height(itemSpacing))
+        Spacer(Modifier.height(UiConstants.itemSpacing))
 
         // Confirm Password
         PasswordTextField(
@@ -139,7 +139,7 @@ fun RegisterPage(
         )
 
         if (isBeneficiary) {
-            Spacer(Modifier.height(itemSpacing))
+            Spacer(Modifier.height(UiConstants.itemSpacing))
             // Reference
             OutlinedTextfieldElement(
                 modifier = Modifier
