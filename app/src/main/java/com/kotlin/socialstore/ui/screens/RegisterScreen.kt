@@ -74,16 +74,11 @@ fun RegisterPage(
             labelText = stringResource(R.string.full_name_text_field)
         )
 
-        if (isBeneficiary) {
-            Spacer(Modifier.height(UiConstants.itemSpacing))
-            // Nationality input
-            OutlinedTextfieldElement(
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = { nationality = it },
-                value = nationality,
-                labelText = stringResource(R.string.nationality_text_field)
-            )
-        }
+        Spacer(Modifier.height(UiConstants.itemSpacing))
+        NationalityDropdown(
+            selectedNationality = nationality,
+            onNationalitySelected = { nationality = it }
+        )
 
         Spacer(Modifier.height(UiConstants.itemSpacing))
 
@@ -99,6 +94,7 @@ fun RegisterPage(
             showError = phoneNumber != "",
             clearIcon = null,
             initialCountryIsoCode = "PT",
+            shape = UiConstants.outlinedTextFieldElementShape,
         )
 
         Spacer(Modifier.height(UiConstants.itemSpacing))
