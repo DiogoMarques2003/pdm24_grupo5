@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.elements
 
+import UiConstants
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
@@ -33,7 +34,8 @@ fun OutlinedTextfieldElement(
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
-    isError: Boolean = false
+    isError: Boolean = false,
+    readOnly: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
@@ -45,8 +47,9 @@ fun OutlinedTextfieldElement(
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
-        shape = RoundedCornerShape(30),
-        isError = isError
+        shape = UiConstants.outlinedTextFieldElementShape,
+        isError = isError,
+        readOnly = readOnly
     )
 }
 
