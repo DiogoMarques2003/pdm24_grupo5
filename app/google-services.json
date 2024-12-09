@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "881904383672",
+    "project_id": "socialstore-ec874",
+    "storage_bucket": "socialstore-ec874.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881904383672:android:8dfaa4ea8db7573657664d",
+        "android_client_info": {
+          "package_name": "com.kotlin.socialstore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWs3W8w39IVDa86hkzFy3A0U0BU6iDUDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

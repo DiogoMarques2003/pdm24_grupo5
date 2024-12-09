@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens
 
+import android.app.Dialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +24,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.ui.elements.ButtonElement
+import com.kotlin.socialstore.ui.elements.DialogForgotPassword
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
 import com.kotlin.socialstore.ui.elements.PopBackButton
@@ -42,6 +47,8 @@ fun LoginPage(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var rememberCred by remember { mutableStateOf(false) }
+    var forgotPasswordIsCilicked by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -105,16 +112,29 @@ fun LoginPage(
                 ) {
                     // Forgot Password
                     Text(
-                        modifier = Modifier.clickable { },
+                        modifier = Modifier.clickable {
+                            forgotPasswordIsCilicked = true
+                        },
                         text = stringResource(R.string.login_forgot_password),
                         color = MaterialTheme.colorScheme.primary
                     )
+
+                    if(forgotPasswordIsCilicked){
+                        DialogForgotPassword(context)
+                    }
                 }
             }
 
             Spacer(Modifier.height(UiConstants.itemSpacing))
+            /*Sumbit Login*/
             ButtonElement(
-                onClick = { },
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        FirebaseObj.loginAccount(email, password, context)
+                    } else {
+                        //error display
+                    }
+                },
                 text = stringResource(R.string.login_button),
                 modifier = Modifier.fillMaxWidth()
             )

@@ -28,6 +28,8 @@ import android.util.Patterns.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.ui.platform.LocalContext
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 
 @Composable
 fun RegisterPage(
@@ -45,6 +47,7 @@ fun RegisterPage(
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var reference by remember { mutableStateOf("") }
+    val context = LocalContext.current
 
     // Add backgroud image
     BackgroundImageElement()
@@ -153,7 +156,10 @@ fun RegisterPage(
 
     // Register button in the end of the page
     Box(modifier = modifier.fillMaxSize()) {
-        ButtonElement(onClick = {},
+        ButtonElement(onClick = {
+            //Firebase
+            FirebaseObj.createAccount(email,password,context)
+        },
             text = stringResource(R.string.login_create_account_button),
             modifier = Modifier.fillMaxWidth()
                                .align(Alignment.BottomEnd))
