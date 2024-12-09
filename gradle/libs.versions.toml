@@ -12,6 +12,9 @@ roomCommon = "2.6.1"
 roomKtx = "2.6.1"
 navigationRuntimeKtx = "2.8.4"
 navigationCompose = "2.8.4"
+materialIcons = "1.7.5"
+material = "1.6.0"
+cpp = "2.2.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +37,9 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androix-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
 coil-compose = { module = "io.coil-kt:coil-compose", version = "2.5.0" }
+materialIcons = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIcons" }
+material = { module = "androidx.compose.material:material", version.ref = "material" }
+cpp = { module = "com.github.jump-sdk:jetpack_compose_country_code_picker_emoji", version.ref = "cpp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

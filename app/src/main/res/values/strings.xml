@@ -7,7 +7,13 @@
     <string name="login_create_account_button">Create account</string>
     <string name="login_remember_me">Remember me</string>
     <string name="login_forgot_password">Forgot password?</string>
+    <string name="beneficiary">Beneficiary</string>
+    <string name="volunteer">Volunteer</string>
+    <string name="full_name_text_field">Full Name</string>
+    <string name="nationality_text_field">Nationality</string>
+    <string name="confirmpassword_textfield">Confirm Password</string>
+    <string name="reference_textfield">Reference</string>
+    <string name="phoneNumber_textfield">Phone Number</string>
     <string name="homepage_Donate">Donation</string>
     <string name="homepage_welcome">Welcome!</string>
-
 </resources>

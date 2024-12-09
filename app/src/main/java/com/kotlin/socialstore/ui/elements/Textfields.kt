@@ -32,19 +32,21 @@ fun OutlinedTextfieldElement(
     leadingIcon: ImageVector? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    isError: Boolean = false
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(labelText) },
         modifier = modifier,
+        leadingIcon = if (leadingIcon != null) {{Icon(imageVector = leadingIcon, null) } }else null ,
         singleLine = true,
-        leadingIcon = { if (leadingIcon != null) Icon(imageVector = leadingIcon, null) },
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
-        shape = RoundedCornerShape(30)
+        shape = RoundedCornerShape(30),
+        isError = isError
     )
 }
 
