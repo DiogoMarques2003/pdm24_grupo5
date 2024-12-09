@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 
 @Composable
-fun RadioButton(text: String, selected: Boolean, onClick: () -> Unit) {
+fun RadioButtonElement(text: String, selected: Boolean, onClick: () -> Unit) {
     Row (verticalAlignment = Alignment.CenterVertically) {
         RadioButton(
             selected = selected,
