@@ -40,7 +40,7 @@ fun OutlinedTextfieldElement(
         onValueChange = onValueChange,
         label = { Text(labelText) },
         modifier = modifier,
-        leadingIcon = { if (leadingIcon != null) Icon(imageVector = leadingIcon, null) },
+        leadingIcon = if (leadingIcon != null) {{Icon(imageVector = leadingIcon, null) } }else null ,
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,

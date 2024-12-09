@@ -22,9 +22,9 @@ fun BackgroundImage () {
             painter = painterResource(R.drawable.social_store_image_no_background),
             contentDescription = "Image",
             modifier = Modifier.fillMaxSize()
-            .align(Alignment.BottomCenter)
-                .graphicsLayer(rotationZ = -21F) // Rotate image
-                .offset(x = (-18).dp, y = 400.dp), // send image to bottom left
+                               .align(Alignment.BottomCenter)
+                               .graphicsLayer(rotationZ = -21F) // Rotate image
+                               .offset(x = (-18).dp, y = 400.dp), // send image to bottom left
             contentScale = ContentScale.Fit,
             alpha = 0.25F, // Opacity
         )

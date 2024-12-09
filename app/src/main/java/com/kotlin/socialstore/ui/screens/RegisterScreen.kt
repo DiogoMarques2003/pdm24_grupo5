@@ -25,6 +25,9 @@ import com.kotlin.socialstore.ui.elements.PasswordTextField
 import com.kotlin.socialstore.ui.elements.RadioButton
 import com.togitech.ccp.component.TogiCountryCodePicker
 import android.util.Patterns.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 
 @Composable
 fun RegisterPage(
@@ -61,30 +64,32 @@ fun RegisterPage(
             RadioButton(stringResource(R.string.volunteer), !isBeneficiary) { isBeneficiary = false }
         }
 
+        Spacer(Modifier.height(itemSpacing))
+
         // Full name input
         OutlinedTextfieldElement(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { fullName = it },
             value = fullName,
             labelText = stringResource(R.string.full_name_text_field)
         )
 
         if (isBeneficiary) {
+            Spacer(Modifier.height(itemSpacing))
             // Nationality input
             OutlinedTextfieldElement(
-                modifier = Modifier.fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 onValueChange = { nationality = it },
                 value = nationality,
                 labelText = stringResource(R.string.nationality_text_field)
             )
         }
 
+        Spacer(Modifier.height(itemSpacing))
+
         // Phone number/Phone Country code
         TogiCountryCodePicker(
-            modifier = Modifier.fillMaxWidth()
-                .padding(bottom = 16.dp),
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { (code, phone), valid ->
                 phoneNumber = phone
                 phoneCountryCode = code
@@ -96,54 +101,61 @@ fun RegisterPage(
             initialCountryIsoCode = "PT",
         )
 
+        Spacer(Modifier.height(itemSpacing))
+
         // Email
         OutlinedTextfieldElement(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .fillMaxWidth(),
             onValueChange = {
                 email = it
                 isEmailValid = EMAIL_ADDRESS.matcher(it).matches() // Check if is a valid email
             },
             value = email,
             labelText = stringResource(R.string.email_textfield),
-            isError = !isEmailValid
+            isError = if (email == "") false else !isEmailValid
         )
+
+        Spacer(Modifier.height(itemSpacing))
 
         // Password
         PasswordTextField(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .fillMaxWidth(),
             onValueChange = { password = it },
             value = password,
             labelText = stringResource(R.string.password_textfield)
         )
 
+        Spacer(Modifier.height(itemSpacing))
+
         // Confirm Password
         PasswordTextField(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp),
+                .fillMaxWidth(),
             onValueChange = { confirmPassword = it },
             value = confirmPassword,
             labelText = stringResource(R.string.confirmpassword_textfield)
         )
 
         if (isBeneficiary) {
+            Spacer(Modifier.height(itemSpacing))
             // Reference
             OutlinedTextfieldElement(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                    .fillMaxWidth(),
                 onValueChange = { reference = it },
                 value = reference,
                 labelText = stringResource(R.string.reference_textfield)
             )
         }
+    }
 
+    // Register button in the end of the page
+    Box(modifier = modifier.fillMaxSize()) {
         ButtonElement(onClick = {},
-                      text = stringResource(R.string.login_create_account_button),
-                      modifier = Modifier.fillMaxWidth())
+            text = stringResource(R.string.login_create_account_button),
+            modifier = Modifier.fillMaxWidth()
+                               .align(Alignment.BottomEnd))
     }
 }
