@@ -41,6 +41,7 @@ fun OutlinedTextfieldElement(
         label = { Text(labelText) },
         modifier = modifier,
         leadingIcon = if (leadingIcon != null) {{Icon(imageVector = leadingIcon, null) } }else null ,
+        singleLine = true,
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
@@ -59,9 +60,9 @@ fun PasswordTextField(
     var passwordVisibility by remember { mutableStateOf(false) }
 
     val icon = if (passwordVisibility)
-        painterResource(R.drawable.password_closed)
-    else
         painterResource(R.drawable.password_open)
+    else
+        painterResource(R.drawable.password_closed)
 
     OutlinedTextfieldElement(
         modifier = modifier,

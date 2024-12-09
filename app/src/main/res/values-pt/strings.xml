@@ -15,4 +15,6 @@
     <string name="confirmpassword_textfield">Confirmar palavra-passe</string>
     <string name="reference_textfield">Referência</string>
     <string name="phoneNumber_textfield">Número de telefone</string>
+    <string name="homepage_Donate">Doação</string>
+    <string name="homepage_welcome">Bem-vindo!</string>
 </resources>
