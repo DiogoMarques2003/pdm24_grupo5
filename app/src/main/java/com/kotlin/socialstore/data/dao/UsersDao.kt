@@ -16,7 +16,7 @@ interface UsersDao {
     fun getAll(): Flow<List<Users>>
 
     @Query("SELECT * FROM users WHERE id =:id")
-    fun getById(id: Int): Flow<Users>
+    fun getById(id: String): Flow<Users>
 
     @Delete
     suspend fun delete(users: Users)

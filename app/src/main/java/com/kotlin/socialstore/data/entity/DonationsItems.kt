@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "donationsItems")
 data class DonationsItems(
-    @PrimaryKey(autoGenerate = false) val id: Int,
-    val donationID: Int,
-    val categoryID: Int?,
+    @PrimaryKey(autoGenerate = false) val id: String,
+    val donationID: String,
+    val categoryID: String?,
     val picture: String?,
     val state: String,
     val size: String?,

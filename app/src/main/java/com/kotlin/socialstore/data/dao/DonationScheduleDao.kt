@@ -16,7 +16,7 @@ interface DonationScheduleDao {
     fun getAll(): Flow<List<DonationSchedule>>
 
     @Query("SELECT * FROM donationSchedule WHERE id = :id")
-    fun getByID(id: Int): Flow<DonationSchedule>
+    fun getByID(id: String): Flow<DonationSchedule>
 
     @Delete
     suspend fun delete(donationSchedule: DonationSchedule)

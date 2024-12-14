@@ -7,12 +7,12 @@ import java.util.Date
 
 @Entity(tableName = "volunteerSchedule")
 data class VolunteerSchedule(
-    @PrimaryKey(autoGenerate = false) val id: Int,
-    val userID: Int,
+    @PrimaryKey(autoGenerate = false) val id: String,
+    val userID: String,
     val day: Date,
     val startTime: Time,
     val endTime: Time,
     val accepted: Boolean = false,
-    val local: String?,
+    val localId: String?,
     val workFunction: String?
 )
