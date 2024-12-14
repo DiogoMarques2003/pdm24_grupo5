@@ -1,6 +1,5 @@
 package com.kotlin.socialstore.ui.screens
 
-import android.app.Dialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,21 +27,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
-import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.DialogForgotPassword
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
 import com.kotlin.socialstore.ui.elements.PopBackButton
+import com.kotlin.socialstore.viewModels.LoginViewModel
 
 //@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginPage(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    loginViewModel: LoginViewModel
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -129,11 +128,12 @@ fun LoginPage(
             /*Sumbit Login*/
             ButtonElement(
                 onClick = {
-                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                    /*if (email.isNotEmpty() && password.isNotEmpty()) {
                         FirebaseObj.loginAccount(email, password, context)
                     } else {
                         //error display
-                    }
+                    }*/
+                    loginViewModel.login(email, password, context)
                 },
                 text = stringResource(R.string.login_button),
                 modifier = Modifier.fillMaxWidth()
