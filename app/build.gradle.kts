@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     /*Firebase*/
     id("com.google.gms.google-services")
+    // Room
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -81,4 +83,6 @@ dependencies {
     /*Firebase*/
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics")
+    // For auto generation of room database
+    kapt("androidx.room:room-compiler:2.6.1")
 }

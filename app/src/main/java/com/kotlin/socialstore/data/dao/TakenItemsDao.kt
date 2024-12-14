@@ -16,7 +16,7 @@ interface TakenItemsDao {
     fun getAll(): Flow<List<TakenItems>>
 
     @Query("SELECT * FROM takenItems WHERE id = :id")
-    fun getById(id: Int): Flow<TakenItems>
+    fun getById(id: String): Flow<TakenItems>
 
     @Delete
     suspend fun delete(takenItems: TakenItems)

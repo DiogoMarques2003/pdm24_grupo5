@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 data class Users (
-    @PrimaryKey(autoGenerate = false) val id: Int,
+    @PrimaryKey(autoGenerate = false) val id: String,
     val email: String,
     val password: String,
     val accountType: String,
@@ -18,6 +18,6 @@ data class Users (
     val reference: String?,
     val notes: String?,
     val warningsLevel: String?,
-    val familyHouseholdID: Int?,
+    val familyHouseholdID: String?,
     val familyHouseholdVerified: Boolean = false
 )

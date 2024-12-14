@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.sql.Time
 
-@Entity(tableName = "donationSchedule")
-data class DonationSchedule(
+@Entity(tableName = "storesSchedule")
+data class StoresSchedule(
     @PrimaryKey(autoGenerate = false) val id: String,
-    val local: String,
+    val storesId: String,
     val weekDay: Int,
     val startTime: Time,
     val endTime: Time

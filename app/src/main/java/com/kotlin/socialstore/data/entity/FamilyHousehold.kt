@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "familyHousehold")
 data class FamilyHousehold(
-    @PrimaryKey(autoGenerate = false) val id: Int,
-    val accessKids: Boolean = false,
-    val visitNumber: Int = 0
+    @PrimaryKey(autoGenerate = false) val id: String,
+    val accessKids: Boolean = false
 )

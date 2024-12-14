@@ -29,12 +29,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.platform.LocalContext
-import com.kotlin.socialstore.data.firebase.FirebaseObj
+import com.kotlin.socialstore.viewModels.RegisterViewModel
 
 @Composable
 fun RegisterPage(
     navController: NavController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    registerViewModel: RegisterViewModel
 ) {
     var isBeneficiary by remember { mutableStateOf(true) }
     var fullName by remember { mutableStateOf("") }
@@ -154,7 +155,10 @@ fun RegisterPage(
     Box(modifier = modifier.fillMaxSize()) {
         ButtonElement(onClick = {
             //Firebase
-            FirebaseObj.createAccount(email,password,context)
+            //FirebaseObj.createAccount(email,password,context)
+            registerViewModel.register(email,  password, confirmPassword, isBeneficiary,
+                                       fullName, nationality, phoneNumber, phoneCountryCode,
+                                       isPhoneNumberValid, reference, context)
         },
             text = stringResource(R.string.login_create_account_button),
             modifier = Modifier.fillMaxWidth()

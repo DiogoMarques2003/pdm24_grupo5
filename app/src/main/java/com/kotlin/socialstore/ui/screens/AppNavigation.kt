@@ -1,29 +1,32 @@
 package com.kotlin.socialstore.ui.screens
 
-import DonationItem
 import ForgotPasswordPage
 import SubmitDonationPage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
-private val defaultPadding = 16.dp
+import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.RegisterViewModel
 
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val modifierCustom: Modifier = modifier.padding(start = defaultPadding, end = defaultPadding)
+    val modifierCustom: Modifier = modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
 
     NavHost(navController = navController, startDestination = "home_screen") {
         composable("login_screen") {
-            LoginPage(navController, modifierCustom)
+            // Initialize view model
+            val loginViewModel = LoginViewModel(LocalContext.current)
+            LoginPage(navController, modifierCustom, loginViewModel)
         }
         composable("register_screen") {
-            RegisterPage(navController, modifierCustom)
+            // Initialize view model
+            val registerViewModel = RegisterViewModel(LocalContext.current)
+            RegisterPage(navController, modifierCustom, registerViewModel)
         }
         composable("donation_success") {
             DonationSuccessPage(navController, modifierCustom)

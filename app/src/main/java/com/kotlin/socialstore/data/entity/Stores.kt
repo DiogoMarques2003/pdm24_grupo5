@@ -3,9 +3,11 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "category")
-data class Category(
+@Entity(tableName = "stores")
+data class Stores(
     @PrimaryKey(autoGenerate = false) val id: String,
-    val nome: String,
-    val kidsStore: Boolean = false
+    val name: String,
+    val address: String,
+    val postalCode: String,
+    val city: String
 )

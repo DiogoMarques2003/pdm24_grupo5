@@ -5,11 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "donations")
 data class Donations(
-    @PrimaryKey(autoGenerate = false) val id: Int,
+    @PrimaryKey(autoGenerate = false) val id: String,
     val donaterName: String,
     val email: String,
     val phoneNumber: String,
     val phoneCountryCode: String,
     val accepted: Boolean = false,
-    val donationScheduleID: Int
+    val donationScheduleID: String
 )

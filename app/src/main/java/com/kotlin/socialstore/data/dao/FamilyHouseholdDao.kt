@@ -16,7 +16,7 @@ interface FamilyHouseholdDao {
     fun getAll(): Flow<List<FamilyHousehold>>
 
     @Query("SELECT * FROM familyHousehold WHERE id = :id")
-    fun getById(id: Int): Flow<FamilyHousehold>
+    fun getById(id: String): Flow<FamilyHousehold>
 
     @Delete
     suspend fun delete(familyHousehold: FamilyHousehold)

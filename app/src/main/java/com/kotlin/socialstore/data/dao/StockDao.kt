@@ -16,7 +16,7 @@ interface StockDao {
     fun getAll(): Flow<List<Stock>>
 
     @Query("SELECT * FROM stock WHERE id = :id")
-    fun getById(id: Int): Flow<Stock>
+    fun getById(id: String): Flow<Stock>
 
     @Delete
     suspend fun delete(stock: Stock)
