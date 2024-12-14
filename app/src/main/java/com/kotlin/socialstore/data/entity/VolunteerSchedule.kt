@@ -2,8 +2,8 @@ package com.kotlin.socialstore.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.sql.Date
 import java.sql.Time
-import java.util.Date
 
 @Entity(tableName = "volunteerSchedule")
 data class VolunteerSchedule(

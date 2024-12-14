@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.sql.Date
 
+
 @Entity(tableName = "takenItems")
 data class TakenItems(
     @PrimaryKey(autoGenerate = false) val id: String,
