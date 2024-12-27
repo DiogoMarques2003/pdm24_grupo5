@@ -7,4 +7,20 @@ import androidx.room.PrimaryKey
 data class FamilyHousehold(
     @PrimaryKey(autoGenerate = false) val id: String,
     val accessKids: Boolean = false
-)
+) {
+    fun toFirebaseMap(): Map<String, Any?> {
+        return mapOf(
+            "id" to id,
+            "accessKids" to accessKids
+        )
+    }
+
+    companion object {
+        fun firebaseMapToClass(data: Map<String, Any?>): FamilyHousehold {
+            return FamilyHousehold(
+                id = data["id"] as String,
+                accessKids = data["accessKids"] as? Boolean ?: false
+            )
+        }
+    }
+}

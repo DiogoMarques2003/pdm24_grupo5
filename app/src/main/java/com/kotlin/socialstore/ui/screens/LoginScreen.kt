@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens
 
+import android.util.Patterns.EMAIL_ADDRESS
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +48,7 @@ fun LoginPage(
     var password by remember { mutableStateOf("") }
     var rememberCred by remember { mutableStateOf(false) }
     var forgotPasswordIsCilicked by remember { mutableStateOf(false) }
+    var isEmailValid by remember { mutableStateOf(true) }
     val context = LocalContext.current
 
     Column(
@@ -79,11 +81,15 @@ fun LoginPage(
             Spacer(Modifier.height(UiConstants.itemSpacing))
             OutlinedTextfieldElement(
                 modifier = Modifier.fillMaxWidth(),
-                onValueChange = { email = it },
+                onValueChange = {
+                    email = it
+                    isEmailValid = EMAIL_ADDRESS.matcher(it).matches() // Check if is a valid email
+                },
                 value = email,
                 labelText = stringResource(R.string.email_textfield),
                 leadingIcon = Icons.Default.Person,
-                trailingIcon = {}
+                trailingIcon = {},
+                isError = if (email == "") false else !isEmailValid
             )
             PasswordTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -118,7 +124,7 @@ fun LoginPage(
                         color = MaterialTheme.colorScheme.primary
                     )
 
-                    if(forgotPasswordIsCilicked){
+                    if (forgotPasswordIsCilicked) {
                         DialogForgotPassword(context)
                     }
                 }
@@ -128,11 +134,6 @@ fun LoginPage(
             /*Sumbit Login*/
             ButtonElement(
                 onClick = {
-                    /*if (email.isNotEmpty() && password.isNotEmpty()) {
-                        FirebaseObj.loginAccount(email, password, context)
-                    } else {
-                        //error display
-                    }*/
                     loginViewModel.login(email, password, context)
                 },
                 text = stringResource(R.string.login_button),
