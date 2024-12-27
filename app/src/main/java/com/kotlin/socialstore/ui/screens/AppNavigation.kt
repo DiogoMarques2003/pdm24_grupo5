@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 
 @Composable
@@ -20,7 +21,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     NavHost(navController = navController, startDestination = "home_screen") {
         composable("login_screen") {
             // Initialize view model
-            val loginViewModel = LoginViewModel(LocalContext.current)
+            val loginViewModel = LoginViewModel(LocalContext.current, navController)
             LoginPage(navController, modifierCustom, loginViewModel)
         }
         composable("register_screen") {
@@ -40,6 +41,12 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 }
             )
         }
+
+        composable("profile_page_screen") {
+            val profileViewModel = ProfileViewModel(LocalContext.current)
+            ProfileScreen(navController, modifierCustom, profileViewModel)
+        }
+
         composable("forgot_password_screen") {
             ForgotPasswordPage(navController, modifierCustom)
         }

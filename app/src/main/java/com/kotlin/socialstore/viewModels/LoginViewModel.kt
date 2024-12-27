@@ -5,6 +5,7 @@ import android.util.Patterns.EMAIL_ADDRESS
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
@@ -13,9 +14,10 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.UsersRepository
 import kotlinx.coroutines.launch
 
-class LoginViewModel(context: Context) : ViewModel() {
+class LoginViewModel(context: Context, navController: NavController) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
     private val usersRepository = UsersRepository(database.usersDao())
+    private val _navController = navController
 
     fun login(email: String, password: String, context: Context) {
         if (email.isEmpty() || !EMAIL_ADDRESS.matcher(email).matches()) {
@@ -63,7 +65,8 @@ class LoginViewModel(context: Context) : ViewModel() {
                 context.getString(R.string.login_success),
                 Toast.LENGTH_LONG,
             ).show()
-
+            // TODO: remove after test of profile screen
+            _navController.navigate("profile_page_screen")
             if (user.active) {
                 // TODO: redirect to dashboard
             } else {
