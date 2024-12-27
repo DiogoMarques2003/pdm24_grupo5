@@ -18,6 +18,9 @@ interface UsersDao {
     @Query("SELECT * FROM users WHERE id =:id")
     fun getById(id: String): Flow<Users>
 
+    @Query("SELECT COUNT(*) > 0 FROM users WHERE id = :id")
+    suspend fun existsById(id: String): Boolean
+
     @Delete
     suspend fun delete(users: Users)
 }

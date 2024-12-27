@@ -1,4 +1,4 @@
-package com.kotlin.socialstore.ui.screens
+package com.kotlin.socialstore.ui.elements
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import com.kotlin.socialstore.R
-import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 
 @Composable
 fun NationalityDropdown(
@@ -37,7 +36,9 @@ fun NationalityDropdown(
 ) {
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val nationalities = context.resources.getStringArray(R.array.nationalities)
+    val nationalitiesRaw = context.resources.getStringArray(R.array.nationalities)
+    val nationalities = nationalitiesRaw.map { it.split("|") }
+    val selectedNationalityName = nationalities.find { it[1] == selectedNationality }?.get(0) ?: ""
     val icon = if (expanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown
     var textFieldSize by remember { mutableStateOf(Size.Zero)}
 
@@ -45,7 +46,7 @@ fun NationalityDropdown(
 
 
         OutlinedTextfieldElement(
-            value = selectedNationality,
+            value = selectedNationalityName,
             onValueChange = {},
             readOnly = true,
             labelText = stringResource(R.string.nationality_text_field),
@@ -69,16 +70,16 @@ fun NationalityDropdown(
                 .width(with(LocalDensity.current){ textFieldSize.width.toDp() })
                 .heightIn(max = 400.dp)
         ) {
-            nationalities.forEach { nationality ->
+            nationalities.forEach { (name, code) ->
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = nationality,
+                            text = name,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     },
                     onClick = {
-                        onNationalitySelected(nationality)
+                        onNationalitySelected(code)
                         expanded = false
                     }
                 )

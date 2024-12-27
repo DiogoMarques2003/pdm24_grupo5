@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens
 
+import UiConstants
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.platform.LocalContext
+import com.kotlin.socialstore.ui.elements.NationalityDropdown
+import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 
 @Composable
@@ -53,20 +55,34 @@ fun RegisterPage(
     // Add backgroud image
     BackgroundImageElement()
 
-    Column ( modifier = modifier.fillMaxSize(),
-             verticalArrangement = Arrangement.Top) {
+    Column(
+        modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.Top
+    ) {
 
-        // Beneficiary or Volunteer
-        Row (Modifier.fillMaxWidth()
-            .padding(bottom = 16.dp),
-             horizontalArrangement = Arrangement.SpaceEvenly,
-             verticalAlignment = Alignment.CenterVertically) {
-            // Beneficiary Radio Button with label
-            RadioButtonElement(stringResource(R.string.beneficiary), isBeneficiary) { isBeneficiary = true }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = UiConstants.defaultPadding),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            PopBackButton(navController)
+            // Beneficiary or Volunteer
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                // Beneficiary Radio Button with label
+                RadioButtonElement(
+                    stringResource(R.string.beneficiary), isBeneficiary
+                ) { isBeneficiary = true }
 
-            // Volunteer Radio Button with label
-            RadioButtonElement(stringResource(R.string.volunteer), !isBeneficiary) { isBeneficiary = false }
+                // Volunteer Radio Button with label
+                RadioButtonElement(
+                    stringResource(R.string.volunteer), !isBeneficiary
+                ) { isBeneficiary = false }
+            }
         }
+
 
         Spacer(Modifier.height(UiConstants.itemSpacing))
 
@@ -79,10 +95,8 @@ fun RegisterPage(
         )
 
         Spacer(Modifier.height(UiConstants.itemSpacing))
-        NationalityDropdown(
-            selectedNationality = nationality,
-            onNationalitySelected = { nationality = it }
-        )
+        NationalityDropdown(selectedNationality = nationality,
+            onNationalitySelected = { nationality = it })
 
         Spacer(Modifier.height(UiConstants.itemSpacing))
 
@@ -105,8 +119,7 @@ fun RegisterPage(
 
         // Email
         OutlinedTextfieldElement(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = {
                 email = it
                 isEmailValid = EMAIL_ADDRESS.matcher(it).matches() // Check if is a valid email
@@ -120,8 +133,7 @@ fun RegisterPage(
 
         // Password
         PasswordTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { password = it },
             value = password,
             labelText = stringResource(R.string.password_textfield)
@@ -131,8 +143,7 @@ fun RegisterPage(
 
         // Confirm Password
         PasswordTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             onValueChange = { confirmPassword = it },
             value = confirmPassword,
             labelText = stringResource(R.string.confirmpassword_textfield)
@@ -142,8 +153,7 @@ fun RegisterPage(
             Spacer(Modifier.height(UiConstants.itemSpacing))
             // Reference
             OutlinedTextfieldElement(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 onValueChange = { reference = it },
                 value = reference,
                 labelText = stringResource(R.string.reference_textfield)
@@ -153,15 +163,26 @@ fun RegisterPage(
 
     // Register button in the end of the page
     Box(modifier = modifier.fillMaxSize()) {
-        ButtonElement(onClick = {
-            //Firebase
-            //FirebaseObj.createAccount(email,password,context)
-            registerViewModel.register(email,  password, confirmPassword, isBeneficiary,
-                                       fullName, nationality, phoneNumber, phoneCountryCode,
-                                       isPhoneNumberValid, reference, context)
-        },
+        ButtonElement(
+            onClick = {
+                registerViewModel.register(
+                    email,
+                    password,
+                    confirmPassword,
+                    isBeneficiary,
+                    fullName,
+                    nationality,
+                    phoneNumber,
+                    phoneCountryCode,
+                    isPhoneNumberValid,
+                    reference,
+                    context
+                )
+            },
             text = stringResource(R.string.login_create_account_button),
-            modifier = Modifier.fillMaxWidth()
-                               .align(Alignment.BottomEnd))
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomEnd)
+        )
     }
 }

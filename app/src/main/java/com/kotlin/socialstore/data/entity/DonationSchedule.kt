@@ -11,4 +11,26 @@ data class DonationSchedule(
     val weekDay: Int,
     val startTime: Time,
     val endTime: Time
-)
+) {
+    fun toFirebaseMap(): Map<String, Any?> {
+        return mapOf(
+            "id" to id,
+            "local" to local,
+            "weekDay" to weekDay,
+            "startTime" to startTime.toString(),
+            "endTime" to endTime.toString()
+        )
+    }
+
+    companion object {
+        fun firebaseMapToClass(data: Map<String, Any?>): DonationSchedule {
+            return DonationSchedule(
+                id = data["id"] as String,
+                local = data["local"] as String,
+                weekDay = data["weekDay"] as Int,
+                startTime = Time.valueOf(data["startTime"] as String),
+                endTime = Time.valueOf(data["endTime"] as String)
+            )
+        }
+    }
+}
