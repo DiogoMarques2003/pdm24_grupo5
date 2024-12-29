@@ -18,6 +18,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.DialogForgotPassword
+import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
 import com.kotlin.socialstore.ui.elements.PopBackButton
@@ -50,6 +52,10 @@ fun LoginPage(
     var forgotPasswordIsCilicked by remember { mutableStateOf(false) }
     var isEmailValid by remember { mutableStateOf(true) }
     val context = LocalContext.current
+
+    if (loginViewModel.isProcessingRequest.collectAsState(false).value) {
+        LoadIndicator(modifier)
+    }
 
     Column(
         modifier = modifier

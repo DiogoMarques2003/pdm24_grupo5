@@ -19,8 +19,9 @@
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
     <string name="invalid_phone_number">Invalid phone number</string>
-    <string name="register_success">Register successfully</string>
-    <string name="login_success">Login successfully</string>
+    <string name="registration_received">Registration Received!</string>
+    <string name="waiting_for_approval">Waiting for In-Person Approval</string>
+    <string name="back_button">Back</string>
     <string-array name="nationalities">
         <item>Afghan|AF</item>
         <item>Albanian|AL</item>

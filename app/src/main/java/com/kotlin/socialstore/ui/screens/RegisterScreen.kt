@@ -28,7 +28,9 @@ import android.util.Patterns.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
+import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.NationalityDropdown
 import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.viewModels.RegisterViewModel
@@ -51,6 +53,10 @@ fun RegisterPage(
     var confirmPassword by remember { mutableStateOf("") }
     var reference by remember { mutableStateOf("") }
     val context = LocalContext.current
+
+    if (registerViewModel.isProcessingRequest.collectAsState(false).value) {
+        LoadIndicator(modifier)
+    }
 
     // Add backgroud image
     BackgroundImageElement()
