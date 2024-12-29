@@ -16,4 +16,12 @@ class UsersRepository(private val usersDao: UsersDao) {
         // Inserir o utilizador atualizado
         usersDao.insert(users)
     }
+
+    fun getById(id: String): Flow<Users> {
+        return usersDao.getById(id)
+    }
+
+    suspend fun deleteById(id: String) {
+        usersDao.deleteById(id)
+    }
 }
