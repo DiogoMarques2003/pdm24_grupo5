@@ -149,6 +149,7 @@ object FirebaseObj {
                     if (snapshot != null) {
                         val documents = snapshot.documents.mapNotNull { doc ->
                             val data = doc.data ?: return@mapNotNull null
+                            Log.d(TAG, "Documento - id: ${doc.id} - ${doc.data}")
                             data + ("id" to doc.id) // Adiciona o id a cada documento
                         }
                         onDataChanged(documents) // Retorna todos os documentos

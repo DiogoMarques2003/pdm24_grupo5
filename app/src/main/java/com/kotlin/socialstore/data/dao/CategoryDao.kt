@@ -12,6 +12,9 @@ interface CategoryDao {
     @Insert
     suspend fun insert(category: Category)
 
+    @Insert
+    suspend fun insertList(categories: List<Category>)
+
     @Query("SELECT * FROM category")
     fun getAll(): Flow<List<Category>>
 
@@ -20,4 +23,7 @@ interface CategoryDao {
 
     @Delete
     suspend fun delete(category: Category)
+
+    @Query("DELETE FROM category")
+    suspend fun deleteAll()
 }

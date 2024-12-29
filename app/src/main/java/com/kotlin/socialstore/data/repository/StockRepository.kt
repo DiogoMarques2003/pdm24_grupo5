@@ -10,4 +10,12 @@ class StockRepository(private val stockDao: StockDao) {
     suspend fun insert(stock: Stock) {
         stockDao.insert(stock)
     }
+
+    suspend fun insertList(stock: List<Stock>){
+        stockDao.insertList(stock)
+    }
+
+    suspend fun deleteAll(){
+        stockDao.deleteAll()
+    }
 }

@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 
 @Composable
@@ -17,7 +18,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val modifierCustom: Modifier = modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
 
-    NavHost(navController = navController, startDestination = "home_screen") {
+    NavHost(navController = navController, startDestination = "products_screen") {
         composable("login_screen") {
             // Initialize view model
             val loginViewModel = LoginViewModel(LocalContext.current)
@@ -45,6 +46,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         }
         composable("home_screen") {
             HomePage(navController, modifierCustom)
+        }
+        composable("products_screen") {
+            val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+            ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
         }
 
     }

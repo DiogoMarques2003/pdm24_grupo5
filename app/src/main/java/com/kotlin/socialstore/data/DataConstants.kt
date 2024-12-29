@@ -9,5 +9,7 @@ object DataConstants {
 
     object FirebaseCollections {
         val users = "users"
+        val category = "category"
+        val stock = "stock"
     }
 }

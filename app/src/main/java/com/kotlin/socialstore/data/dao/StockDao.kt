@@ -12,6 +12,9 @@ interface StockDao {
     @Insert
     suspend fun insert(stock: Stock)
 
+    @Insert
+    suspend fun insertList(stock: List<Stock>)
+
     @Query("SELECT * FROM stock")
     fun getAll(): Flow<List<Stock>>
 
@@ -20,4 +23,7 @@ interface StockDao {
 
     @Delete
     suspend fun delete(stock: Stock)
+
+    @Query("DELETE FROM stock")
+    suspend fun deleteAll()
 }
