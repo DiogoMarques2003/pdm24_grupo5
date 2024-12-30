@@ -5,8 +5,6 @@ import SubmitDonationPage
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -37,7 +35,8 @@ import kotlinx.coroutines.flow.firstOrNull
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val modifierCustom: Modifier = modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
+    val modifierCustom: Modifier =
+        modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
     val context = LocalContext.current
 
     // Check what is the first sreen of user
@@ -95,40 +94,41 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             }
 
             composable("awaiting_approval_screen") {
-                val awaitingApprovalViewModel = AwaitingApprovalViewModel(LocalContext.current, navController)
+                val awaitingApprovalViewModel =
+                    AwaitingApprovalViewModel(LocalContext.current, navController)
                 AwaitingApprovalScreen(modifierCustom, awaitingApprovalViewModel)
             }
 
             composable("main_screen") {
                 MainScreen(navController, modifierCustom)
             }
-            
-            composable("profile_page_screen") {
-               val profileViewModel = ProfileViewModel(LocalContext.current)
-               ProfileScreen(navController, modifierCustom, profileViewModel)
-           }
 
-            composable("qrcode_reader_screen") {
-                QRCodeReaderScreen(modifierCustom){qrCodeContent ->
-                    Log.d("Qr Code result: ", qrCodeContent)
-                    // Pass the result back to the home screen
-                    navController.previousBackStackEntry?.savedStateHandle?.set("qrCodeResult", qrCodeContent)
-                    navController.popBackStack()
-                }
-            )
-        }
-        composable("forgot_password_screen") {
-            ForgotPasswordPage(navController, modifierCustom)
-        }
-        composable("home_screen") {
-            HomePage(navController, modifierCustom)
-        }
-        composable("products_screen") {
-            val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
-            ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
-        }
+            composable("profile_page_screen") {
+                val profileViewModel = ProfileViewModel(LocalContext.current)
+                ProfileScreen(navController, modifierCustom, profileViewModel)
             }
 
+            composable("qrcode_reader_screen") {
+                QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
+                    Log.d("Qr Code result: ", qrCodeContent)
+                    // Pass the result back to the home screen
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "qrCodeResult",
+                        qrCodeContent
+                    )
+                    navController.popBackStack()
+                }
+            }
+            composable("forgot_password_screen") {
+                ForgotPasswordPage(navController, modifierCustom)
+            }
+            composable("home_screen") {
+                HomePage(navController, modifierCustom)
+            }
+            composable("products_screen") {
+                val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+            }
         }
     } else {
         LoadIndicator(modifier)
