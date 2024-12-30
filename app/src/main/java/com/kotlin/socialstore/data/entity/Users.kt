@@ -2,6 +2,7 @@ package com.kotlin.socialstore.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentReference
 
 @Entity(tableName = "users")
 data class Users (
@@ -40,6 +41,8 @@ data class Users (
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): Users {
+            val familyHouseholdReference= data["familyHouseholdID"] as? DocumentReference
+
             return Users(
                 id = data["id"] as String,
                 email = data["email"] as String,
@@ -53,7 +56,7 @@ data class Users (
                 reference = data["reference"] as? String,
                 notes = data["notes"] as? String,
                 warningsLevel = data["warningsLevel"] as? String,
-                familyHouseholdID = data["familyHouseholdID"] as? String,
+                familyHouseholdID = familyHouseholdReference?.id ?: "",
                 familyHouseholdVerified = data["familyHouseholdVerified"] as? Boolean ?: false
             )
         }

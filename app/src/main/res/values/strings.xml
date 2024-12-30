@@ -19,9 +19,13 @@
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
     <string name="invalid_phone_number">Invalid phone number</string>
+    <string name="register_success">Register successfully</string>
+    <string name="login_success">Login successfully</string>
+    <string name="product_state">State:</string>
     <string name="registration_received">Registration Received!</string>
     <string name="waiting_for_approval">Waiting for In-Person Approval</string>
     <string name="back_button">Back</string>
+    <string name="error_generate_qrcode">Failed to generate QR Code</string>
     <string-array name="nationalities">
         <item>Afghan|AF</item>
         <item>Albanian|AL</item>
@@ -180,4 +184,11 @@
         <item>Zambian|ZM</item>
         <item>Zimbabwean|ZW</item>
     </string-array>
+    <string name="product_size">Size:</string>
+    <string name="product_state_n">New</string>
+    <string name="product_state_u">Used</string>
+    <string name="product_state_g">Good</string>
+    <string name="product_state_b">Bad</string>
+    <string name="product_state_default">N/A</string>
+    <string name="products_page_title">Products</string>
 </resources>
