@@ -1,4 +1,5 @@
 
+import UiConstants.itemConditions
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -78,7 +79,7 @@ fun AddDonationItemDialog(
         }
     }
 
-    val conditions = listOf("New", "Like New", "Good", "Fair", "Used")
+
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -138,7 +139,7 @@ fun AddDonationItemDialog(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
                     ) {
-                        conditions.forEach { condition ->
+                        itemConditions.forEach { condition ->
                             DropdownMenuItem(
                                 text = { Text(condition) },
                                 onClick = {
