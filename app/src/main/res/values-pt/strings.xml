@@ -20,8 +20,10 @@
     <string name="invalid_email">E-mail inválido</string>
     <string name="invalid_password">Password inválida</string>
     <string name="invalid_phone_number">Número de telefone inválido</string>
-    <string name="register_success">Conta criada com sucesso</string>
-    <string name="login_success">Login feito com sucesso</string>
+    <string name="registration_received">Criação de conta recebida!</string>
+    <string name="waiting_for_approval">Aguardando aprovação presencial</string>
+    <string name="back_button">Voltar</string>
+    <string name="error_generate_qrcode">Falha ao gerar o código QR</string>
     <string-array name="nationalities">
         <item>Afegão|AF</item>
         <item>Albanês|AL</item>

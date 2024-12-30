@@ -54,7 +54,11 @@ object FirebaseObj {
         }
     }
 
-    fun sendPasswordResetEmail(email: String, baseContext: Context) {
+    fun logoutAccount() {
+        auth.signOut()
+    }
+
+    fun sendPasswordResetEmail(email: String, baseContext: Context){
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
