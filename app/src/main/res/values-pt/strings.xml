@@ -23,6 +23,7 @@
     <string name="registration_received">Criação de conta recebida!</string>
     <string name="waiting_for_approval">Aguardando aprovação presencial</string>
     <string name="back_button">Voltar</string>
+    <string name="error_generate_qrcode">Falha ao gerar o código QR</string>
     <string-array name="nationalities">
         <item>Afegão|AF</item>
         <item>Albanês|AL</item>

@@ -90,4 +90,16 @@ dependencies {
 
     // Await/async tasks
     implementation(libs.kotlinx.coroutines.play.services)
+
+    //QRCode generation
+    implementation(libs.core)
+
+    // ZXING -> Used to read qrcode
+    implementation(libs.zxing.android.embedded)
+    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.play.services.mlkit.barcode.scanning)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
 }
