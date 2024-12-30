@@ -41,6 +41,7 @@ import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.data.firebase.FirebaseObj
+import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.ui.elements.ProductsGrid
 import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
@@ -77,6 +78,9 @@ fun ProductsCatalogPage(
             if (selectedCategory == null) allProducts else allProducts.filter { it.categoryID == selectedCategory }
         Log.w("","Category: $selectedCategory")
     }
+
+    //Add background image
+    BackgroundImageElement()
 
     Column(modifier = modifier.fillMaxSize())
     {
