@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.QrCodePopup
@@ -58,15 +59,18 @@ fun ProfileScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                // Imagem de perfil
-                Image(
-                    painter = painterResource(id = R.drawable.pdmfinal),
-                    contentDescription = "User Profile Picture",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
+                Row(modifier = Modifier.weight(1f)) {
+                    SubcomposeAsyncImage(
+                        model = userInfo?.profilePic ?: R.drawable.product_image_not_found,
+                        contentDescription = "User Profile Picture",
+                        loading = { CircularProgressIndicator() },
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -208,7 +212,7 @@ fun ProfileScreen(
         }
 
         if (showQrCodePopup.value) {
-            QrCodePopup("SMSSrLLsMtPkNBF7xgdANJ6f3Gj1", showQrCodePopup)
+            QrCodePopup(userInfo!!.id, showQrCodePopup)
         }
     }
 }

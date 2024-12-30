@@ -21,6 +21,9 @@ class ProfileViewModel(context: Context) : ViewModel() {
         viewModelScope.launch {
             val userFirebase = FirebaseObj.getCurrentUser()
             userInfo.value = usersRepository.getById(userFirebase!!.uid).first()
+            if (userInfo.value?.profilePic != null){
+                userInfo.value!!.profilePic =  FirebaseObj.getImageUrl(userInfo.value!!.profilePic!!)
+            }
         }
     }
 }
