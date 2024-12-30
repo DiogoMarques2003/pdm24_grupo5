@@ -3,6 +3,7 @@ package com.kotlin.socialstore.viewModels
 import android.content.Context
 import android.util.Patterns.EMAIL_ADDRESS
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -16,11 +17,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 
-class LoginViewModel(context: Context, val navController: NavController) : ViewModel() {
+class LoginViewModel(context: Context, val navController: NavController, val userType: MutableState<String?>) : ViewModel() {
 
     private val database = AppDatabase.getDatabase(context)
     private val usersRepository = UsersRepository(database.usersDao())
-    private val _navController = navController
 
     var isProcessingRequest = MutableStateFlow(false)
 
@@ -68,6 +68,8 @@ class LoginViewModel(context: Context, val navController: NavController) : ViewM
 
                 // Inserir na base de dados local
                 usersRepository.insert(user)
+
+                userType.value = user.accountType
 
                 if (user.active) {
                     navController.navigate("main_screen")
