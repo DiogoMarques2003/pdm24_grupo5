@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +27,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
+import com.kotlin.socialstore.ui.elements.QrCodePopup
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 
@@ -35,6 +38,7 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel
 ) {
     val userInfo by profileViewModel.userInfo.collectAsState(null)
+    val showQrCodePopup = remember { mutableStateOf(false) }
 
     if (userInfo == null) {
         LaunchedEffect(Unit) {
@@ -64,7 +68,7 @@ fun ProfileScreen(
                     contentScale = ContentScale.Crop
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // Nome do usuário
                 Text(
@@ -86,7 +90,7 @@ fun ProfileScreen(
                     Text(text = "Edit profile")
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // "Household"
                 Row(
@@ -132,7 +136,7 @@ fun ProfileScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+  //              Spacer(modifier = Modifier.height(16.dp))
 
                 // Lista de itens
                 val items = listOf(
@@ -191,16 +195,20 @@ fun ProfileScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+        //        Spacer(modifier = Modifier.height(24.dp))
 
                 // Botão QR Code
                 Button(
-                    onClick = { /* Abrir QR Code */ },
+                    onClick = { showQrCodePopup.value = true },
                     modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
                     Text(text = "QR Code")
                 }
             }
+        }
+
+        if (showQrCodePopup.value) {
+            QrCodePopup("SMSSrLLsMtPkNBF7xgdANJ6f3Gj1", showQrCodePopup)
         }
     }
 }
