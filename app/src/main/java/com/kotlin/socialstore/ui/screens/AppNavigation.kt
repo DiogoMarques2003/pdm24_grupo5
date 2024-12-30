@@ -25,6 +25,7 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -33,7 +34,6 @@ import kotlinx.coroutines.flow.firstOrNull
 fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val modifierCustom: Modifier = modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
-
     val context = LocalContext.current
 
     // Check what is the first sreen of user
@@ -54,6 +54,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             } else {
                 "awaiting_approval_screen"
             }
+
         }
 
         isStartDestinationDetermined = true
@@ -98,6 +99,11 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             composable("main_screen") {
                 MainScreen(navController, modifierCustom)
             }
+            
+            composable("profile_page_screen") {
+               val profileViewModel = ProfileViewModel(LocalContext.current)
+               ProfileScreen(navController, modifierCustom, profileViewModel)
+           }
 
         }
     } else {
