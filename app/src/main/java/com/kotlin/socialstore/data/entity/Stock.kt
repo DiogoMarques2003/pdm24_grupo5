@@ -6,7 +6,7 @@ import com.google.firebase.firestore.DocumentReference
 
 @Entity(tableName = "stock")
 data class Stock(
-    @PrimaryKey(autoGenerate = false) val id: String,
+    @PrimaryKey(autoGenerate = false) var id: String,
     val categoryID: String,
     var picture: String?,
     val state: String,

@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.ui.screens
 
 import ForgotPasswordPage
+import StockViewModel
 import SubmitDonationPage
 import android.util.Log
 import androidx.annotation.OptIn
@@ -84,6 +85,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 ) {
                     AdminBottomNavigationBar(navController)
                 }
+
             }
         ) { innerPadding ->
             NavHost(
@@ -120,42 +122,47 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     HomePage(navController, modifierCustom)
                 }
                 
-            composable("awaiting_approval_screen") {
-                val awaitingApprovalViewModel =
-                    AwaitingApprovalViewModel(LocalContext.current, navController)
-                AwaitingApprovalScreen(modifierCustom, awaitingApprovalViewModel)
-            }
+                composable("manage_stock") {
+                  val stockViewModel = StockViewModel(LocalContext.current)
+                  ManageStockPage(navController, modifierCustom, stockViewModel)
+              }
+                
+              composable("awaiting_approval_screen") {
+                  val awaitingApprovalViewModel =
+                      AwaitingApprovalViewModel(LocalContext.current, navController)
+                  AwaitingApprovalScreen(modifierCustom, awaitingApprovalViewModel)
+              }
 
-            composable("main_screen") {
-                MainScreen(navController, modifierCustom)
-            }
+              composable("main_screen") {
+                  MainScreen(navController, modifierCustom)
+              }
 
-            composable("profile_page_screen") {
-                val profileViewModel = ProfileViewModel(LocalContext.current)
-                ProfileScreen(navController, modifierCustom, profileViewModel)
-            }
+              composable("profile_page_screen") {
+                  val profileViewModel = ProfileViewModel(LocalContext.current)
+                  ProfileScreen(navController, modifierCustom, profileViewModel)
+              }
 
-            composable("qrcode_reader_screen") {
-                QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
-                    Log.d("Qr Code result: ", qrCodeContent)
-                    // Pass the result back to the home screen
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "qrCodeResult",
-                        qrCodeContent
-                    )
-                    navController.popBackStack()
-                }
-            }
-            composable("forgot_password_screen") {
-                ForgotPasswordPage(navController, modifierCustom)
-            }
-            composable("home_screen") {
-                HomePage(navController, modifierCustom)
-            }
-            composable("products_screen") {
-                val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
-                ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
-            }
+              composable("qrcode_reader_screen") {
+                  QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
+                      Log.d("Qr Code result: ", qrCodeContent)
+                      // Pass the result back to the home screen
+                      navController.previousBackStackEntry?.savedStateHandle?.set(
+                          "qrCodeResult",
+                          qrCodeContent
+                      )
+                      navController.popBackStack()
+                  }
+              }
+              composable("forgot_password_screen") {
+                  ForgotPasswordPage(navController, modifierCustom)
+              }
+              composable("home_screen") {
+                  HomePage(navController, modifierCustom)
+              }
+              composable("products_screen") {
+                  val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                  ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+              }
         }
     } else {
         LoadIndicator(modifier)

@@ -32,6 +32,7 @@ data class DonationItem(
 fun SubmitDonationPage(
     navController: NavController,
     modifier: Modifier = Modifier,
+    viewModel: StockViewModel,
     onSubmitDonations: (List<DonationItem>) -> Unit
 ) {
     var donationItems by remember { mutableStateOf(listOf<DonationItem>()) }
@@ -94,22 +95,10 @@ fun SubmitDonationPage(
     }
 
     if (showAddItemDialog) {
-        AddDonationItemDialog(
-            navController = navController,
-            onDismiss = { showAddItemDialog = false },
-            onAddItem = { name, description, condition, size, quantity, photoUri ->
-                val newItem = DonationItem(
-                    name = name,
-                    description = description,
-                    condition = condition,
-                    size = size,
-                    quantity = quantity,
-                    photoUri = photoUri
-                )
-                donationItems = donationItems + newItem
-                showAddItemDialog = false
-            },
-            onPhotoSelected = { uri -> currentPhotoUri = uri }
+        AddItemDialog(
+            viewModel = viewModel,
+            onDismiss = {},
+            modifier = modifier
         )
     }
 }
