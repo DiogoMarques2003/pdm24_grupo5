@@ -65,8 +65,7 @@ class LoginViewModel(context: Context, navController: NavController) : ViewModel
                 context.getString(R.string.login_success),
                 Toast.LENGTH_LONG,
             ).show()
-            // TODO: remove after test of profile screen
-            _navController.navigate("profile_page_screen")
+            
             if (user.active) {
                 // TODO: redirect to dashboard
             } else {
