@@ -21,6 +21,7 @@
     <string name="invalid_phone_number">Invalid phone number</string>
     <string name="register_success">Register successfully</string>
     <string name="login_success">Login successfully</string>
+    <string name="product_state">State:</string>
     <string-array name="nationalities">
         <item>Afghan|AF</item>
         <item>Albanian|AL</item>
@@ -179,4 +180,11 @@
         <item>Zambian|ZM</item>
         <item>Zimbabwean|ZW</item>
     </string-array>
+    <string name="product_size">Size:</string>
+    <string name="product_state_n">New</string>
+    <string name="product_state_u">Used</string>
+    <string name="product_state_g">Good</string>
+    <string name="product_state_b">Bad</string>
+    <string name="product_state_default">N/A</string>
+    <string name="products_page_title">Products</string>
 </resources>

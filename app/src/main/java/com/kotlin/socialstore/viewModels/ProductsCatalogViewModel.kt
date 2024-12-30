@@ -2,10 +2,12 @@ package com.kotlin.socialstore.viewModels
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.ListenerRegistration
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
@@ -68,7 +70,13 @@ class ProductsCatalogViewModel(context: Context) : ViewModel() {
             }
 
             //Convert firebase data to local db data
-            val productsConv = productsList.map { Stock.firebaseMapToClass(it) }
+            val productsConv = productsList.map {
+                val stock = Stock.firebaseMapToClass(it)
+                if (stock.picture != null){
+                    stock.picture =  FirebaseObj.getImageUrl(stock.picture!!)
+                }
+                stock
+            }
 
             //Delete all local data
             productsRepository.deleteAll()
@@ -79,7 +87,7 @@ class ProductsCatalogViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun stopListeners(){
+    fun stopListeners() {
         categoryListener?.remove()
         categoryListener = null
         productsListener?.remove()

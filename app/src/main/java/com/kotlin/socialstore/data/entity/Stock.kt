@@ -8,7 +8,7 @@ import com.google.firebase.firestore.DocumentReference
 data class Stock(
     @PrimaryKey(autoGenerate = false) val id: String,
     val categoryID: String,
-    val picture: String?,
+    var picture: String?,
     val state: String,
     val size: String?,
     val description: String,

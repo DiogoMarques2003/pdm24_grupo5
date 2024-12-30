@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -200,14 +201,13 @@ object FirebaseObj {
         }
     }
 
-    fun downloadImage(path: String) {
-        // Create a reference with an initial file path and name and Download image
-        var imageRef = storagerefence.child(path)
-
-        var gsUrl = "gs://${firestorage.app.options.storageBucket}/${storagerefence.path}"
-
-        Log.d(TAG,"Path downloadUrl: $imageRef")
-
-        // Create a reference to a file from a Google Cloud Storage URI
+    suspend fun getImageUrl(path: String) : String? {
+        try {
+            // Create a reference with an initial file path and name and Download image
+            return storagerefence.child(path).downloadUrl.await().toString()
+        }catch (e: Exception){
+            e.printStackTrace()
+            return null
+        }
     }
 }

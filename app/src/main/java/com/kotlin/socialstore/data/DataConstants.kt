@@ -1,5 +1,7 @@
 package com.kotlin.socialstore.data
 
+import com.kotlin.socialstore.R
+
 object DataConstants {
     object AccountType {
         val admin = "ADM"
@@ -12,4 +14,9 @@ object DataConstants {
         val category = "category"
         val stock = "stock"
     }
+
+    val mapProductCondition = mapOf("N" to R.string.product_state_n,
+                                    "B" to R.string.product_state_b,
+                                    "U" to R.string.product_state_u,
+                                    "G" to R.string.product_state_g)
 }
