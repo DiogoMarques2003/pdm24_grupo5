@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -87,3 +86,15 @@ private fun generateQrCode(content: String, isLoading: MutableState<Boolean>): B
         isLoading.value = false
     }
 }
+
+/* Show PopUp
+* ButtonElement(
+*   text = "Test QrCode",
+*   onClick = { showQrCodePopup.value = true },
+*   modifier = Modifier.fillMaxWidth()
+*)
+*
+*if (showQrCodePopup.value) {
+*   QrCodePopup("SMSSrLLsMtPkNBF7xgdANJ6f3Gj1", showQrCodePopup)
+*}
+* */
