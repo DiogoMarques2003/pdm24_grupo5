@@ -58,7 +58,6 @@ class StockViewModel(
             }
 
         productsListener = firestore.collection("stock")
-            .whereEqualTo("storesId", auth.currentUser?.uid)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) return@addSnapshotListener
                 viewModelScope.launch {
@@ -95,7 +94,7 @@ class StockViewModel(
             }
 
             stocks.forEach { stock ->
-                stock.id = FirebaseObj.insertData(
+                FirebaseObj.insertData(
                     DataConstants.FirebaseCollections.stock,
                     stock.toFirebaseMap()
                 )
@@ -105,8 +104,6 @@ class StockViewModel(
                         Toast.LENGTH_SHORT,
                     ).show()
             }
-
-            stockRepository.insertList(stocks)
         } catch (e: Exception) {
 
         }

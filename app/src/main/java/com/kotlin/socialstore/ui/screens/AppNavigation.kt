@@ -95,7 +95,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             ) {
                 composable("login_screen") {
                     // Initialize view model
-                    val loginViewModel = LoginViewModel(LocalContext.current, navController, userType)
+                    val loginViewModel =
+                        LoginViewModel(LocalContext.current, navController, userType)
                     LoginPage(navController, modifierCustom, loginViewModel)
                 }
                 composable("register_screen") {
@@ -107,9 +108,11 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     DonationSuccessPage(navController, modifierCustom)
                 }
                 composable("submit_donation") {
+                    val stockViewModel = StockViewModel(LocalContext.current)
                     SubmitDonationPage(
                         navController,
                         modifierCustom,
+                        stockViewModel,
                         onSubmitDonations = { items ->
 
                         }
@@ -121,48 +124,49 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("home_screen") {
                     HomePage(navController, modifierCustom)
                 }
-                
+
                 composable("manage_stock") {
-                  val stockViewModel = StockViewModel(LocalContext.current)
-                  ManageStockPage(navController, modifierCustom, stockViewModel)
-              }
-                
-              composable("awaiting_approval_screen") {
-                  val awaitingApprovalViewModel =
-                      AwaitingApprovalViewModel(LocalContext.current, navController)
-                  AwaitingApprovalScreen(modifierCustom, awaitingApprovalViewModel)
-              }
+                    val stockViewModel = StockViewModel(LocalContext.current)
+                    ManageStockPage(navController, modifierCustom, stockViewModel)
+                }
 
-              composable("main_screen") {
-                  MainScreen(navController, modifierCustom)
-              }
+                composable("awaiting_approval_screen") {
+                    val awaitingApprovalViewModel =
+                        AwaitingApprovalViewModel(LocalContext.current, navController)
+                    AwaitingApprovalScreen(modifierCustom, awaitingApprovalViewModel)
+                }
 
-              composable("profile_page_screen") {
-                  val profileViewModel = ProfileViewModel(LocalContext.current)
-                  ProfileScreen(navController, modifierCustom, profileViewModel)
-              }
+                composable("main_screen") {
+                    MainScreen(navController, modifierCustom)
+                }
 
-              composable("qrcode_reader_screen") {
-                  QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
-                      Log.d("Qr Code result: ", qrCodeContent)
-                      // Pass the result back to the home screen
-                      navController.previousBackStackEntry?.savedStateHandle?.set(
-                          "qrCodeResult",
-                          qrCodeContent
-                      )
-                      navController.popBackStack()
-                  }
-              }
-              composable("forgot_password_screen") {
-                  ForgotPasswordPage(navController, modifierCustom)
-              }
-              composable("home_screen") {
-                  HomePage(navController, modifierCustom)
-              }
-              composable("products_screen") {
-                  val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
-                  ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
-              }
+                composable("profile_page_screen") {
+                    val profileViewModel = ProfileViewModel(LocalContext.current)
+                    ProfileScreen(navController, modifierCustom, profileViewModel)
+                }
+
+                composable("qrcode_reader_screen") {
+                    QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
+                        Log.d("Qr Code result: ", qrCodeContent)
+                        // Pass the result back to the home screen
+                        navController.previousBackStackEntry?.savedStateHandle?.set(
+                            "qrCodeResult",
+                            qrCodeContent
+                        )
+                        navController.popBackStack()
+                    }
+                }
+                composable("forgot_password_screen") {
+                    ForgotPasswordPage(navController, modifierCustom)
+                }
+                composable("home_screen") {
+                    HomePage(navController, modifierCustom)
+                }
+                composable("products_screen") {
+                    val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                    ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                }
+            }
         }
     } else {
         LoadIndicator(modifier)
