@@ -22,6 +22,7 @@
     <string name="registration_received">Registration Received!</string>
     <string name="waiting_for_approval">Waiting for In-Person Approval</string>
     <string name="back_button">Back</string>
+    <string name="error_generate_qrcode">Failed to generate QR Code</string>
     <string-array name="nationalities">
         <item>Afghan|AF</item>
         <item>Albanian|AL</item>

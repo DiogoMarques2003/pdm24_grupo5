@@ -89,4 +89,7 @@ dependencies {
 
     // Await/async tasks
     implementation(libs.kotlinx.coroutines.play.services)
+
+    //QRCode generation
+    implementation(libs.core)
 }

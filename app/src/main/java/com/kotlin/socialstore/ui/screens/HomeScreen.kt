@@ -11,6 +11,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -21,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.ButtonElement
+import com.kotlin.socialstore.ui.elements.QrCodePopup
 
 //DEFAULT VALUES
 private val itemSpacing = 8.dp
@@ -31,6 +36,8 @@ fun HomePage(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    var showQrCodePopup = remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -61,6 +68,16 @@ fun HomePage(
                 onClick = { navController.navigate("submit_donation") },
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(Modifier.height(itemSpacing))
+            ButtonElement(
+                text = "Test QrCode",
+                onClick = { showQrCodePopup.value = true },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            if (showQrCodePopup.value) {
+                QrCodePopup("SMSSrLLsMtPkNBF7xgdANJ6f3Gj1", showQrCodePopup)
+            }
         }
     }
 }
