@@ -19,11 +19,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
-fun ButtonElement(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun ButtonElement(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
     Button(
         modifier = modifier.size(50.dp),
         onClick = onClick,
-        shape = RoundedCornerShape(35)
+        shape = RoundedCornerShape(35),
+        enabled = enabled
     ) {
         Text(text = text, fontSize = 15.sp)
     }

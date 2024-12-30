@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.ui.screens
 
 import ForgotPasswordPage
+import StockViewModel
 import SubmitDonationPage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -18,7 +19,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val modifierCustom: Modifier = modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
 
-    NavHost(navController = navController, startDestination = "products_screen") {
+    NavHost(navController = navController, startDestination = "home_screen") {
         composable("login_screen") {
             // Initialize view model
             val loginViewModel = LoginViewModel(LocalContext.current)
@@ -33,9 +34,12 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             DonationSuccessPage(navController, modifierCustom)
         }
         composable("submit_donation") {
+            val stockViewModel = StockViewModel(LocalContext.current)
+
             SubmitDonationPage(
                 navController,
                 modifierCustom,
+                stockViewModel,
                 onSubmitDonations = { items ->
 
                 }
@@ -50,6 +54,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         composable("products_screen") {
             val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
             ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+        }
+        composable("manage_stock") {
+            val stockViewModel = StockViewModel(LocalContext.current)
+            ManageStockPage(navController, modifierCustom, stockViewModel)
         }
 
     }

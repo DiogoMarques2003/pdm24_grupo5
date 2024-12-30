@@ -204,9 +204,9 @@ object FirebaseObj {
         // Create a reference with an initial file path and name and Download image
         var imageRef = storagerefence.child(path)
 
-        var gsUrl = "gs://${firestorage.app.options.storageBucket}/${storagerefence.path}"
+        //var gsUrl = "gs://${firestorage.app.options.storageBucket}/${storagerefence.path}"
 
-        Log.d(TAG,"Path downloadUrl: $imageRef")
+        //Log.d(TAG,"Path downloadUrl: $imageRef")
 
         // Create a reference to a file from a Google Cloud Storage URI
     }

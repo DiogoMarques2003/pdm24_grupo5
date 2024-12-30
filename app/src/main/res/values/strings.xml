@@ -15,6 +15,9 @@
     <string name="reference_textfield">Reference</string>
     <string name="phoneNumber_textfield">Phone Number</string>
     <string name="homepage_Donate">Donation</string>
+    <string name="homepage_AddItem">Add new item</string>
+    <string name="manageStock_AddItem">Add new item</string>
+    <string name="manageStock_Title">Manage Stock</string>
     <string name="homepage_welcome">Welcome!</string>
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
