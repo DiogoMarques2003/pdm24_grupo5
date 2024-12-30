@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -19,9 +20,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
 
@@ -55,15 +60,30 @@ fun ProductsCatalogPage(
             Text("Products", fontSize = UiConstants.titleTextSize)
         }
 
-        LazyRow( modifier = Modifier.fillMaxWidth()) {
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(allCategories) { item ->
                 AssistChip(
                     onClick = { },
                     label = { Text(item.nome) },
                 )
+                Spacer(modifier = Modifier.size(UiConstants.itemSpacing))
             }
         }
-
+        Spacer(modifier = Modifier.size(UiConstants.itemSpacing))
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            items(allProducts) { item ->
+                ElevatedCard(modifier = Modifier.size(height = 150.dp, width = 150.dp)) {
+                    Text(
+                        allCategories.find { it.id == item.categoryID }?.nome ?: "",
+                        fontWeight = FontWeight.Bold
+                    )
+                    if (item.picture != null) {
+                        FirebaseObj.downloadImage(item.picture)
+                    }
+                    Text(item.description)
+                }
+            }
+        }
     }
 }
 

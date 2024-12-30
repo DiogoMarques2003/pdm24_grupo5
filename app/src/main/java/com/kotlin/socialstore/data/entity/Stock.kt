@@ -2,6 +2,7 @@ package com.kotlin.socialstore.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentReference
 
 @Entity(tableName = "stock")
 data class Stock(
@@ -16,7 +17,7 @@ data class Stock(
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
             "id" to id,
-            "categoryID" to categoryID,
+            "categoryId" to categoryID,
             "picture" to picture,
             "state" to state,
             "size" to size,
@@ -27,9 +28,11 @@ data class Stock(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): Stock {
+            val categoryReference = data["categoryId"] as? DocumentReference
+
             return Stock(
                 id = data["id"] as String,
-                categoryID = data["categoryID"] as String,
+                categoryID = categoryReference?.id ?: "",
                 picture = data["picture"] as? String,
                 state = data["state"] as String,
                 size = data["size"] as? String,

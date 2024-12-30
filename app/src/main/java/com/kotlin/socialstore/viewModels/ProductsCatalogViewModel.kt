@@ -75,6 +75,7 @@ class ProductsCatalogViewModel(context: Context) : ViewModel() {
 
             //Insert new data
             productsRepository.insertList(productsConv)
+
         }
     }
 

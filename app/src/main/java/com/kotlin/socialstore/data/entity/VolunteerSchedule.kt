@@ -2,6 +2,7 @@ package com.kotlin.socialstore.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentReference
 import java.sql.Date
 import java.sql.Time
 
@@ -31,14 +32,17 @@ data class VolunteerSchedule(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): VolunteerSchedule {
+            val userReference= data["userID"] as? DocumentReference
+            val localReference= data["localId"] as? DocumentReference
+
             return VolunteerSchedule(
                 id = data["id"] as String,
-                userID = data["userID"] as String,
+                userID = userReference?.id ?: "",
                 day = Date(data["day"] as Long), // Converte timestamp para Date
                 startTime = Time.valueOf(data["startTime"] as String), // Converte String para Time
                 endTime = Time.valueOf(data["endTime"] as String), // Converte String para Time
                 accepted = data["accepted"] as? Boolean ?: false,
-                localId = data["localId"] as? String,
+                localId = localReference?.id ?: "",
                 workFunction = data["workFunction"] as? String
             )
         }

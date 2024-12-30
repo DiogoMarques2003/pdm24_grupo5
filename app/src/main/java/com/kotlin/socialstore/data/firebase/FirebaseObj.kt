@@ -11,16 +11,22 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 
 
 object FirebaseObj {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var firestorage: FirebaseStorage
+    private lateinit var storagerefence: StorageReference
 
     fun startFirebase() {
         auth = Firebase.auth
         firestore = Firebase.firestore
+        firestorage = FirebaseStorage.getInstance()
+        storagerefence = firestorage.reference
     }
 
     fun getCurrentUser(): FirebaseUser? {
@@ -47,17 +53,17 @@ object FirebaseObj {
         }
     }
 
-    fun sendPasswordResetEmail(email: String, baseContext: Context){
+    fun sendPasswordResetEmail(email: String, baseContext: Context) {
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful){
+                if (task.isSuccessful) {
                     Log.d(TAG, "Email enviado")
                     Toast.makeText(
                         baseContext,
                         "Email enviado",
                         Toast.LENGTH_SHORT,
                     ).show()
-                }else {
+                } else {
                     Toast.makeText(
                         baseContext,
                         "Falha ao enviar email",
@@ -68,11 +74,16 @@ object FirebaseObj {
     }
 
     // Método para inserir dados
-    suspend fun insertData(collection: String, data: Map<String, Any?>, documentId: String? = null): String? {
+    suspend fun insertData(
+        collection: String,
+        data: Map<String, Any?>,
+        documentId: String? = null
+    ): String? {
         return try {
             val documentReference = if (documentId != null) {
                 firestore.collection(collection).document(documentId).set(data).await()
-                firestore.collection(collection).document(documentId) // Retorna a referência do documento criado com ID fornecido
+                firestore.collection(collection)
+                    .document(documentId) // Retorna a referência do documento criado com ID fornecido
             } else {
                 val result = firestore.collection(collection).add(data).await()
                 result // Retorna a referência do documento criado com ID automático
@@ -162,7 +173,11 @@ object FirebaseObj {
     }
 
     // Método para atualizar dados
-    suspend fun updateData(collection: String, documentId: String, updatedData: Map<String, Any?>): Boolean {
+    suspend fun updateData(
+        collection: String,
+        documentId: String,
+        updatedData: Map<String, Any?>
+    ): Boolean {
         return try {
             firestore.collection(collection).document(documentId).update(updatedData).await()
             Log.d(TAG, "Documento atualizado com sucesso")
@@ -183,5 +198,16 @@ object FirebaseObj {
             Log.w(TAG, "Erro ao deletar documento", e)
             false
         }
+    }
+
+    fun downloadImage(path: String) {
+        // Create a reference with an initial file path and name and Download image
+        var imageRef = storagerefence.child(path)
+
+        var gsUrl = "gs://${firestorage.app.options.storageBucket}/${storagerefence.path}"
+
+        Log.d(TAG,"Path downloadUrl: $imageRef")
+
+        // Create a reference to a file from a Google Cloud Storage URI
     }
 }
