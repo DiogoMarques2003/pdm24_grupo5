@@ -2,6 +2,7 @@ package com.kotlin.socialstore.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentReference
 import java.sql.Date
 
 @Entity(tableName = "familyHouseholdVisits")
@@ -20,9 +21,11 @@ data class FamilyHouseholdVisits(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): FamilyHouseholdVisits {
+            val familyHouseholdReference = data["familyHouseholdId"] as? DocumentReference
+
             return FamilyHouseholdVisits(
                 id = data["id"] as String,
-                familyHouseholdId = data["familyHouseholdId"] as String,
+                familyHouseholdId = familyHouseholdReference?.id ?: "",
                 date = Date(data["date"] as Long) // Converte timestamp de volta para `Date`
             )
         }

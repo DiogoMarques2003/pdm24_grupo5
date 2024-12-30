@@ -71,6 +71,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.common.ktx)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -91,6 +92,9 @@ dependencies {
     // Await/async tasks
     implementation(libs.kotlinx.coroutines.play.services)
 
+    //Coil - Display images
+    implementation("io.coil-kt.coil3:coil-compose:3.0.3")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.3")
     //QRCode generation
     implementation(libs.core)
 

@@ -2,6 +2,7 @@ package com.kotlin.socialstore.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentReference
 import java.sql.Time
 
 @Entity(tableName = "storesSchedule")
@@ -24,9 +25,11 @@ data class StoresSchedule(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): StoresSchedule {
+            val storesReference = data["storesId"] as? DocumentReference
+
             return StoresSchedule(
                 id = data["id"] as String,
-                storesId = data["storesId"] as String,
+                storesId = storesReference?.id ?: "",
                 weekDay = data["weekDay"] as Int,
                 startTime = Time.valueOf(data["startTime"] as String), // Converte String para Time
                 endTime = Time.valueOf(data["endTime"] as String)      // Converte String para Time

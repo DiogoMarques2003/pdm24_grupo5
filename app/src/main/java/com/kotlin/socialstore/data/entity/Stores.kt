@@ -23,6 +23,7 @@ data class Stores(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): Stores {
+
             return Stores(
                 id = data["id"] as String,
                 name = data["name"] as String,

@@ -27,6 +27,7 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 import kotlinx.coroutines.flow.first
@@ -57,7 +58,6 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             } else {
                 "awaiting_approval_screen"
             }
-
         }
 
         isStartDestinationDetermined = true
@@ -115,6 +115,18 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     navController.previousBackStackEntry?.savedStateHandle?.set("qrCodeResult", qrCodeContent)
                     navController.popBackStack()
                 }
+            )
+        }
+        composable("forgot_password_screen") {
+            ForgotPasswordPage(navController, modifierCustom)
+        }
+        composable("home_screen") {
+            HomePage(navController, modifierCustom)
+        }
+        composable("products_screen") {
+            val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+            ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+        }
             }
 
         }

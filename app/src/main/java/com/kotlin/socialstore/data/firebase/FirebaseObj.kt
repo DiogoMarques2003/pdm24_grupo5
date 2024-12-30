@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -11,16 +12,22 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 
 
 object FirebaseObj {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var firestorage: FirebaseStorage
+    private lateinit var storagerefence: StorageReference
 
     fun startFirebase() {
         auth = Firebase.auth
         firestore = Firebase.firestore
+        firestorage = FirebaseStorage.getInstance()
+        storagerefence = firestorage.reference
     }
 
     fun getCurrentUser(): FirebaseUser? {
@@ -54,14 +61,14 @@ object FirebaseObj {
     fun sendPasswordResetEmail(email: String, baseContext: Context){
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful){
+                if (task.isSuccessful) {
                     Log.d(TAG, "Email enviado")
                     Toast.makeText(
                         baseContext,
                         "Email enviado",
                         Toast.LENGTH_SHORT,
                     ).show()
-                }else {
+                } else {
                     Toast.makeText(
                         baseContext,
                         "Falha ao enviar email",
@@ -72,11 +79,16 @@ object FirebaseObj {
     }
 
     // Método para inserir dados
-    suspend fun insertData(collection: String, data: Map<String, Any?>, documentId: String? = null): String? {
+    suspend fun insertData(
+        collection: String,
+        data: Map<String, Any?>,
+        documentId: String? = null
+    ): String? {
         return try {
             val documentReference = if (documentId != null) {
                 firestore.collection(collection).document(documentId).set(data).await()
-                firestore.collection(collection).document(documentId) // Retorna a referência do documento criado com ID fornecido
+                firestore.collection(collection)
+                    .document(documentId) // Retorna a referência do documento criado com ID fornecido
             } else {
                 val result = firestore.collection(collection).add(data).await()
                 result // Retorna a referência do documento criado com ID automático
@@ -153,6 +165,7 @@ object FirebaseObj {
                     if (snapshot != null) {
                         val documents = snapshot.documents.mapNotNull { doc ->
                             val data = doc.data ?: return@mapNotNull null
+                            Log.d(TAG, "Documento - id: ${doc.id} - ${doc.data}")
                             data + ("id" to doc.id) // Adiciona o id a cada documento
                         }
                         onDataChanged(documents) // Retorna todos os documentos
@@ -165,7 +178,11 @@ object FirebaseObj {
     }
 
     // Método para atualizar dados
-    suspend fun updateData(collection: String, documentId: String, updatedData: Map<String, Any?>): Boolean {
+    suspend fun updateData(
+        collection: String,
+        documentId: String,
+        updatedData: Map<String, Any?>
+    ): Boolean {
         return try {
             firestore.collection(collection).document(documentId).update(updatedData).await()
             Log.d(TAG, "Documento atualizado com sucesso")
@@ -185,6 +202,16 @@ object FirebaseObj {
         } catch (e: Exception) {
             Log.w(TAG, "Erro ao deletar documento", e)
             false
+        }
+    }
+
+    suspend fun getImageUrl(path: String) : String? {
+        try {
+            // Create a reference with an initial file path and name and Download image
+            return storagerefence.child(path).downloadUrl.await().toString()
+        }catch (e: Exception){
+            e.printStackTrace()
+            return null
         }
     }
 }
