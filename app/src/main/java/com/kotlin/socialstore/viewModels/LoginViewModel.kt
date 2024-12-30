@@ -15,9 +15,12 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
+
 class LoginViewModel(context: Context, val navController: NavController) : ViewModel() {
+
     private val database = AppDatabase.getDatabase(context)
     private val usersRepository = UsersRepository(database.usersDao())
+    private val _navController = navController
 
     var isProcessingRequest = MutableStateFlow(false)
 
@@ -74,6 +77,7 @@ class LoginViewModel(context: Context, val navController: NavController) : ViewM
             } finally {
                 // Set processing to false
                 isProcessingRequest.value = false
+
             }
         }
     }
