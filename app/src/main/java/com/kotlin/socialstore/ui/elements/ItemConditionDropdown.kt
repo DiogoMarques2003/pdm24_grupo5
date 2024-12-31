@@ -13,6 +13,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.DataConstants.mapProductCondition
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +32,9 @@ fun ItemConditionDropdown(
         onExpandedChange = { expanded = it }
     ) {
         OutlinedTextfieldElement(
-            value = selectedCondition,
+            value = if (selectedCondition.isNotEmpty()) {
+                stringResource(mapProductCondition[selectedCondition] ?: R.string.product_state_n)
+            } else "",
             onValueChange = {},
             readOnly = true,
             labelText = "Condition",
@@ -42,11 +47,11 @@ fun ItemConditionDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            itemConditions.forEach { condition ->
+            mapProductCondition.forEach { (key, stringResourceId) ->
                 DropdownMenuItem(
-                    text = { Text(condition) },
+                    text = { Text(stringResource(stringResourceId)) },
                     onClick = {
-                        onConditionSelected(condition)
+                        onConditionSelected(key)
                         expanded = false
                     }
                 )

@@ -1,5 +1,6 @@
 import UiConstants.itemConditions
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -54,6 +55,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
@@ -61,9 +63,11 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.entity.Category
 import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.data.entity.Stores
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import kotlinx.coroutines.launch
@@ -78,20 +82,20 @@ fun AddItemDialog(
     var description by remember { mutableStateOf("") }
     var size by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("1") }
-    var condition by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
     var selectedStore by remember { mutableStateOf<Stores?>(null) }
     var selectedCondition by remember { mutableStateOf("") }
     var expandedCategory by remember { mutableStateOf(false) }
     var expandedStore by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var storesID by remember { mutableStateOf("") }
+    var filePath by remember { mutableStateOf("") }
 
     val categories by viewModel.allCategories.collectAsState(initial = emptyList())
     val stores by viewModel.allStores.collectAsState(initial = emptyList())
 
     var isUploading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -101,8 +105,9 @@ fun AddItemDialog(
             scope.launch {
                 viewModel.uploadStockImage(it).collect { result ->
                     result.onSuccess { url ->
-                        imageUri = url.toUri()
+                        imageUri = FirebaseObj.getImageUrl(url)?.toUri()
                         isUploading = false
+                        filePath = url
                     }.onFailure { error ->
                         isUploading = false
                     }
@@ -264,7 +269,7 @@ fun AddItemDialog(
                         }
                     }
 
-                    Spacer(Modifier.height(UiConstants.inputDialogSpacing))
+                    Spacer(Modifier.height(UiConstants.imageContentSpacing))
 
                     Card(
                         modifier = modifier
@@ -326,19 +331,32 @@ fun AddItemDialog(
                     ButtonElement(
                         text = "Add product",
                         onClick = {
-                            selectedStore?.let { store ->
-                                selectedCategory?.let { category ->
-                                    viewModel.addStock(
-                                        description = description,
-                                        size = size,
-                                        quantity = quantity.toIntOrNull() ?: 1,
-                                        state = selectedCondition,
-                                        categoryID = category.id,
-                                        picture = imageUri?.toString(),
-                                        storesId = store.id
-                                    )
-                                    onDismiss()
+                            try {
+                                selectedStore?.let { store ->
+                                    selectedCategory?.let { category ->
+                                        viewModel.addStock(
+                                            description = description,
+                                            size = size,
+                                            quantity = quantity.toIntOrNull() ?: 1,
+                                            state = selectedCondition,
+                                            categoryID = category.id,
+                                            picture = filePath,
+                                            storesId = store.id
+                                        )
+                                        Toast.makeText(
+                                            context,
+                                            R.string.item_added_success,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        onDismiss()
+                                    }
                                 }
+                            } catch (e: Exception) {
+                                Toast.makeText(
+                                    context,
+                                    R.string.item_added_error,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         },
                         modifier = Modifier
@@ -351,221 +369,6 @@ fun AddItemDialog(
         }
     )
 }
-
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AddDonationItemDialog(
-    navController: NavController,
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit,
-    onPhotoSelected: (Uri) -> Unit
-) {
-    var itemName by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var size by remember { mutableStateOf("") }
-    var quantity by remember { mutableStateOf("1") }
-    var expanded by remember { mutableStateOf(false) }
-    var selectedCondition by remember { mutableStateOf("") }
-    var currentPhotoUri by remember { mutableStateOf<Uri?>(null) }
-
-    val photoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            currentPhotoUri = it
-            onPhotoSelected(it)
-        }
-    }
-
-
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Add Donation Item") },
-        text = {
-            Column(
-                modifier = modifier
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Item Name
-                OutlinedTextField(
-                    value = itemName,
-                    onValueChange = { itemName = it },
-                    label = { Text("What are you donating?") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Color(0xFFF5F5F5),
-                        focusedContainerColor = Color(0xFFF5F5F5)
-                    )
-                )
-
-                // Description
-                OutlinedTextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Description") },
-                    modifier = Modifier.fillMaxWidth(),
-                    minLines = 3,
-                    maxLines = 5,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Color(0xFFF5F5F5),
-                        focusedContainerColor = Color(0xFFF5F5F5)
-                    )
-                )
-
-                // Condition Dropdown
-                ExposedDropdownMenuBox(
-                    expanded = expanded,
-                    onExpandedChange = { expanded = !expanded }
-                ) {
-                    OutlinedTextField(
-                        value = selectedCondition,
-                        onValueChange = {},
-                        readOnly = true,
-                        label = { Text("Condition") },
-                        trailingIcon = { Icon(Icons.Filled.ArrowDropDown, "dropdown arrow") },
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedContainerColor = Color(0xFFF5F5F5),
-                            focusedContainerColor = Color(0xFFF5F5F5)
-                        )
-                    )
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        itemConditions.forEach { condition ->
-                            DropdownMenuItem(
-                                text = { Text(condition) },
-                                onClick = {
-                                    selectedCondition = condition
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                // Size
-                OutlinedTextField(
-                    value = size,
-                    onValueChange = { size = it },
-                    label = { Text("Size (Optional)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Color(0xFFF5F5F5),
-                        focusedContainerColor = Color(0xFFF5F5F5)
-                    )
-                )
-
-                // Quantity
-                OutlinedTextField(
-                    value = quantity,
-                    onValueChange = { if (it.isEmpty() || it.toIntOrNull() != null) quantity = it },
-                    label = { Text("Quantity") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedContainerColor = Color(0xFFF5F5F5),
-                        focusedContainerColor = Color(0xFFF5F5F5)
-                    )
-                )
-
-                // Photo Upload Section
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(
-                        containerColor = Color(0xFFF5F5F5)
-                    )
-                ) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (currentPhotoUri != null) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Image(
-                                    painter = rememberAsyncImagePainter(currentPhotoUri),
-                                    contentDescription = "Selected photo",
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentScale = ContentScale.Crop
-                                )
-                                IconButton(
-                                    onClick = { currentPhotoUri = null },
-                                    modifier = Modifier.align(Alignment.TopEnd)
-                                ) {
-                                    Icon(
-                                        Icons.Default.Close,
-                                        contentDescription = "Remove photo",
-                                        tint = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            }
-                        } else {
-                            Button(
-                                onClick = { photoPickerLauncher.launch("image/*") },
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
-                                )
-                            ) {
-                                Icon(
-                                    Icons.Default.AddAPhoto,
-                                    contentDescription = "Add photo",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    "Add Photo",
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    if (itemName.isNotBlank() && description.isNotBlank() && selectedCondition.isNotBlank()) {
-
-                    }
-                },
-                enabled = itemName.isNotBlank() && description.isNotBlank() && selectedCondition.isNotBlank()
-            ) {
-                Text("Add")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancel")
-            }
-        }
-    )
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

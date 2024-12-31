@@ -82,14 +82,13 @@ class StockViewModel(
 
     fun uploadStockImage(uri: Uri): Flow<Result<String>> = flow {
         try {
-            val filename = "${UUID.randomUUID()}.jpg"
-            val storageRef = storage.reference
-                .child("stockImages/$filename")
+            val filename = FirebaseObj.createStorageImage(uri, DataConstants.FirebaseImageFolders.stock)
+            if (filename != null) {
+                emit(Result.success(filename))
+            } else {
+                emit(Result.failure(Exception("Failed to upload image")))
+            }
 
-            val uploadTask = storageRef.putFile(uri).await()
-            val downloadUrl = uploadTask.storage.downloadUrl.await()
-
-            emit(Result.success(downloadUrl.toString()))
         } catch (e: Exception) {
             emit(Result.failure(e))
         }

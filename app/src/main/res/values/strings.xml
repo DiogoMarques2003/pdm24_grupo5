@@ -29,6 +29,8 @@
     <string name="waiting_for_approval">Waiting for In-Person Approval</string>
     <string name="back_button">Back</string>
     <string name="error_generate_qrcode">Failed to generate QR Code</string>
+    <string name="item_added_success">Item added successfully!</string>
+    <string name="item_added_error">An error occurred. Please try again.</string>
     <string-array name="nationalities">
         <item>Afghan|AF</item>
         <item>Albanian|AL</item>

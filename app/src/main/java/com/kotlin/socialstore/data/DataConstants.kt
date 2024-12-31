@@ -16,6 +16,11 @@ object DataConstants {
         val stores = "stores"
     }
 
+    object FirebaseImageFolders {
+        val users = "profileImages"
+        val stock = "stockImages"
+    }
+
     val mapProductCondition = mapOf("N" to R.string.product_state_n,
                                     "B" to R.string.product_state_b,
                                     "U" to R.string.product_state_u,

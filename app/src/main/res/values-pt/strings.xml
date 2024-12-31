@@ -27,6 +27,8 @@
     <string name="waiting_for_approval">Aguardando aprovação presencial</string>
     <string name="back_button">Voltar</string>
     <string name="error_generate_qrcode">Falha ao gerar o código QR</string>
+    <string name="item_added_success">Item adicionado com sucesso!</string>
+    <string name="item_added_error">Ocorreu um erro na criação. Tente novamente por favor.</string>
     <string-array name="nationalities">
         <item>Afegão|AF</item>
         <item>Albanês|AL</item>
