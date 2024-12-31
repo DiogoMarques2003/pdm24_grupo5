@@ -196,6 +196,7 @@
     <string name="product_state_b">Bad</string>
     <string name="product_state_default">N/A</string>
     <string name="products_page_title">Products</string>
+    <string name="edit_profile_button">Edit Profile</string>
     <string name="donation_approved">Approved</string>
     <string name="donation_pending">Pending</string>
     <string name="donation_declined">Declined</string>
