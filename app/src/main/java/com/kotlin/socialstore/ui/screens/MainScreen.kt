@@ -1,5 +1,7 @@
 package com.kotlin.socialstore.ui.screens
 
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import UiConstants
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
