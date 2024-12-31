@@ -134,7 +134,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     val profileViewModel = ProfileViewModel(LocalContext.current)
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
-
+                
                 composable("qrcode_reader_screen") {
                     QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
                         Log.d("Qr Code result: ", qrCodeContent)

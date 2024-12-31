@@ -14,13 +14,13 @@ import kotlinx.coroutines.launch
 
 class ProfileViewModel(context: Context) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
-    private var userListener : ListenerRegistration? = null
+    private var userListener: ListenerRegistration? = null
     private val userRepository = UsersRepository(database.usersDao())
     private val currUser = FirebaseObj.getCurrentUser()
 
     val userData = userRepository.getById(currUser!!.uid)
 
-    fun getUserInfo(context: Context){
+    fun getUserInfo(context: Context) {
         //Add Listener to User
         userListener = FirebaseObj.listenToData(
             DataConstants.FirebaseCollections.users,
@@ -29,7 +29,7 @@ class ProfileViewModel(context: Context) : ViewModel() {
             { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
     }
 
-    private fun updateUserInfo(users: List<Map<String, Any>>?){
+    private fun updateUserInfo(users: List<Map<String, Any>>?) {
         viewModelScope.launch {
             //Get user
             val user = users?.firstOrNull() ?: return@launch
@@ -41,7 +41,7 @@ class ProfileViewModel(context: Context) : ViewModel() {
             userRepository.deleteById(userConv.id)
 
             //Get Image
-            if ( userConv.profilePic != null ){
+            if (userConv.profilePic != null) {
                 userConv.profilePic = FirebaseObj.getImageUrl(userConv.profilePic!!)
             }
 
@@ -49,4 +49,37 @@ class ProfileViewModel(context: Context) : ViewModel() {
             userRepository.insert(userConv)
         }
     }
+
+    fun updateUserInfo(
+        name: String,
+        email: String,
+        password: String,
+        phoneNumber: String,
+        nationality: String,
+        context: Context
+    ) {
+        viewModelScope.launch {
+            val updatedUser = mapOf(
+                "name" to name,
+                "email" to email,
+                "password" to password,
+                "phoneNumber" to phoneNumber,
+                "nationality" to nationality
+            )
+
+            val isUpdated = FirebaseObj.updateData(
+                collection = DataConstants.FirebaseCollections.users,
+                documentId = currUser?.uid ?: "",
+                updatedData = updatedUser
+            )
+
+            if (isUpdated) {
+                Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed to update profile", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 }
+
+

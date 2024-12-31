@@ -90,7 +90,7 @@ fun ProfileScreen(
 
                 //  "Edit Profile"
                 ButtonElement(
-                    onClick = { /* Navegar para edição */ },
+                    onClick = { navController.navigate("edit_profile_screen") },
                     modifier = Modifier.fillMaxWidth(0.5f),
                     text = stringResource(R.string.edit_profile_button),
                 )
