@@ -18,7 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +30,7 @@ import androidx.navigation.NavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
+import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.QrCodePopup
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
@@ -38,13 +41,15 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel
 ) {
-    val userInfo by profileViewModel.userInfo.collectAsState(null)
+    val userInfo by profileViewModel.userData.collectAsState(null)
     val showQrCodePopup = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        profileViewModel.getUserInfo(context)
+    }
 
     if (userInfo == null) {
-        LaunchedEffect(Unit) {
-            profileViewModel.loadInfo()
-        }
         CircularProgressIndicator()
     } else {
 
@@ -54,20 +59,17 @@ fun ProfileScreen(
 
             Column(
                 modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Row(modifier = Modifier.weight(1f)) {
                     SubcomposeAsyncImage(
                         model = userInfo?.profilePic ?: R.drawable.product_image_not_found,
-                        contentDescription = "User Profile Picture",
+                        contentDescription = null,
                         loading = { CircularProgressIndicator() },
                         modifier = Modifier
-                            .size(100.dp)
-                            .clip(CircleShape)
-                            .background(Color.Gray),
+                            .size(120.dp)
+                            .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 }
@@ -87,12 +89,11 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //  "Edit Profile"
-                Button(
+                ButtonElement(
                     onClick = { /* Navegar para edição */ },
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                ) {
-                    Text(text = "Edit profile")
-                }
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    text = stringResource(R.string.edit_profile_button),
+                )
 
                 Spacer(modifier = Modifier.height(5.dp))
 
@@ -140,7 +141,7 @@ fun ProfileScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-  //              Spacer(modifier = Modifier.height(16.dp))
+                //              Spacer(modifier = Modifier.height(16.dp))
 
                 // Lista de itens
                 val items = listOf(
@@ -199,7 +200,7 @@ fun ProfileScreen(
                     }
                 }
 
-        //        Spacer(modifier = Modifier.height(24.dp))
+                //        Spacer(modifier = Modifier.height(24.dp))
 
                 // Botão QR Code
                 Button(
