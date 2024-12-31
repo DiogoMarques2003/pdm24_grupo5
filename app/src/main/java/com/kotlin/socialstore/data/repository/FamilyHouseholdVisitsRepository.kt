@@ -10,4 +10,16 @@ class FamilyHouseholdVisitsRepository(private val familyHouseholdVisitsDao: Fami
     suspend fun insert(familyHouseholdVisits: FamilyHouseholdVisits) {
         familyHouseholdVisitsDao.insert(familyHouseholdVisits)
     }
+
+    suspend fun insertList(familyHouseholdVisitsList: List<FamilyHouseholdVisits>){
+        familyHouseholdVisitsDao.insertList(familyHouseholdVisitsList)
+    }
+
+    fun getAllmonthly(): Flow<List<FamilyHouseholdVisits>>{
+        return familyHouseholdVisitsDao.getAllMonthly()
+    }
+
+    suspend fun deleteAll(){
+        familyHouseholdVisitsDao.deleteAll()
+    }
 }

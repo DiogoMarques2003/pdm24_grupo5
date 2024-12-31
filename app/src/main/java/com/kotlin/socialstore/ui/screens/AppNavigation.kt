@@ -150,16 +150,9 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
 
-                composable("qrcode_reader_screen") {
-                    QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
-                        Log.d("Qr Code result: ", qrCodeContent)
-                        // Pass the result back to the home screen
-                        navController.previousBackStackEntry?.savedStateHandle?.set(
-                            "qrCodeResult",
-                            qrCodeContent
-                        )
-                        navController.popBackStack()
-                    }
+                composable("qrcode_reader_screen/{next_screen}") { backStackEntry ->
+                    val nextScreen = backStackEntry.arguments?.getString("next_screen")
+                    QRCodeReaderScreen(modifierCustom,nextScreen ?: "home_screen",navController)
                 }
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)

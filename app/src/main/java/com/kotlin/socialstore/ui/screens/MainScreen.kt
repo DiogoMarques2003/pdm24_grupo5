@@ -1,9 +1,10 @@
 package com.kotlin.socialstore.ui.screens
 
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import UiConstants
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,12 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.Text
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,10 +27,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +37,6 @@ import androidx.navigation.NavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
-import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.ProductCard
@@ -52,11 +51,15 @@ fun MainScreen(
     val userData by mainPageViewModel.userData.collectAsState(null)
     val productsData by mainPageViewModel.lastProducts.collectAsState(emptyList())
     val categoriesData by mainPageViewModel.allCategories.collectAsState(emptyList())
+    val donationsData by mainPageViewModel.lastDonations.collectAsState(emptyList())
+    val visitsData by mainPageViewModel.lastVisits.collectAsState(emptyList())
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         //Get fresh data
         mainPageViewModel.getUserInfo(context)
+        mainPageViewModel.getDonations(context)
+        mainPageViewModel.getVisits(context)
     }
 
     //Background Image
@@ -97,9 +100,42 @@ fun MainScreen(
             Spacer(Modifier.size(UiConstants.defaultPadding))
             Column(Modifier.fillMaxWidth()) {
                 Text("This Month")
-                Text("Visits: ", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+                Text("Visits: " + visitsData.size , fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
                 Text("Taken Items: ", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
             }
+
+            //Draw ADMIN menus
+            if (userData!!.accountType != DataConstants.AccountType.benefiaryy) {
+                Column(verticalArrangement = Arrangement.SpaceEvenly) {
+                    Spacer(Modifier.size(UiConstants.defaultPadding))
+                    Row(Modifier.fillMaxWidth()) {
+                        Column(Modifier.clickable {
+                            navController.navigate("qrcode_reader_screen/profile_screen")
+                        }) {
+                            Text("Submit visit", fontSize = UiConstants.titleTextSize)
+                            Text("Scan QrCode")
+                        }
+                        Spacer(Modifier.size(UiConstants.defaultPadding))
+                        Column(Modifier.clickable {}) {
+                            Text("Schedules", fontSize = UiConstants.titleTextSize)
+                            Text("Manage schedules")
+                        }
+                    }
+                    Spacer(Modifier.size(UiConstants.defaultPadding))
+                    Row(Modifier.fillMaxWidth()) {
+                        Column(Modifier.clickable {}) {
+                            Text("Manage user", fontSize = UiConstants.titleTextSize)
+                            Text("Edit user profiles")
+                        }
+                        Spacer(Modifier.size(UiConstants.defaultPadding))
+                        Column(Modifier.clickable {}) {
+                            Text("Add items", fontSize = UiConstants.titleTextSize)
+                            Text("Scan QrCode")
+                        }
+                    }
+                }
+            }
+
             Spacer(Modifier.size(UiConstants.defaultPadding))
             Text(
                 "Products",
@@ -126,7 +162,20 @@ fun MainScreen(
                     Modifier.clickable { navController.navigate("main_screen") },
                     fontSize = UiConstants.titleTextSize
                 )
-
+                LazyRow(modifier = Modifier.fillMaxWidth()) {
+                    items(donationsData) { item ->
+                        ElevatedCard(
+                            modifier = Modifier
+                                .size(height = 300.dp, width = 140.dp)
+                                .padding(UiConstants.itemSpacing)
+                        ) {
+                            Column(Modifier.fillMaxSize().padding(6.dp)) {
+                                Text("Donation " + "#" +item.donationId)
+                                Text("Date: " + item.creationDate)
+                            }
+                        }
+                    }
+                }
             }
         }
     }

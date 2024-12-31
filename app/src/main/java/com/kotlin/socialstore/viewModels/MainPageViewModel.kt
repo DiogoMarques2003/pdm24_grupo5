@@ -8,10 +8,12 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
+import com.kotlin.socialstore.data.entity.Donations
 import com.kotlin.socialstore.data.entity.FamilyHouseholdVisits
 import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.CategoryRepository
+import com.kotlin.socialstore.data.repository.DonationsRepository
 import com.kotlin.socialstore.data.repository.FamilyHouseholdRepository
 import com.kotlin.socialstore.data.repository.FamilyHouseholdVisitsRepository
 import com.kotlin.socialstore.data.repository.StockRepository
@@ -24,13 +26,15 @@ class MainPageViewModel(context: Context) : ViewModel() {
     private val userRepository = UsersRepository(database.usersDao())
     private val productsRepository = StockRepository(database.stockDao())
     private val categoriesRepository = CategoryRepository(database.categoryDao())
+    private val donationsRepository = DonationsRepository(database.donationsDao())
     private val householdVisitRepository = FamilyHouseholdVisitsRepository(database.familyHouseholdVisitsDao())
     private val currUser = FirebaseObj.getCurrentUser()
 
     val userData = userRepository.getById(currUser!!.uid)
     val lastProducts = productsRepository.getLastRows(5)
+    val lastDonations = donationsRepository.getLastDonations(5)
     val allCategories = categoriesRepository.allCategories
-    //val allVisits = householdVisitRepository.
+    var lastVisits = householdVisitRepository.getAllmonthly()
 
     fun getUserInfo(context: Context){
         //Add Listener to User
@@ -39,6 +43,44 @@ class MainPageViewModel(context: Context) : ViewModel() {
             currUser?.uid,
             { updateUserInfo(it) },
             { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+    }
+
+    fun getDonations(context: Context){
+        viewModelScope.launch {
+           val donations =  FirebaseObj.getData(DataConstants.FirebaseCollections.donations,null)
+
+            if (donations!!.isEmpty()){
+                return@launch
+            }
+
+            val donationsConv = donations.map { Donations.firebaseMapToClass(it) }
+
+            //delete all data
+            donationsRepository.deleteAll()
+
+            //Insert new data
+            donationsRepository.insertList(donationsConv)
+        }
+    }
+
+    fun getVisits(context: Context){
+        viewModelScope.launch {
+            val visits =  FirebaseObj.getData(DataConstants.FirebaseCollections.familyHouseholdVisits,null)
+
+            if (visits!!.isEmpty()){
+                return@launch
+            }
+
+            val visitsConv = visits.map { FamilyHouseholdVisits.firebaseMapToClass(it) }
+
+            //delete all data
+            householdVisitRepository.deleteAll()
+
+            //Insert new data
+            householdVisitRepository.insertList(visitsConv)
+
+            lastVisits = householdVisitRepository.getAllmonthly()
+        }
     }
 
     private fun updateUserInfo(users: List<Map<String, Any>>?){

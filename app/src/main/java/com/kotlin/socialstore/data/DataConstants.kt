@@ -15,6 +15,7 @@ object DataConstants {
         val category = "category"
         val stock = "stock"
         val stores = "stores"
+        val familyHouseholdVisits = "familyHouseholdVisits"
     }
 
     object FirebaseImageFolders {

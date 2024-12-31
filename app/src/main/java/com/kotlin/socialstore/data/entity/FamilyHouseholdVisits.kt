@@ -23,10 +23,15 @@ data class FamilyHouseholdVisits(
         fun firebaseMapToClass(data: Map<String, Any?>): FamilyHouseholdVisits {
             val familyHouseholdReference = data["familyHouseholdId"] as? DocumentReference
 
+            // Convert date
+            val timestamp = data["date"] as com.google.firebase.Timestamp
+            val dateInMillis = timestamp.seconds * 1000 + timestamp.nanoseconds / 1_000_000
+            val date = Date(dateInMillis)
+
             return FamilyHouseholdVisits(
                 id = data["id"] as String,
                 familyHouseholdId = familyHouseholdReference?.id ?: "",
-                date = Date(data["date"] as Long) // Converte timestamp de volta para `Date`
+                date = date
             )
         }
     }

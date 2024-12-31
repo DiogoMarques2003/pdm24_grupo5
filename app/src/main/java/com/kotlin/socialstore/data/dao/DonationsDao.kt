@@ -21,6 +21,9 @@ interface DonationsDao {
     @Query("SELECT * FROM donations WHERE id = :id")
     fun getById(id: String): Flow<Donations>
 
+    @Query("SELECT * FROM donations ORDER BY creationDate DESC LIMIT :number")
+    fun getLastDonations(number: Int): Flow<List<Donations>>
+
     @Delete
     suspend fun delete(donations: Donations)
 
