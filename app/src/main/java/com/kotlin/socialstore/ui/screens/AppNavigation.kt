@@ -109,15 +109,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         navController,
                         modifierCustom,
                         onSubmitDonations = { items ->
-
                         }
                     )
-                }
-                composable("forgot_password_screen") {
-                    ForgotPasswordPage(navController, modifierCustom)
-                }
-                composable("home_screen") {
-                    HomePage(navController, modifierCustom)
                 }
 
                 composable("awaiting_approval_screen") {
@@ -134,7 +127,11 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     val profileViewModel = ProfileViewModel(LocalContext.current)
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
-                
+                composable("edit_profile_screen") {
+                    val profileViewModel = ProfileViewModel(context)
+                    EditProfileScreen(navController, modifierCustom, profileViewModel)
+                }
+
                 composable("qrcode_reader_screen") {
                     QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
                         Log.d("Qr Code result: ", qrCodeContent)

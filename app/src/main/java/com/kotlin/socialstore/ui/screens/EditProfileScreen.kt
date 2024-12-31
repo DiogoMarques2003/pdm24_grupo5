@@ -1,24 +1,27 @@
 package com.kotlin.socialstore.ui.screens
 
 
-import android.widget.Toast
+import android.util.Patterns.EMAIL_ADDRESS
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.kotlin.socialstore.R
+import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 
 @Composable
 fun EditProfileScreen(
     navController: NavController,
+    modifier: Modifier,
     profileViewModel: ProfileViewModel
 ) {
     val userInfo by profileViewModel.userData.collectAsState(null)
@@ -29,13 +32,13 @@ fun EditProfileScreen(
     val password = remember { mutableStateOf("") }
     val phoneNumber = remember { mutableStateOf(userInfo?.phoneNumber ?: "") }
     val nationality = remember { mutableStateOf(userInfo?.nationality ?: "") }
+    var isEmailValid by remember { mutableStateOf(true) }
 
 
     LaunchedEffect(userInfo) {
         userInfo?.let { user ->
             name.value = user.name
             email.value = user.email ?: ""
-            //password.value = user.password ?: ""
             phoneNumber.value = user.phoneNumber ?: ""
             nationality.value = user.nationality ?: ""
         }
@@ -63,11 +66,17 @@ fun EditProfileScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            OutlinedTextField(
+            OutlinedTextfieldElement(
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = {
+                    email.value = it
+                        EMAIL_ADDRESS.matcher(it).matches() // Check if is a valid email
+                },
                 value = email.value,
-                onValueChange = { email.value = it },
-                label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth()
+                labelText = stringResource(R.string.email_textfield),
+                leadingIcon = Icons.Default.Person,
+                trailingIcon = {},
+                isError = if (email.value == "") false else !isEmailValid
             )
 
             OutlinedTextField(
@@ -103,7 +112,6 @@ fun EditProfileScreen(
                         context = context
                     )
 
-                    // Navegar de volta
                     navController.popBackStack()
                 },
                 modifier = Modifier.fillMaxWidth()
