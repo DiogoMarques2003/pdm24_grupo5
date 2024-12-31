@@ -30,6 +30,7 @@ import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.MainPageViewModel
 import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
@@ -140,7 +141,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 }
 
                 composable("main_screen") {
-                    MainScreen(navController, modifierCustom)
+                    val mainPageViewModel = MainPageViewModel(LocalContext.current)
+                    MainScreen(navController, modifierCustom, mainPageViewModel)
                 }
 
                 composable("profile_page_screen") {
@@ -180,4 +182,3 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         LoadIndicator(modifier)
     }
 }
-

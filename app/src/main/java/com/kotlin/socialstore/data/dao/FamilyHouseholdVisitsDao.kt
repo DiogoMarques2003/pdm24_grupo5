@@ -15,6 +15,9 @@ interface FamilyHouseholdVisitsDao {
     @Query("SELECT * FROM familyHouseholdVisits")
     fun getAll(): Flow<List<FamilyHouseholdVisits>>
 
+    @Query("SELECT * FROM familyHouseholdVisits")
+    fun getAllMonthly(): Flow<List<FamilyHouseholdVisits>>
+
     @Query("SELECT * FROM familyHouseholdVisits WHERE id = :id")
     fun getById(id: String): Flow<FamilyHouseholdVisits>
 
