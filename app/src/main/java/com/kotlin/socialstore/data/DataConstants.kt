@@ -27,4 +27,9 @@ object DataConstants {
                                     "B" to R.string.product_state_b,
                                     "U" to R.string.product_state_u,
                                     "G" to R.string.product_state_g)
+
+    val mapDonationStatus = mapOf("APR" to R.string.donation_approved,
+                                  "PND" to R.string.donation_pending,
+                                  "DEC" to R.string.donation_declined,
+                                  "DON" to R.string.donation_done)
 }

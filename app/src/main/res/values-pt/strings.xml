@@ -195,4 +195,8 @@
     <string name="product_state_b">Bad</string>
     <string name="product_state_default">N/A</string>
     <string name="products_page_title">Produtos</string>
+    <string name="donation_approved">Aprovada</string>
+    <string name="donation_pending">Pendente</string>
+    <string name="donation_declined">Rejeitada</string>
+    <string name="donation_done">Entregue</string>
 </resources>

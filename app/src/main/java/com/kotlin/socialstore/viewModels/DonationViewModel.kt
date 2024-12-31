@@ -66,7 +66,8 @@ class DonationViewModel(context: Context) : ViewModel() {
                 email = email,
                 phoneNumber = phoneNumber,
                 phoneCountryCode = phoneCountryCode,
-                donationScheduleID = ""
+                donationScheduleID = "",
+                state = ""
             )
 
             FirebaseObj.insertData(
