@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.sql.Date
 
 class DonationViewModel(context: Context) : ViewModel() {
     private val database: AppDatabase = AppDatabase.getDatabase(context)
@@ -67,7 +68,9 @@ class DonationViewModel(context: Context) : ViewModel() {
                 phoneNumber = phoneNumber,
                 phoneCountryCode = phoneCountryCode,
                 donationScheduleID = "",
-                state = ""
+                state = "",
+                creationDate = Date(System.currentTimeMillis()),
+                donationId = ""
             )
 
             FirebaseObj.insertData(
