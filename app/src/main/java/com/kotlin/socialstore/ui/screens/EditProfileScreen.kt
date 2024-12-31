@@ -11,12 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.ui.elements.NationalityDropdown
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
+import com.kotlin.socialstore.ui.elements.PasswordTextField
 import com.kotlin.socialstore.viewModels.ProfileViewModel
+import com.togitech.ccp.component.TogiCountryCodePicker
 
 @Composable
 fun EditProfileScreen(
@@ -27,12 +29,15 @@ fun EditProfileScreen(
     val userInfo by profileViewModel.userData.collectAsState(null)
     val context = LocalContext.current
 
+
     val name = remember { mutableStateOf(userInfo?.name ?: "") }
     val email = remember { mutableStateOf(userInfo?.email ?: "") }
     val password = remember { mutableStateOf("") }
     val phoneNumber = remember { mutableStateOf(userInfo?.phoneNumber ?: "") }
     val nationality = remember { mutableStateOf(userInfo?.nationality ?: "") }
     var isEmailValid by remember { mutableStateOf(true) }
+    var phoneCountryCode by remember { mutableStateOf("") }
+    var isPhoneNumberValid by remember { mutableStateOf(true) }
 
 
     LaunchedEffect(userInfo) {
@@ -68,6 +73,14 @@ fun EditProfileScreen(
 
             OutlinedTextfieldElement(
                 modifier = Modifier.fillMaxWidth(),
+                onValueChange = { name.value = it },
+                value = name.value,
+                labelText = stringResource(R.string.full_name_text_field)
+            )
+
+
+            OutlinedTextfieldElement(
+                modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
                     email.value = it
                         EMAIL_ADDRESS.matcher(it).matches() // Check if is a valid email
@@ -79,27 +92,30 @@ fun EditProfileScreen(
                 isError = if (email.value == "") false else !isEmailValid
             )
 
-            OutlinedTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
-                label = { Text("Password") },
+            PasswordTextField(
                 modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation()
+                onValueChange = { password.value = it },
+                value = password.value,
+                labelText = stringResource(R.string.password_textfield)
             )
 
-            OutlinedTextField(
-                value = phoneNumber.value,
-                onValueChange = { phoneNumber.value = it },
-                label = { Text("Phone Number") },
-                modifier = Modifier.fillMaxWidth()
+            TogiCountryCodePicker(
+                modifier = Modifier.fillMaxWidth(),
+                onValueChange = { (code, phone), valid ->
+                    phoneNumber.value = phone
+                    phoneCountryCode = code
+                    isPhoneNumberValid = valid
+                },
+                label = { Text(stringResource(R.string.phoneNumber_textfield)) },
+                showError = phoneNumber.value != "",
+                clearIcon = null,
+                initialCountryIsoCode = "PT",
+                shape = UiConstants.outlinedTextFieldElementShape,
             )
 
-            OutlinedTextField(
-                value = nationality.value,
-                onValueChange = { nationality.value = it },
-                label = { Text("Nationality") },
-                modifier = Modifier.fillMaxWidth()
-            )
+
+            NationalityDropdown(selectedNationality = nationality.value,
+                onNationalitySelected = { nationality.value = it })
 
             Button(
                 onClick = {

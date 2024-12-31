@@ -1,16 +1,22 @@
 package com.kotlin.socialstore.viewModels
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.data.firebase.FirebaseObj
+import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebaseEmail
+import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebasePassword
 import com.kotlin.socialstore.data.repository.UsersRepository
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class ProfileViewModel(context: Context) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
@@ -59,27 +65,40 @@ class ProfileViewModel(context: Context) : ViewModel() {
         context: Context
     ) {
         viewModelScope.launch {
-            val updatedUser = mapOf(
-                "name" to name,
-                "email" to email,
-                "password" to password,
-                "phoneNumber" to phoneNumber,
-                "nationality" to nationality
-            )
+            try {
+                // Atualizar dados no Firestore
+                val updatedData = mapOf(
+                    "name" to name,
+                    "email" to email,
+                    "phoneNumber" to phoneNumber,
+                    "nationality" to nationality
+                )
+                FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                    .update(updatedData)
+                    .await()
 
-            val isUpdated = FirebaseObj.updateData(
-                collection = DataConstants.FirebaseCollections.users,
-                documentId = currUser?.uid ?: "",
-                updatedData = updatedUser
-            )
+                // Atualizar dados no Firebase Authentication
+                updateFirebaseEmail(email) { emailSuccess, emailError ->
+                    if (!emailSuccess) {
+                        Log.e("ProfileUpdate", "Failed to update email: $emailError")
+                    }
+                }
 
-            if (isUpdated) {
-                Toast.makeText(context, "Profile updated successfully", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Failed to update profile", Toast.LENGTH_SHORT).show()
+                updateFirebasePassword(password) { passwordSuccess, passwordError ->
+                    if (!passwordSuccess) {
+                        Log.e("ProfileUpdate", "Failed to update password: $passwordError")
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.e("ProfileUpdate", "Error updating profile: ${e.message}", e)
             }
         }
     }
 }
+
+
 
 
