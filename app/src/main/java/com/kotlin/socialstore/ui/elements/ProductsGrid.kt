@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
@@ -68,7 +67,6 @@ fun ProductsGrid(stock: List<Stock>, categories: List<Category>){
                 if (showProductPopUp.value) {
                     ProductsPopUp(item, showProductPopUp)
                 }
-
             }
         }
     }

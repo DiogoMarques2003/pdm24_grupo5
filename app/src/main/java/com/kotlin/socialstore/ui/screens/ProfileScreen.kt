@@ -25,6 +25,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
+import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 
@@ -40,7 +41,7 @@ fun ProfileScreen(
         LaunchedEffect(Unit) {
             profileViewModel.loadInfo()
         }
-        CircularProgressIndicator()
+        LoadIndicator()
     } else {
 
         Box(modifier = modifier.fillMaxSize()) {
