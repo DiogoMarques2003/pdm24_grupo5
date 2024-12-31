@@ -28,6 +28,7 @@ import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
+import com.kotlin.socialstore.viewModels.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
@@ -167,6 +168,11 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("products_screen") {
                     val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
                     ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                }
+
+                composable("list_donations_screen") {
+                    val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
+                    ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
                 }
             }
         }

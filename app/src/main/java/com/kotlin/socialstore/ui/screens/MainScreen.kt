@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens
 
+import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,4 +12,6 @@ fun MainScreen(
     modifier: Modifier = Modifier
 ) {
     Text("Main Screen")
+
+    Button(onClick = { navController.navigate("list_donations_screen") }) { Text("Login") }
 }

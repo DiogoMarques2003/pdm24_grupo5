@@ -11,7 +11,7 @@ data class Donations(
     val email: String,
     val phoneNumber: String,
     val phoneCountryCode: String,
-    val accepted: Boolean = false,
+    val state: String,
     val donationScheduleID: String
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
@@ -21,7 +21,7 @@ data class Donations(
             "email" to email,
             "phoneNumber" to phoneNumber,
             "phoneCountryCode" to phoneCountryCode,
-            "accepted" to accepted,
+            "state" to state,
             "donationScheduleID" to donationScheduleID
         )
     }
@@ -36,7 +36,7 @@ data class Donations(
                 email = data["email"] as String,
                 phoneNumber = data["phoneNumber"] as String,
                 phoneCountryCode = data["phoneCountryCode"] as String,
-                accepted = data["accepted"] as? Boolean ?: false,
+                state = data["state"] as String,
                 donationScheduleID = donationReference?.id ?: ""
             )
         }

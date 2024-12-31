@@ -10,4 +10,12 @@ class DonationsRepository(private val donationsDao: DonationsDao) {
     suspend fun insert(donations: Donations) {
         donationsDao.insert(donations)
     }
+
+    suspend fun insertList(donations: List<Donations>) {
+        donationsDao.insertList(donations)
+    }
+
+    suspend fun deleteAll() {
+        donationsDao.deleteAll()
+    }
 }
