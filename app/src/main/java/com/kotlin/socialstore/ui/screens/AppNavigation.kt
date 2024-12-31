@@ -73,15 +73,14 @@ fun AppNavigation(modifier: Modifier = Modifier) {
             bottomBar = {
                 val currentRoute =
                     navController.currentBackStackEntryAsState()?.value?.destination?.route
-                if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer )  && currentRoute in listOf(
+                if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer) && currentRoute in listOf(
                         "main_screen",
                         "submit_donation"
                     )
                 ) {
                     BeneficiaryBottomNavigationBar(navController)
                 } else if (userType.value == DataConstants.AccountType.admin && currentRoute in listOf(
-                        "main_screen",
-                        "profile_page_screen"
+                        "main_screen"
                     )
                 ) {
                     AdminBottomNavigationBar(navController)
@@ -120,17 +119,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
 //
 //                        }
 //                    )
-                }
-                composable("forgot_password_screen") {
-                    ForgotPasswordPage(navController, modifierCustom)
-                }
-                composable("home_screen") {
-                    HomePage(navController, modifierCustom)
-                }
 
-                composable("manage_stock") {
-                    val stockViewModel = StockViewModel(LocalContext.current)
-                    ManageStockPage(navController, modifierCustom, stockViewModel)
                 }
 
                 composable("awaiting_approval_screen") {
@@ -147,6 +136,10 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     val profileViewModel = ProfileViewModel(LocalContext.current)
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
+                composable("edit_profile_screen") {
+                    val profileViewModel = ProfileViewModel(context)
+                    EditProfileScreen(navController, modifierCustom, profileViewModel)
+                }
 
                 composable("qrcode_reader_screen") {
                     QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
@@ -162,9 +155,20 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)
                 }
+                
                 composable("home_screen") {
                     HomePage(navController, modifierCustom)
                 }
+
+                composable("products_screen") {
+                    val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                    ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+
+                composable("manage_stock") {
+                    val stockViewModel = StockViewModel(LocalContext.current)
+                    ManageStockPage(navController, modifierCustom, stockViewModel)
+                }              
+                
                 composable("products_screen") {
                     val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
                     ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
@@ -173,6 +177,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("list_donations_screen") {
                     val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
                     ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+
                 }
             }
         }

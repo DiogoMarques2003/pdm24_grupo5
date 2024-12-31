@@ -13,7 +13,7 @@ data class Users (
     val name: String,
     val phoneNumber: String,
     val phoneCountryCode: String,
-    val profilePic: String?,
+    var profilePic: String?,
     val nationality: String?,
     val reference: String?,
     val notes: String?,

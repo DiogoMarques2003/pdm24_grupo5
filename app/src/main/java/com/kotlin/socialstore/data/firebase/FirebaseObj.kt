@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
@@ -65,7 +66,7 @@ object FirebaseObj {
         auth.signOut()
     }
 
-    fun sendPasswordResetEmail(email: String, baseContext: Context){
+    fun sendPasswordResetEmail(email: String, baseContext: Context) {
         auth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -212,16 +213,50 @@ object FirebaseObj {
         }
     }
 
-    suspend fun getImageUrl(path: String) : String? {
+    suspend fun getImageUrl(path: String): String? {
         try {
             // Create a reference with an initial file path and name and Download image
             return storagerefence.child(path).downloadUrl.await().toString()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             return null
         }
     }
 
+    fun updateFirebaseEmail(newEmail: String, onComplete: (Boolean, String?) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            user.verifyBeforeUpdateEmail(newEmail)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("UpdateEmail", "User email address updated.")
+                        onComplete(true, null)
+                    } else {
+                        Log.w("UpdateEmail", "Failed to update email", task.exception)
+                        onComplete(false, task.exception?.message)
+                    }
+                }
+        } else {
+            onComplete(false, "User not logged in.")
+        }
+    }
+    fun updateFirebasePassword(newPassword: String, onComplete: (Boolean, String?) -> Unit) {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            user.updatePassword(newPassword)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("UpdatePassword", "User password updated.")
+                        onComplete(true, null)
+                    } else {
+                        Log.w("UpdatePassword", "Failed to update password", task.exception)
+                        onComplete(false, task.exception?.message)
+                    }
+                }
+        } else {
+            onComplete(false, "User not logged in.")
+    }
+ }
     suspend fun createStorageImage(uri: Uri, folder: String): String? {
         return try {
             val filename = "${folder}/${UUID.randomUUID()}.jpg"
@@ -233,6 +268,7 @@ object FirebaseObj {
         } catch (e: Exception) {
             e.printStackTrace()
             null
+
         }
     }
 }
