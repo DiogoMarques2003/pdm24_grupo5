@@ -1,8 +1,8 @@
 package com.kotlin.socialstore.ui.screens
 
+import DonationViewModel
 import ForgotPasswordPage
 import StockViewModel
-import SubmitDonationPage
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
@@ -108,15 +108,17 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     DonationSuccessPage(navController, modifierCustom)
                 }
                 composable("submit_donation") {
-                    val stockViewModel = StockViewModel(LocalContext.current)
-                    SubmitDonationPage(
-                        navController,
-                        modifierCustom,
-                        stockViewModel,
-                        onSubmitDonations = { items ->
+                    val donationViewModel = DonationViewModel(LocalContext.current)
+                    SubmitDonationPage2(navController, donationViewModel)
 
-                        }
-                    )
+//                    SubmitDonationPage(
+//                        navController,
+//                        modifierCustom,
+//                        stockViewModel,
+//                        onSubmitDonations = { items ->
+//
+//                        }
+//                    )
                 }
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)

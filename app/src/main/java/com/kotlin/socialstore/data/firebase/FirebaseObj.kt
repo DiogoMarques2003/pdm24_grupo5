@@ -2,6 +2,7 @@ package com.kotlin.socialstore.data.firebase
 
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -16,6 +17,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
+import java.util.UUID
 
 
 object FirebaseObj {
@@ -217,6 +219,20 @@ object FirebaseObj {
         }catch (e: Exception){
             e.printStackTrace()
             return null
+        }
+    }
+
+    suspend fun createStorageImage(uri: Uri, folder: String): String? {
+        return try {
+            val filename = "${folder}/${UUID.randomUUID()}.jpg"
+            val storageRef = storagerefence
+                .child(filename)
+
+            storageRef.putFile(uri).await()
+            filename
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }
