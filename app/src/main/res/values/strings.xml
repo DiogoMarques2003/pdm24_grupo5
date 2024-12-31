@@ -15,6 +15,9 @@
     <string name="reference_textfield">Reference</string>
     <string name="phoneNumber_textfield">Phone Number</string>
     <string name="homepage_Donate">Donation</string>
+    <string name="homepage_AddItem">Add new item</string>
+    <string name="manageStock_AddItem">Add new item</string>
+    <string name="manageStock_Title">Manage Stock</string>
     <string name="homepage_welcome">Welcome!</string>
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
@@ -26,6 +29,8 @@
     <string name="waiting_for_approval">Waiting for In-Person Approval</string>
     <string name="back_button">Back</string>
     <string name="error_generate_qrcode">Failed to generate QR Code</string>
+    <string name="item_added_success">Item added successfully!</string>
+    <string name="item_added_error">An error occurred. Please try again.</string>
     <string-array name="nationalities">
         <item>Afghan|AF</item>
         <item>Albanian|AL</item>
@@ -192,4 +197,8 @@
     <string name="product_state_default">N/A</string>
     <string name="products_page_title">Products</string>
     <string name="edit_profile_button">Edit Profile</string>
+    <string name="donation_approved">Approved</string>
+    <string name="donation_pending">Pending</string>
+    <string name="donation_declined">Declined</string>
+    <string name="donation_done">Done</string>
 </resources>

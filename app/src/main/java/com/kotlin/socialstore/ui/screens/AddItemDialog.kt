@@ -74,8 +74,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddDonationItemDialog(
-    viewModel: DonationViewModel,
+fun AddItemDialog(
+    viewModel: StockViewModel,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -83,12 +83,15 @@ fun AddDonationItemDialog(
     var size by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("1") }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var selectedStore by remember { mutableStateOf<Stores?>(null) }
     var selectedCondition by remember { mutableStateOf("") }
     var expandedCategory by remember { mutableStateOf(false) }
+    var expandedStore by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var filePath by remember { mutableStateOf("") }
 
     val categories by viewModel.allCategories.collectAsState(initial = emptyList())
+    val stores by viewModel.allStores.collectAsState(initial = emptyList())
 
     var isUploading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -100,7 +103,7 @@ fun AddDonationItemDialog(
         uri?.let {
             isUploading = true
             scope.launch {
-                viewModel.uploadDonationImage(it).collect { result ->
+                viewModel.uploadStockImage(it).collect { result ->
                     result.onSuccess { url ->
                         imageUri = FirebaseObj.getImageUrl(url)?.toUri()
                         isUploading = false
@@ -234,6 +237,38 @@ fun AddDonationItemDialog(
                         onConditionSelected = { selectedCondition = it }
                     )
 
+                    Spacer(Modifier.height(UiConstants.inputDialogSpacing))
+
+                    ExposedDropdownMenuBox(
+                        expanded = expandedStore,
+                        onExpandedChange = { expandedStore = it }
+                    ) {
+                        OutlinedTextfieldElement(
+                            value = selectedStore?.name ?: "",
+                            onValueChange = {},
+                            readOnly = true,
+                            labelText = "Store",
+                            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedStore,
+                            onDismissRequest = { expandedStore = false }
+                        ) {
+                            stores.forEach { store ->
+                                DropdownMenuItem(
+                                    text = { Text(store.name) },
+                                    onClick = {
+                                        selectedStore = store
+                                        expandedStore = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
                     Spacer(Modifier.height(UiConstants.imageContentSpacing))
 
                     Card(
@@ -297,21 +332,24 @@ fun AddDonationItemDialog(
                         text = "Add product",
                         onClick = {
                             try {
-                                selectedCategory?.let { category ->
-                                    viewModel.addDonationItem(
-                                        description = description,
-                                        size = size,
-                                        quantity = quantity.toIntOrNull() ?: 1,
-                                        state = selectedCondition,
-                                        categoryID = category.id,
-                                        picture = filePath
-                                    )
-                                    Toast.makeText(
-                                        context,
-                                        R.string.item_added_success,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    onDismiss()
+                                selectedStore?.let { store ->
+                                    selectedCategory?.let { category ->
+                                        viewModel.addStock(
+                                            description = description,
+                                            size = size,
+                                            quantity = quantity.toIntOrNull() ?: 1,
+                                            state = selectedCondition,
+                                            categoryID = category.id,
+                                            picture = filePath,
+                                            storesId = store.id
+                                        )
+                                        Toast.makeText(
+                                            context,
+                                            R.string.item_added_success,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        onDismiss()
+                                    }
                                 }
                             } catch (e: Exception) {
                                 Toast.makeText(
@@ -324,7 +362,7 @@ fun AddDonationItemDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp),
-                        enabled = selectedCategory != null && description.isNotBlank() && selectedCondition.isNotBlank() && quantity.toIntOrNull()?.let { it > 0 } ?: false
+                        enabled = selectedCategory != null && selectedStore != null && description.isNotBlank() && selectedCondition.isNotBlank() && quantity.toIntOrNull()?.let { it > 0 } ?: false
                     )
                 }
             }

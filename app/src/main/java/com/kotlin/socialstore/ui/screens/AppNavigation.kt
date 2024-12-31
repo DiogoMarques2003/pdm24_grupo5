@@ -1,7 +1,8 @@
 package com.kotlin.socialstore.ui.screens
 
+import DonationViewModel
 import ForgotPasswordPage
-import SubmitDonationPage
+import StockViewModel
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
@@ -27,6 +28,7 @@ import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
+import com.kotlin.socialstore.viewModels.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
@@ -83,6 +85,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 ) {
                     AdminBottomNavigationBar(navController)
                 }
+
             }
         ) { innerPadding ->
             NavHost(
@@ -105,12 +108,18 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     DonationSuccessPage(navController, modifierCustom)
                 }
                 composable("submit_donation") {
-                    SubmitDonationPage(
-                        navController,
-                        modifierCustom,
-                        onSubmitDonations = { items ->
-                        }
-                    )
+                    val donationViewModel = DonationViewModel(LocalContext.current)
+                    SubmitDonationPage2(navController, donationViewModel)
+
+//                    SubmitDonationPage(
+//                        navController,
+//                        modifierCustom,
+//                        stockViewModel,
+//                        onSubmitDonations = { items ->
+//
+//                        }
+//                    )
+
                 }
 
                 composable("awaiting_approval_screen") {
@@ -146,12 +155,29 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)
                 }
+                
                 composable("home_screen") {
                     HomePage(navController, modifierCustom)
                 }
+
                 composable("products_screen") {
                     val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
                     ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+
+                composable("manage_stock") {
+                    val stockViewModel = StockViewModel(LocalContext.current)
+                    ManageStockPage(navController, modifierCustom, stockViewModel)
+                }              
+                
+                composable("products_screen") {
+                    val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                    ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                }
+
+                composable("list_donations_screen") {
+                    val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
+                    ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+
                 }
             }
         }

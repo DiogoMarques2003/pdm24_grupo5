@@ -4,7 +4,7 @@ import com.kotlin.socialstore.data.dao.DonationsItemsDao
 import com.kotlin.socialstore.data.entity.DonationsItems
 import kotlinx.coroutines.flow.Flow
 
-class DonationsItemsReository(private val donationsItemsDao: DonationsItemsDao) {
+class DonationsItemsRepository(private val donationsItemsDao: DonationsItemsDao) {
     val allDonationsItems: Flow<List<DonationsItems>> = donationsItemsDao.getAll()
 
     suspend fun insert(donationsItems: DonationsItems) {
