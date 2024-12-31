@@ -21,6 +21,7 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebasePassword
 import com.kotlin.socialstore.ui.elements.NationalityDropdown
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
+import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.togitech.ccp.component.TogiCountryCodePicker
 
@@ -62,6 +63,7 @@ fun EditProfileScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            PopBackButton(navController)
             Text(
                 text = "Edit Profile",
                 style = MaterialTheme.typography.headlineMedium,
