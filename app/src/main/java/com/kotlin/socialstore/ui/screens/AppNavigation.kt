@@ -155,7 +155,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)
                 }
-                
+
                 composable("home_screen") {
                     HomePage(navController, modifierCustom)
                 }
@@ -164,20 +164,21 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
                     ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
 
-                composable("manage_stock") {
-                    val stockViewModel = StockViewModel(LocalContext.current)
-                    ManageStockPage(navController, modifierCustom, stockViewModel)
-                }              
-                
-                composable("products_screen") {
-                    val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
-                    ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
-                }
+                    composable("manage_stock") {
+                        val stockViewModel = StockViewModel(LocalContext.current)
+                        ManageStockPage(navController, modifierCustom, stockViewModel)
+                    }
 
-                composable("list_donations_screen") {
-                    val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
-                    ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+                    composable("products_screen") {
+                        val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                        ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                    }
 
+                    composable("list_donations_screen") {
+                        val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
+                        ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+
+                    }
                 }
             }
         }
@@ -185,4 +186,5 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         LoadIndicator(modifier)
     }
 }
+
 
