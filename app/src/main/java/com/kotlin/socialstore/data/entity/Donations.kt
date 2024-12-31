@@ -3,6 +3,7 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import java.sql.Date
 
 @Entity(tableName = "donations")
 data class Donations(
@@ -12,17 +13,20 @@ data class Donations(
     val phoneNumber: String,
     val phoneCountryCode: String,
     val state: String,
-    val donationScheduleID: String
+    val donationScheduleID: String,
+    val creationDate: Date,
+    val donationId: String
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "donaterName" to donaterName,
             "email" to email,
             "phoneNumber" to phoneNumber,
             "phoneCountryCode" to phoneCountryCode,
             "state" to state,
-            "donationScheduleID" to donationScheduleID
+            "donationScheduleID" to donationScheduleID,
+            "creationDate" to creationDate,
+            "donationId" to donationId
         )
     }
 
@@ -37,7 +41,9 @@ data class Donations(
                 phoneNumber = data["phoneNumber"] as String,
                 phoneCountryCode = data["phoneCountryCode"] as String,
                 state = data["state"] as String,
-                donationScheduleID = donationReference?.id ?: ""
+                donationScheduleID = donationReference?.id ?: "",
+                creationDate = Date(data["creationDate"] as Long),
+                donationId = data["donationId"] as String
             )
         }
     }
