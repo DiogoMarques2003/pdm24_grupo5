@@ -63,6 +63,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.kotlin.socialstore.data.entity.Category
 import com.kotlin.socialstore.data.entity.Stock
+import com.kotlin.socialstore.data.entity.Stores
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import kotlinx.coroutines.launch
@@ -79,11 +80,15 @@ fun AddItemDialog(
     var quantity by remember { mutableStateOf("1") }
     var condition by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<Category?>(null) }
+    var selectedStore by remember { mutableStateOf<Stores?>(null) }
     var selectedCondition by remember { mutableStateOf("") }
     var expandedCategory by remember { mutableStateOf(false) }
+    var expandedStore by remember { mutableStateOf(false) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var storesID by remember { mutableStateOf("") }
 
     val categories by viewModel.allCategories.collectAsState(initial = emptyList())
+    val stores by viewModel.allStores.collectAsState(initial = emptyList())
 
     var isUploading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -229,6 +234,38 @@ fun AddItemDialog(
 
                     Spacer(Modifier.height(UiConstants.inputDialogSpacing))
 
+                    ExposedDropdownMenuBox(
+                        expanded = expandedStore,
+                        onExpandedChange = { expandedStore = it }
+                    ) {
+                        OutlinedTextfieldElement(
+                            value = selectedStore?.name ?: "",
+                            onValueChange = {},
+                            readOnly = true,
+                            labelText = "Store",
+                            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+                            modifier = Modifier
+                                .menuAnchor()
+                                .fillMaxWidth()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = expandedStore,
+                            onDismissRequest = { expandedStore = false }
+                        ) {
+                            stores.forEach { store ->
+                                DropdownMenuItem(
+                                    text = { Text(store.name) },
+                                    onClick = {
+                                        selectedStore = store
+                                        expandedStore = false
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(Modifier.height(UiConstants.inputDialogSpacing))
+
                     Card(
                         modifier = modifier
                             .fillMaxWidth()
@@ -289,22 +326,25 @@ fun AddItemDialog(
                     ButtonElement(
                         text = "Add product",
                         onClick = {
-                            selectedCategory?.let { category ->
-                                viewModel.addStock(
-                                    description = description,
-                                    size = size,
-                                    quantity = quantity.toIntOrNull() ?: 1,
-                                    state = condition,
-                                    categoryName = category.nome,
-                                    picture = imageUri?.toString()
-                                )
-                                onDismiss()
+                            selectedStore?.let { store ->
+                                selectedCategory?.let { category ->
+                                    viewModel.addStock(
+                                        description = description,
+                                        size = size,
+                                        quantity = quantity.toIntOrNull() ?: 1,
+                                        state = selectedCondition,
+                                        categoryID = category.id,
+                                        picture = imageUri?.toString(),
+                                        storesId = store.id
+                                    )
+                                    onDismiss()
+                                }
                             }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 16.dp),
-                        enabled = selectedCategory != null && description.isNotBlank()
+                        enabled = selectedCategory != null && selectedStore != null && description.isNotBlank() && selectedCondition.isNotBlank() && quantity.toIntOrNull()?.let { it > 0 } ?: false
                     )
                 }
             }

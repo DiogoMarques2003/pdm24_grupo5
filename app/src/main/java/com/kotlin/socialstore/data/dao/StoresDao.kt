@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.data.entity.Stores
 import kotlinx.coroutines.flow.Flow
 
@@ -20,4 +21,10 @@ interface StoresDao {
 
     @Delete
     suspend fun delete(stores: Stores)
+
+    @Insert
+    suspend fun insertList(stores: List<Stores>)
+
+    @Query("DELETE FROM stores")
+    suspend fun deleteAll()
 }
