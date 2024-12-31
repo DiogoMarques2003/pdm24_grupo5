@@ -15,6 +15,10 @@ class StockRepository(private val stockDao: StockDao) {
         stockDao.insertList(stock)
     }
 
+    fun getLastRows(number: Int): Flow<List<Stock>>{
+        return stockDao.getLastRows(number)
+    }
+
     suspend fun deleteAll(){
         stockDao.deleteAll()
     }

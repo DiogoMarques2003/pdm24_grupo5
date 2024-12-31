@@ -69,7 +69,6 @@ fun AppNavigation(modifier: Modifier = Modifier) {
     }
 
     if (isStartDestinationDetermined) {
-<<<<<<< Updated upstream
         Scaffold(
             bottomBar = {
                 val currentRoute =
@@ -77,61 +76,6 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer )  && currentRoute in listOf(
                         "main_screen",
                         "submit_donation"
-=======
-        NavHost(navController = navController, startDestination = startDestination) {
-            composable("login_screen") {
-                // Initialize view model
-                val loginViewModel = LoginViewModel(LocalContext.current, navController)
-                LoginPage(navController, modifierCustom, loginViewModel)
-            }
-            composable("register_screen") {
-                // Initialize view model
-                val registerViewModel = RegisterViewModel(LocalContext.current, navController)
-                RegisterPage(navController, modifierCustom, registerViewModel)
-            }
-            composable("donation_success") {
-                DonationSuccessPage(navController, modifierCustom)
-            }
-            composable("submit_donation") {
-                SubmitDonationPage(
-                    navController,
-                    modifierCustom,
-                    onSubmitDonations = { items ->
-
-                    }
-                )
-            }
-            composable("forgot_password_screen") {
-                ForgotPasswordPage(navController, modifierCustom)
-            }
-            composable("home_screen") {
-                HomePage(navController, modifierCustom)
-            }
-
-            composable("awaiting_approval_screen") {
-                val awaitingApprovalViewModel =
-                    AwaitingApprovalViewModel(LocalContext.current, navController)
-                AwaitingApprovalScreen(modifierCustom, awaitingApprovalViewModel)
-            }
-
-            composable("main_screen") {
-                val  mainPageViewModel = MainPageViewModel(LocalContext.current)
-                MainScreen(navController, modifierCustom, mainPageViewModel)
-            }
-
-            composable("profile_page_screen") {
-                val profileViewModel = ProfileViewModel(LocalContext.current)
-                ProfileScreen(navController, modifierCustom, profileViewModel)
-            }
-
-            composable("qrcode_reader_screen") {
-                QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
-                    Log.d("Qr Code result: ", qrCodeContent)
-                    // Pass the result back to the home screen
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "qrCodeResult",
-                        qrCodeContent
->>>>>>> Stashed changes
                     )
                 ) {
                     BeneficiaryBottomNavigationBar(navController)
@@ -194,7 +138,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 }
 
                 composable("main_screen") {
-                    MainScreen(navController, modifierCustom)
+                    val mainPageViewModel = MainPageViewModel(LocalContext.current)
+                    MainScreen(navController, modifierCustom, mainPageViewModel)
                 }
 
                 composable("profile_page_screen") {
@@ -229,4 +174,3 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         LoadIndicator(modifier)
     }
 }
-

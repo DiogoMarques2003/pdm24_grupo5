@@ -8,8 +8,13 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
+import com.kotlin.socialstore.data.entity.FamilyHouseholdVisits
 import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.data.firebase.FirebaseObj
+import com.kotlin.socialstore.data.repository.CategoryRepository
+import com.kotlin.socialstore.data.repository.FamilyHouseholdRepository
+import com.kotlin.socialstore.data.repository.FamilyHouseholdVisitsRepository
+import com.kotlin.socialstore.data.repository.StockRepository
 import com.kotlin.socialstore.data.repository.UsersRepository
 import kotlinx.coroutines.launch
 
@@ -17,9 +22,15 @@ class MainPageViewModel(context: Context) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
     private var userListener : ListenerRegistration? = null
     private val userRepository = UsersRepository(database.usersDao())
+    private val productsRepository = StockRepository(database.stockDao())
+    private val categoriesRepository = CategoryRepository(database.categoryDao())
+    private val householdVisitRepository = FamilyHouseholdVisitsRepository(database.familyHouseholdVisitsDao())
     private val currUser = FirebaseObj.getCurrentUser()
 
     val userData = userRepository.getById(currUser!!.uid)
+    val lastProducts = productsRepository.getLastRows(5)
+    val allCategories = categoriesRepository.allCategories
+    //val allVisits = householdVisitRepository.
 
     fun getUserInfo(context: Context){
         //Add Listener to User
