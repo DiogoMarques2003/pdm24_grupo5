@@ -4,10 +4,12 @@ import DonationViewModel
 import ForgotPasswordPage
 import StockViewModel
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -16,10 +18,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.firebase.FirebaseObj
@@ -75,13 +79,15 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     navController.currentBackStackEntryAsState()?.value?.destination?.route
                 if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer )  && currentRoute in listOf(
                         "main_screen",
-                        "submit_donation"
+                        "submit_donation",
+                        "list_donations_screen"
                     )
                 ) {
                     BeneficiaryBottomNavigationBar(navController)
                 } else if (userType.value == DataConstants.AccountType.admin && currentRoute in listOf(
                         "main_screen",
-                        "profile_page_screen"
+                        "profile_page_screen",
+                        "list_donations_screen"
                     )
                 ) {
                     AdminBottomNavigationBar(navController)
@@ -173,6 +179,18 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("list_donations_screen") {
                     val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
                     ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+                }
+
+                composable("donation_screen/{screenId}") { backstageEntry ->
+                    val donationId = backstageEntry.arguments?.getString("screenId")
+
+                    if (donationId == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(context, context.getString(R.string.donation_not_found), Toast.LENGTH_SHORT).show()
+                            navController.popBackStack()
+                        }
+                    }
+                    // Call screen to display donation details
                 }
             }
         }
