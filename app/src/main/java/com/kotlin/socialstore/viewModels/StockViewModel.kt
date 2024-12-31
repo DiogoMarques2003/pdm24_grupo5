@@ -35,8 +35,6 @@ class StockViewModel(
     private var productsListener: ListenerRegistration? = null
     private var storesListener: ListenerRegistration? = null
 
-    private val storage = Firebase.storage
-
     val allStock = stockRepository.allStock
     val allCategories = categoriesRepository.allCategories
     val allStores = storesRepository.allStores

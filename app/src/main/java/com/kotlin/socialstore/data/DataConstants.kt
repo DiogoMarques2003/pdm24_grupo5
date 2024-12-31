@@ -10,6 +10,7 @@ object DataConstants {
     }
 
     object FirebaseCollections {
+        val donations = "donations"
         val users = "users"
         val category = "category"
         val stock = "stock"
@@ -19,6 +20,7 @@ object DataConstants {
     object FirebaseImageFolders {
         val users = "profileImages"
         val stock = "stockImages"
+        val donations = "donations"
     }
 
     val mapProductCondition = mapOf("N" to R.string.product_state_n,
