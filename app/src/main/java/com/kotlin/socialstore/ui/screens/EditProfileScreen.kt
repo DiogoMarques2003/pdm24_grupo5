@@ -2,6 +2,7 @@ package com.kotlin.socialstore.ui.screens
 
 
 import android.util.Patterns.EMAIL_ADDRESS
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
@@ -13,7 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebaseEmail
+import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebasePassword
 import com.kotlin.socialstore.ui.elements.NationalityDropdown
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
@@ -113,7 +117,6 @@ fun EditProfileScreen(
                 shape = UiConstants.outlinedTextFieldElementShape,
             )
 
-
             NationalityDropdown(selectedNationality = nationality.value,
                 onNationalitySelected = { nationality.value = it })
 
@@ -127,14 +130,56 @@ fun EditProfileScreen(
                         nationality = nationality.value,
                         context = context
                     )
+                    if (email.value.isNotBlank() && email.value != userInfo?.email) {
+                        updateFirebaseEmail(email.value) { success, message ->
+                            if (success) {
+                                Toast.makeText(
+                                    context,
+                                    "Email updated. Please verify your email to log in again.",
+                                    Toast.LENGTH_LONG
+                                ).show()
 
-                    navController.popBackStack()
+                                FirebaseAuth.getInstance().signOut()
+                                profileViewModel.logoutUser(navController)
+
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Failed to update email: $message",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    //    profileViewModel.logoutUser(navController)
+                    }
+                        if (password.value.isNotBlank()) {
+                            updateFirebasePassword(password.value) { success, message ->
+                                if (success) {
+                                    Toast.makeText(
+                                        context,
+                                        "Password updated successfully.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "Failed to update password: $message",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                        }
+
+                      //  navController.popBackStack()
+                    navController.navigate("login_screen") {
+                        popUpTo(0) { inclusive = true }
+                    }
+
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Save Changes")
             }
-
         }
     }
 }

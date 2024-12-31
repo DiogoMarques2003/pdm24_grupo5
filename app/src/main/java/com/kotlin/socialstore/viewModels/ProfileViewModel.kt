@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -97,6 +98,22 @@ class ProfileViewModel(context: Context) : ViewModel() {
             }
         }
     }
+    fun logoutUser(navController: NavController) {
+        viewModelScope.launch {
+
+            val userFirebase = FirebaseObj.getCurrentUser() ?: return@launch
+
+            userRepository.deleteById(userFirebase.uid)
+
+            FirebaseObj.logoutAccount()
+
+            // Navigate to the login screen
+            navController.navigate("login_screen") {
+                popUpTo(0) { inclusive = true } // Clear navigation history
+            }
+        }
+    }
+
 }
 
 
