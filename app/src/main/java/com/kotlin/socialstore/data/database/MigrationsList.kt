@@ -44,3 +44,42 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         """.trimIndent())
     }
 }
+
+val MIGRATION_3_4 = object : Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Drop the old donationSchedule table if it exists
+        database.execSQL("DROP TABLE IF EXISTS donationSchedule")
+
+        // Create the new donationSchedule table with the updated schema
+        database.execSQL("""
+            CREATE TABLE donationSchedule (
+                id TEXT NOT NULL PRIMARY KEY,
+                local TEXT NOT NULL,
+                weekDay INTEGER NOT NULL,
+                startTime TEXT NOT NULL,
+                endTime TEXT NOT NULL
+            )
+        """.trimIndent())
+    }
+}
+
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Drop the old donationSchedule table if it exists
+        database.execSQL("DROP TABLE IF EXISTS donationsItems")
+
+        // Create the donationsItems table with the required schema
+        database.execSQL("""
+            CREATE TABLE donationsItems (
+                id TEXT NOT NULL PRIMARY KEY,
+                donationID TEXT NOT NULL,
+                categoryID TEXT NOT NULL,
+                picture TEXT,
+                state TEXT NOT NULL,
+                size TEXT,
+                description TEXT,
+                quantity INTEGER NOT NULL
+            )
+        """.trimIndent())
+    }
+}

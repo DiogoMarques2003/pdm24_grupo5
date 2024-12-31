@@ -28,7 +28,7 @@ import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.entity.Donations
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.PopBackButton
-import com.kotlin.socialstore.viewModels.ListDonationsViewModel
+import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 
 @Composable
 fun ListDonationsScreen(

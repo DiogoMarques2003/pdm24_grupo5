@@ -5,7 +5,6 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -13,6 +12,7 @@ import com.google.firebase.auth.auth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.firestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -131,6 +131,21 @@ object FirebaseObj {
             }
         } catch (e: Exception) {
             Log.w(TAG, "Erro ao obter dados", e)
+            null
+        }
+    }
+
+    suspend fun getLastId(collection: String, orderByField: String): String? {
+        return try {
+            val snapshot = firestore.collection(collection)
+                .orderBy(orderByField, Query.Direction.DESCENDING)
+                .limit(1)
+                .get()
+                .await()
+
+            snapshot.documents.firstOrNull()?.getString(orderByField)
+        } catch (e: Exception) {
+            Log.w(TAG, "Error getting last ID", e)
             null
         }
     }

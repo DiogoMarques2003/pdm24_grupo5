@@ -1,8 +1,8 @@
 package com.kotlin.socialstore.ui.screens
 
-import DonationViewModel
+import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import ForgotPasswordPage
-import StockViewModel
+import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
@@ -27,10 +27,14 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
+import com.kotlin.socialstore.ui.screens.Donations.DonationSuccessPage
+import com.kotlin.socialstore.ui.screens.Donations.SubmitDonationPage
+import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
+import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
-import com.kotlin.socialstore.viewModels.ListDonationsViewModel
+import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
-import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
+import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 import kotlinx.coroutines.flow.firstOrNull
@@ -109,8 +113,8 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     DonationSuccessPage(navController, modifierCustom)
                 }
                 composable("submit_donation") {
-                    val donationViewModel = DonationViewModel(LocalContext.current)
-                    SubmitDonationPage2(navController, donationViewModel)
+                    val donationViewModel = DonationViewModel(LocalContext.current, navController)
+                    SubmitDonationPage(navController, donationViewModel)
 
 //                    SubmitDonationPage(
 //                        navController,

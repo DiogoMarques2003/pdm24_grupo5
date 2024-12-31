@@ -11,6 +11,8 @@ object DataConstants {
 
     object FirebaseCollections {
         val donations = "donations"
+        val donationsItems = "donationsItems"
+        val donationSchedule = "donationSchedule"
         val users = "users"
         val category = "category"
         val stock = "stock"
@@ -32,4 +34,6 @@ object DataConstants {
                                   "PND" to R.string.donation_pending,
                                   "DEC" to R.string.donation_declined,
                                   "DON" to R.string.donation_done)
+
+    val donationInitialStatus = "PND"
 }
