@@ -35,7 +35,7 @@ import com.kotlin.socialstore.data.entity.VolunteerSchedule
 @Database(entities = [Category::class, Donations::class, DonationSchedule::class,
                       DonationsItems::class, FamilyHousehold::class, Stock::class,
                       TakenItems::class, Users::class, VolunteerSchedule::class,
-                      FamilyHouseholdVisits::class, Stores::class, StoresSchedule::class], version = 2)
+                      FamilyHouseholdVisits::class, Stores::class, StoresSchedule::class], version = 3)
 @TypeConverters(DateConverter::class, TimeConverters::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun categoryDao(): CategoryDao
@@ -61,6 +61,7 @@ abstract class AppDatabase: RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java, "app_database")
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 instance

@@ -34,6 +34,11 @@ data class Donations(
         fun firebaseMapToClass(data: Map<String, Any?>): Donations {
             val donationReference = data["donationScheduleID"] as? DocumentReference
 
+            // Convert date
+            val timestamp = data["creationDate"] as com.google.firebase.Timestamp
+            val creationDateInMillis = timestamp.seconds * 1000 + timestamp.nanoseconds / 1_000_000
+            val creationDate = Date(creationDateInMillis)
+
             return Donations(
                 id = data["id"] as String,
                 donaterName = data["donaterName"] as String,
@@ -42,7 +47,7 @@ data class Donations(
                 phoneCountryCode = data["phoneCountryCode"] as String,
                 state = data["state"] as String,
                 donationScheduleID = donationReference?.id ?: "",
-                creationDate = Date(data["creationDate"] as Long),
+                creationDate = creationDate,
                 donationId = data["donationId"] as String
             )
         }
