@@ -12,9 +12,11 @@ import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
 import com.kotlin.socialstore.data.entity.Stock
+import com.kotlin.socialstore.data.entity.Stores
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.CategoryRepository
 import com.kotlin.socialstore.data.repository.StockRepository
+import com.kotlin.socialstore.data.repository.StoresRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -28,63 +30,32 @@ class StockViewModel(
     private val database: AppDatabase = AppDatabase.getDatabase(context)
     private val categoriesRepository = CategoryRepository(database.categoryDao())
     private val stockRepository = StockRepository(database.stockDao())
+    private val storesRepository = StoresRepository(database.storesDao())
     private var categoryListener: ListenerRegistration? = null
     private var productsListener: ListenerRegistration? = null
+    private var storesListener: ListenerRegistration? = null
 
-    private val firestore = Firebase.firestore
     private val storage = Firebase.storage
-    private val auth = Firebase.auth
 
+    val allStock = stockRepository.allStock
     val allCategories = categoriesRepository.allCategories
-
-    init {
-        setupFirebaseListeners()
-    }
-
-    private fun setupFirebaseListeners() {
-        categoryListener = firestore.collection("category")
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) return@addSnapshotListener
-                viewModelScope.launch {
-                    snapshot?.documents?.map { doc ->
-                        Category(
-                            id = doc.id,
-                            nome = doc.getString("nome") ?: ""
-                        )
-                    }?.let { categories ->
-                        categoriesRepository.insertList(categories)
-                    }
-                }
-            }
-
-        productsListener = firestore.collection("stock")
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) return@addSnapshotListener
-                viewModelScope.launch {
-                    snapshot?.documents?.map { doc ->
-                        Stock.firebaseMapToClass(doc.data ?: emptyMap())
-                    }?.let { stocks ->
-                        stockRepository.insertList(stocks)
-                    }
-                }
-            }
-    }
+    val allStores = storesRepository.allStores
 
     fun addStock(
         description: String,
         size: String?,
         quantity: Int,
         state: String,
-        categoryName: String,
-        picture: String? = null
+        categoryID: String,
+        picture: String? = null,
+        storesId : String
     ) = viewModelScope.launch {
         try {
-            val storesId = auth.currentUser?.uid ?: return@launch
 
             val stocks = List(quantity) {
                 Stock(
                     id = "",
-                    categoryID = categoryName,
+                    categoryID = categoryID,
                     picture = picture,
                     state = state,
                     size = size,
@@ -124,10 +95,95 @@ class StockViewModel(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
+    fun getData(context: Context) {
+        //Add listener to firebase
+        categoryListener = FirebaseObj.listenToData(
+            DataConstants.FirebaseCollections.category,
+            null,
+            { updateCategoriesListener(it) },
+            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+
+        productsListener = FirebaseObj.listenToData(
+            DataConstants.FirebaseCollections.stock,
+            null,
+            { updateProductsListener(it) },
+            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+
+        storesListener = FirebaseObj.listenToData(
+            DataConstants.FirebaseCollections.stores,
+            null,
+            { updateStoresListener(it) },
+            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+    }
+
+    private fun updateCategoriesListener(categoriesList: List<Map<String, Any>>?) {
+        viewModelScope.launch {
+            if (categoriesList == null) {
+                //Delete all local data
+                return@launch categoriesRepository.deleteAll()
+            }
+
+            //Convert firebase data to local db data
+            val categoriesConv = categoriesList.map { Category.firebaseMapToClass(it) }
+
+            //Delete all local data
+            categoriesRepository.deleteAll()
+
+            //Insert new data
+            categoriesRepository.insertList(categoriesConv)
+        }
+    }
+
+    private fun updateProductsListener(productsList: List<Map<String, Any>>?) {
+        viewModelScope.launch {
+            if (productsList == null) {
+                //Delete all local data
+                return@launch stockRepository.deleteAll()
+            }
+
+            //Convert firebase data to local db data
+            val productsConv = productsList.map {
+                val stock = Stock.firebaseMapToClass(it)
+                if (stock.picture != null){
+                    stock.picture =  FirebaseObj.getImageUrl(stock.picture!!)
+                }
+                stock
+            }
+
+            //Delete all local data
+            stockRepository.deleteAll()
+
+            //Insert new data
+            stockRepository.insertList(productsConv)
+
+        }
+    }
+
+    private fun updateStoresListener(storesList: List<Map<String, Any>>?) {
+        viewModelScope.launch {
+            if (storesList == null) {
+                //Delete all local data
+                return@launch storesRepository.deleteAll()
+            }
+
+            //Convert firebase data to local db data
+            val storesConv = storesList.map { Stores.firebaseMapToClass(it) }
+
+            //Delete all local data
+            storesRepository.deleteAll()
+
+            //Insert new data
+            storesRepository.insertList(storesConv)
+        }
+    }
+
+    fun stopListeners() {
         categoryListener?.remove()
+        categoryListener = null
         productsListener?.remove()
+        productsListener = null
+        storesListener?.remove()
+        storesListener = null
     }
 }
 

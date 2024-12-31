@@ -9,6 +9,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.firestore
@@ -32,6 +33,10 @@ object FirebaseObj {
 
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
+    }
+
+    fun getReferenceById(collection: String, id: String): DocumentReference {
+        return firestore.collection(collection).document(id)
     }
 
     suspend fun createAccount(email: String, password: String): String? {

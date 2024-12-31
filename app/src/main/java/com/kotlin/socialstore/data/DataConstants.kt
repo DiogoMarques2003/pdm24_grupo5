@@ -13,6 +13,7 @@ object DataConstants {
         val users = "users"
         val category = "category"
         val stock = "stock"
+        val stores = "stores"
     }
 
     val mapProductCondition = mapOf("N" to R.string.product_state_n,

@@ -3,6 +3,8 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 
 @Entity(tableName = "stock")
 data class Stock(
@@ -16,8 +18,7 @@ data class Stock(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
-            "categoryId" to categoryID,
+            "categoryId" to FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.category, categoryID),
             "picture" to picture,
             "state" to state,
             "size" to size,
