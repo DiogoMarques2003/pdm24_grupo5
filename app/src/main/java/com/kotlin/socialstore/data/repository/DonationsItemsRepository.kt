@@ -10,4 +10,16 @@ class DonationsItemsRepository(private val donationsItemsDao: DonationsItemsDao)
     suspend fun insert(donationsItems: DonationsItems) {
         donationsItemsDao.insert(donationsItems)
     }
+
+    suspend fun insertList(donationsItems: List<DonationsItems>) {
+        donationsItemsDao.insertList(donationsItems)
+    }
+
+    fun getByDonationId(donationId: String): Flow<List<DonationsItems>> {
+        return donationsItemsDao.getByDonationId(donationId)
+    }
+
+    suspend fun deleteAll() {
+        donationsItemsDao.deleteAll()
+    }
 }

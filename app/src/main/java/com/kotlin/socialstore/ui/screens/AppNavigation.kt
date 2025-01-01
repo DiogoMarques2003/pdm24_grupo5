@@ -32,6 +32,7 @@ import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
+import com.kotlin.socialstore.viewModels.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
@@ -41,17 +42,14 @@ import kotlinx.coroutines.flow.firstOrNull
 
 @OptIn(ExperimentalGetImage::class)
 @Composable
-fun AppNavigation(modifier: Modifier = Modifier) {
+fun AppNavigation() {
     val navController = rememberNavController()
-    val modifierCustom: Modifier =
-        modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
     val context = LocalContext.current
 
     // Check what is the first sreen of user
     var startDestination by remember { mutableStateOf<String>("home_screen") }
     var isStartDestinationDetermined by remember { mutableStateOf(false) }
     var userType = remember { mutableStateOf<String?>(null) }
-
 
     LaunchedEffect(Unit) {
         val firebaseUser = FirebaseObj.getCurrentUser()
@@ -71,34 +69,36 @@ fun AppNavigation(modifier: Modifier = Modifier) {
         }
         isStartDestinationDetermined = true
     }
-
-    if (isStartDestinationDetermined) {
-        Scaffold(
-            bottomBar = {
-                val currentRoute =
-                    navController.currentBackStackEntryAsState()?.value?.destination?.route
-                if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer )  && currentRoute in listOf(
-                        "main_screen",
-                        "submit_donation",
-                        "list_donations_screen"
-                    )
-                ) {
-                    BeneficiaryBottomNavigationBar(navController)
-                } else if (userType.value == DataConstants.AccountType.admin && currentRoute in listOf(
-                        "main_screen",
-                        "profile_page_screen",
-                        "list_donations_screen"
-                    )
-                ) {
-                    AdminBottomNavigationBar(navController)
-                }
-
+    Scaffold(
+        bottomBar = {
+            val currentRoute =
+                navController.currentBackStackEntryAsState()?.value?.destination?.route
+            if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer) && currentRoute in listOf(
+                    "main_screen",
+                    "submit_donation",
+                    "list_donations_screen"
+                )
+            ) {
+                BeneficiaryBottomNavigationBar(navController)
+            } else if (userType.value == DataConstants.AccountType.admin && currentRoute in listOf(
+                    "main_screen",
+                    "profile_page_screen",
+                    "list_donations_screen"
+                )
+            ) {
+                AdminBottomNavigationBar(navController)
             }
-        ) { innerPadding ->
+
+        }
+    ) { innerPadding ->
+        val modifierCustom = Modifier
+            .padding(innerPadding)
+            .padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)
+
+        if (isStartDestinationDetermined) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination,
-                modifier = Modifier.padding(innerPadding)
+                startDestination = startDestination
             ) {
                 composable("login_screen") {
                     // Initialize view model
@@ -181,21 +181,28 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
                 }
 
-                composable("donation_screen/{screenId}") { backstageEntry ->
-                    val donationId = backstageEntry.arguments?.getString("screenId")
+                composable("donation_screen/{donationId}") { backstageEntry ->
+                    val donationId = backstageEntry.arguments?.getString("donationId")
 
                     if (donationId == null) {
                         LaunchedEffect(Unit) {
-                            Toast.makeText(context, context.getString(R.string.donation_not_found), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.donation_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             navController.popBackStack()
                         }
+                    } else {
+                        val donationDetailsViewModel = DonationDetailsViewModel(context, donationId)
+                        DonationDetailsScreen(navController, modifierCustom, donationDetailsViewModel)
                     }
-                    // Call screen to display donation details
                 }
             }
+        } else {
+            LoadIndicator(modifierCustom)
         }
-    } else {
-        LoadIndicator(modifier)
     }
+
 }
 

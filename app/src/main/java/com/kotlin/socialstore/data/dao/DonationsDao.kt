@@ -15,7 +15,7 @@ interface DonationsDao {
     @Insert
     suspend fun insertList(donations: List<Donations>)
 
-    @Query("SELECT * FROM donations")
+    @Query("SELECT * FROM donations ORDER BY creationDate DESC")
     fun getAll(): Flow<List<Donations>>
 
     @Query("SELECT * FROM donations WHERE id = :id")

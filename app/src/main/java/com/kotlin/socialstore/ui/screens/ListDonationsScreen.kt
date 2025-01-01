@@ -2,11 +2,10 @@ package com.kotlin.socialstore.ui.screens
 
 import UiConstants
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -85,7 +84,7 @@ fun ListDonationsScreen(
     //Add background image
     BackgroundImageElement()
 
-    Column(modifier = Modifier.padding(start = UiConstants.defaultPadding, end = UiConstants.defaultPadding)) {
+    Column(modifier = modifier.fillMaxSize()) {
         //Top
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -124,8 +123,8 @@ fun ListDonationsScreen(
                 ElevatedCard(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = UiConstants.itemSpacing)
-                        .clickable { navController.navigate("donation_screen/${item.id}") }
+                        .padding(bottom = UiConstants.itemSpacing),
+                    onClick = { navController.navigate("donation_screen/${item.id}") }
                 ) {
                     Row(
                         modifier = Modifier

@@ -12,6 +12,9 @@ interface DonationScheduleDao {
     @Insert
     suspend fun insert(donationSchedule: DonationSchedule)
 
+    @Insert
+    suspend fun insertList(donationSchedules: List<DonationSchedule>)
+
     @Query("SELECT * FROM donationSchedule")
     fun getAll(): Flow<List<DonationSchedule>>
 
@@ -20,4 +23,7 @@ interface DonationScheduleDao {
 
     @Delete
     suspend fun delete(donationSchedule: DonationSchedule)
+
+    @Query("DELETE FROM donationSchedule")
+    suspend fun deleteAll()
 }

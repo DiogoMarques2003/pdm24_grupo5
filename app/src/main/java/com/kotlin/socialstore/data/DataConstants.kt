@@ -17,6 +17,8 @@ object DataConstants {
 
     object FirebaseCollections {
         val donations = "donations"
+        val donationsItems = "donationsItems"
+        val donationSchedule = "donationSchedule"
         val users = "users"
         val category = "category"
         val stock = "stock"
