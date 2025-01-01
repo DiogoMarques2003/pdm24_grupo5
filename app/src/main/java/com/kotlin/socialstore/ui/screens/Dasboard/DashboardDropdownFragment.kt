@@ -14,15 +14,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.kotlin.socialstore.data.DataConstants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardDropdown(
-    options: List<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val options = DataConstants.DashboardOptionsList
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(

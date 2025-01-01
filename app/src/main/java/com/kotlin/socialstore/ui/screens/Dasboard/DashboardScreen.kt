@@ -22,12 +22,9 @@ fun DashboardScreen(
     viewModel: DashboardViewModel
 ) {
     var selectedOption by remember { mutableStateOf("") }
-    val dashboardOptions = DataConstants.DashboardOptionsList
-
-    val donationsDashboardData by viewModel.donationsDashboardData.collectAsState()
 
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.Top,
@@ -51,7 +48,6 @@ fun DashboardScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         DashboardDropdown(
-            options = dashboardOptions,
             selectedOption = selectedOption,
             onOptionSelected = { newOption ->
                 selectedOption = newOption
@@ -65,10 +61,8 @@ fun DashboardScreen(
             DataConstants.DashboardOptions.beneficiariesPieChart -> {
                 NationalitiesDashboard(navController, viewModel, modifier)
             }
-
             DataConstants.DashboardOptions.donationsBarChart -> {
-                val donationsByMonth = donationsDashboardData.donationsByMonth
-                DonationsDashboard(donationsByMonth = donationsByMonth)
+                DonationsDashboard(navController, viewModel, modifier)
             }
         }
 
