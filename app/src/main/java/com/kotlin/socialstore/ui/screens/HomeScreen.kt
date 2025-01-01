@@ -61,11 +61,11 @@ fun HomePage(
             )
             Spacer(Modifier.height(itemSpacing))
             
-//            ButtonElement(
-//                text = stringResource(R.string.homepage_AddItem),
-//                onClick = { navController.navigate("manage_stock") },
-//                modifier = Modifier.fillMaxWidth()
-//            )
+            ButtonElement(
+                text = stringResource(R.string.homepage_AddItem),
+                onClick = { navController.navigate("dashboard_screen") },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

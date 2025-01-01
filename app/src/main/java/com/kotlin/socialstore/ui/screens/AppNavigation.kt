@@ -1,5 +1,7 @@
 package com.kotlin.socialstore.ui.screens
 
+import DashboardScreen
+import DashboardViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import ForgotPasswordPage
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
@@ -114,16 +116,11 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 composable("submit_donation") {
                     val donationViewModel = DonationViewModel(LocalContext.current, navController)
                     SubmitDonationPage(navController, donationViewModel)
+                }
 
-//                    SubmitDonationPage(
-//                        navController,
-//                        modifierCustom,
-//                        stockViewModel,
-//                        onSubmitDonations = { items ->
-//
-//                        }
-//                    )
-
+                composable("dashboard_screen") {
+                    val dashboardViewModel = DashboardViewModel(LocalContext.current, navController)
+                    DashboardScreen(navController, modifierCustom, dashboardViewModel)
                 }
 
                 composable("awaiting_approval_screen") {

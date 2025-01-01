@@ -110,28 +110,43 @@ object FirebaseObj {
     }
 
     // Método para obter dados
-    suspend fun getData(collection: String, documentId: String? = null): List<Map<String, Any>>? {
+    suspend fun getData(
+        collection: String,
+        documentId: String? = null,
+        whereField: String? = null,
+        whereEqualTo: Any? = null
+    ): List<Map<String, Any>>? {
         return try {
+            val firestore = FirebaseFirestore.getInstance()
+
             if (documentId != null) {
-                // Obter um único documento e retornar como um Map
+                // Get a single document and return it as a Map
                 val snapshot = firestore.collection(collection).document(documentId).get().await()
                 if (snapshot.exists()) {
                     val data = snapshot.data ?: emptyMap()
-                    listOf(data + ("id" to snapshot.id)) // Adicionar o id ao objeto
+                    listOf(data + ("id" to snapshot.id)) // Add the id to the object
                 } else {
-                    Log.w(TAG, "Documento não encontrado")
+                    Log.w("Firestore", "Document not found")
                     null
                 }
             } else {
-                // Obter todos os documentos da coleção e retornar como uma lista de Maps
-                val snapshot = firestore.collection(collection).get().await()
+                // Query the collection with optional where clause
+                val collectionRef = firestore.collection(collection)
+                val query: Query = if (whereField != null && whereEqualTo != null) {
+                    collectionRef.whereEqualTo(whereField, whereEqualTo)
+                } else {
+                    collectionRef
+                }
+
+                // Get all documents matching the query and return as a list of Maps
+                val snapshot = query.get().await()
                 snapshot.documents.mapNotNull { doc ->
                     val data = doc.data ?: return@mapNotNull null
-                    data + ("id" to doc.id) // Adiciona o id ao objeto
+                    data + ("id" to doc.id) // Add the id to the object
                 }
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Erro ao obter dados", e)
+            Log.w("Firestore", "Error fetching data", e)
             null
         }
     }
