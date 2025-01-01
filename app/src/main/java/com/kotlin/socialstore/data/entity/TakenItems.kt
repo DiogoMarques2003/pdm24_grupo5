@@ -28,16 +28,24 @@ data class TakenItems(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): TakenItems {
-            val familyHouseholdReference = data["familyHouseholdID"] as? DocumentReference
-            val categoryReference = data["categoryID"] as? DocumentReference
-            val voluntierReference= data["voluntierID"] as? DocumentReference
+            val familyHouseholdReference = data["familyHouseholdId"] as? DocumentReference
+            val categoryReference = data["categoryId"] as? DocumentReference
+            val voluntierReference= data["voluntierId"] as? DocumentReference
+
+            // Convert date
+            val timestamp = data["date"] as com.google.firebase.Timestamp
+            val dateInMillis = timestamp.seconds * 1000 + timestamp.nanoseconds / 1_000_000
+            val date = Date(dateInMillis)
+
+            //Convert to Long
+            val quantity = data["quantity"] as Long
 
             return TakenItems(
                 id = data["id"] as String,
                 familyHouseholdID = familyHouseholdReference?.id ?: "",
                 categoryID = categoryReference?.id ?: "",
-                quantity = data["quantity"] as Int,
-                date = Date(data["date"] as Long), // Converte timestamp para Date
+                quantity = quantity.toInt(),
+                date = date,
                 voluntierID = voluntierReference?.id ?: ""
             )
         }

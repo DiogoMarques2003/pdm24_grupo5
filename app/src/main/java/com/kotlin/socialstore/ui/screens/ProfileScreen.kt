@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
+import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.QrCodePopup
 import com.kotlin.socialstore.viewModels.LoginViewModel
@@ -50,7 +51,10 @@ fun ProfileScreen(
     }
 
     if (userInfo == null) {
-        CircularProgressIndicator()
+        LaunchedEffect(Unit) {
+            profileViewModel.loadInfo()
+        }
+        LoadIndicator()
     } else {
 
         Box(modifier = modifier.fillMaxSize()) {

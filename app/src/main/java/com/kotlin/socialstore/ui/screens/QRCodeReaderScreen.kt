@@ -17,6 +17,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.navigation.NavController
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -25,10 +26,18 @@ import com.google.mlkit.vision.common.InputImage
 // TODO: Add the square to read qrcode
 @ExperimentalGetImage
 @Composable
-fun QRCodeReaderScreen(modifier: Modifier = Modifier, onQRCodeScanned: (String) -> Unit) {
+fun QRCodeReaderScreen(
+    modifier: Modifier = Modifier,
+    nextScreen: String,
+    navController: NavController
+) {
     val context = LocalContext.current
 
-    if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+    if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CAMERA
+        ) != PackageManager.PERMISSION_GRANTED
+    ) {
         ActivityCompat.requestPermissions(
             (context as Activity),
             arrayOf(Manifest.permission.CAMERA),
@@ -57,7 +66,7 @@ fun QRCodeReaderScreen(modifier: Modifier = Modifier, onQRCodeScanned: (String) 
                         .build()
 
                     imageAnalyzer.setAnalyzer(ContextCompat.getMainExecutor(context)) { imageProxy ->
-                        processImageProxy(imageProxy, barcodeScanner, onQRCodeScanned)
+                        processImageProxy(imageProxy, barcodeScanner, nextScreen, navController)
                     }
 
                     try {
@@ -82,7 +91,8 @@ fun QRCodeReaderScreen(modifier: Modifier = Modifier, onQRCodeScanned: (String) 
 private fun processImageProxy(
     imageProxy: ImageProxy,
     barcodeScanner: BarcodeScanner,
-    onQRCodeScanned: (String) -> Unit
+    nextScreen: String,
+    navController: NavController
 ) {
     val mediaImage = imageProxy.image
     if (mediaImage != null) {
@@ -92,7 +102,7 @@ private fun processImageProxy(
                 for (barcode in barcodes) {
                     if (barcode.format == Barcode.FORMAT_QR_CODE) {
                         barcode.rawValue?.let { qrCodeContent ->
-                            onQRCodeScanned(qrCodeContent)
+                            navController.navigate("$nextScreen/$qrCodeContent")
                             imageProxy.close()
                             return@addOnSuccessListener
                         }

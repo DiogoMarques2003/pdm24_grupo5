@@ -39,6 +39,8 @@ import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.MainPageViewModel
+import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
@@ -140,7 +142,8 @@ fun AppNavigation() {
                 }
 
                 composable("main_screen") {
-                    MainScreen(navController, modifierCustom)
+                    val mainPageViewModel = MainPageViewModel(LocalContext.current)
+                    MainScreen(navController, modifierCustom, mainPageViewModel)
                 }
 
                 composable("profile_page_screen") {
@@ -152,16 +155,9 @@ fun AppNavigation() {
                     EditProfileScreen(navController, modifierCustom, profileViewModel)
                 }
 
-                composable("qrcode_reader_screen") {
-                    QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
-                        Log.d("Qr Code result: ", qrCodeContent)
-                        // Pass the result back to the home screen
-                        navController.previousBackStackEntry?.savedStateHandle?.set(
-                            "qrCodeResult",
-                            qrCodeContent
-                        )
-                        navController.popBackStack()
-                    }
+                composable("qrcode_reader_screen/{next_screen}") { backStackEntry ->
+                    val nextScreen = backStackEntry.arguments?.getString("next_screen")
+                    QRCodeReaderScreen(modifierCustom,nextScreen ?: "home_screen",navController)
                 }
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)
@@ -216,5 +212,3 @@ fun AppNavigation() {
     }
 
 }
-
-
