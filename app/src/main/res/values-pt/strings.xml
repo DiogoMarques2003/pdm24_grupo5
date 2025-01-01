@@ -192,7 +192,7 @@
     <string name="product_state_n">Novo</string>
     <string name="product_state_u">Usado</string>
     <string name="product_state_g">Bom</string>
-    <string name="product_state_b">Bad</string>
+    <string name="product_state_b">Mau</string>
     <string name="product_state_default">N/A</string>
     <string name="products_page_title">Produtos</string>
     <string name="edit_profile_button">Editar Perfil</string>

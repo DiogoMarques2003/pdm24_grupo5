@@ -51,9 +51,6 @@ fun ProfileScreen(
     }
 
     if (userInfo == null) {
-        LaunchedEffect(Unit) {
-            profileViewModel.loadInfo()
-        }
         LoadIndicator()
     } else {
 
