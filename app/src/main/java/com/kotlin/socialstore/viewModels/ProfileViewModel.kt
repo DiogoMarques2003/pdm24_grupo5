@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.viewModels
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.storage.FirebaseStorage
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Users
@@ -112,6 +114,33 @@ class ProfileViewModel(context: Context) : ViewModel() {
             }
         }
     }
+    fun uploadProfileImage(uri: Uri, context: Context) {
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return
+        val storageRef = FirebaseStorage.getInstance().reference.child("profile_pictures/${currentUser.uid}.jpg")
+
+        viewModelScope.launch {
+            try {
+                // Fazer upload
+                storageRef.putFile(uri).await()
+
+                // Obter URL da imagem
+                val downloadUrl = storageRef.downloadUrl.await()
+
+                // Atualizar o campo no Firestore
+                val userDocRef = FirebaseFirestore.getInstance()
+                    .collection("users")
+                    .document(currentUser.uid)
+
+                userDocRef.update("profilePic", downloadUrl.toString()).await()
+
+                Toast.makeText(context, "Profile picture updated successfully.", Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                Log.e("ProfilePicture", "Error uploading profile picture: ${e.message}", e)
+                Toast.makeText(context, "Failed to update profile picture.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
 }
 

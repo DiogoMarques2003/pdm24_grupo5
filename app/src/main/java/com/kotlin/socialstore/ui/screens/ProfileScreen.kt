@@ -199,9 +199,6 @@ fun ProfileScreen(
                         }
                     }
                 }
-
-                //        Spacer(modifier = Modifier.height(24.dp))
-
                 // Botão QR Code
                 Button(
                     onClick = { showQrCodePopup.value = true },
