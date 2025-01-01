@@ -200,4 +200,12 @@
     <string name="donation_pending">Pendente</string>
     <string name="donation_declined">Rejeitada</string>
     <string name="donation_done">Entregue</string>
+    <string name="donations_page_title">Doações</string>
+    <string name="donation">Doação</string>
+    <string name="date">Data</string>
+    <string name="search_by_id">Procurar por id</string>
+    <string name="donation_not_found">Doação não encontrada</string>
+    <string name="donation_items_not_found">Não foi possível encontrar artigos para doação</string>
+    <string name="donation_details_page_title">Detalhes da doação</string>
+    <string name="donation_schedule_not_found">Não foi possível encontrar o calendário de doações</string>
 </resources>

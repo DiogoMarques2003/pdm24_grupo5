@@ -1,5 +1,7 @@
 package com.kotlin.socialstore.ui.screens
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,7 +13,8 @@ fun MainScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    Text("Main Screen")
 
-    Button(onClick = { navController.navigate("list_donations_screen") }) { Text("Login") }
+    Column(modifier.fillMaxSize()) {
+        Button(onClick = { navController.navigate("list_donations_screen") }) { Text("Listar doações") }
+    }
 }

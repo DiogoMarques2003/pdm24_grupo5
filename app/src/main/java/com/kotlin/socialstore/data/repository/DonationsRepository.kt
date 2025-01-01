@@ -15,6 +15,10 @@ class DonationsRepository(private val donationsDao: DonationsDao) {
         donationsDao.insertList(donations)
     }
 
+    fun getById(id: String): Flow<Donations> {
+        return donationsDao.getById(id)
+    }
+
     suspend fun deleteAll() {
         donationsDao.deleteAll()
     }

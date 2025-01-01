@@ -201,4 +201,12 @@
     <string name="donation_pending">Pending</string>
     <string name="donation_declined">Declined</string>
     <string name="donation_done">Done</string>
+    <string name="donations_page_title">Donations</string>
+    <string name="donation">Donation</string>
+    <string name="date">Date</string>
+    <string name="search_by_id">Search By Id</string>
+    <string name="donation_not_found">Donation not found</string>
+    <string name="donation_items_not_found">Can\'t find donation items</string>
+    <string name="donation_details_page_title">Donation Details</string>
+    <string name="donation_schedule_not_found">Can\'t find donation schedule</string>
 </resources>
