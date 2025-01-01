@@ -116,22 +116,20 @@ class ProfileViewModel(context: Context) : ViewModel() {
     }
     fun uploadProfileImage(uri: Uri, context: Context) {
         val currentUser = FirebaseAuth.getInstance().currentUser ?: return
-        val storageRef = FirebaseStorage.getInstance().reference.child("profile_pictures/${currentUser.uid}.jpg")
+        val storageRef = FirebaseStorage.getInstance().reference.child("/profileImages/${currentUser.uid}.jpg")
 
         viewModelScope.launch {
             try {
-                // Fazer upload
                 storageRef.putFile(uri).await()
 
-                // Obter URL da imagem
-                val downloadUrl = storageRef.downloadUrl.await()
+                val imagePath = "profileImages/${currentUser.uid}.jpg"
 
-                // Atualizar o campo no Firestore
                 val userDocRef = FirebaseFirestore.getInstance()
                     .collection("users")
                     .document(currentUser.uid)
 
-                userDocRef.update("profilePic", downloadUrl.toString()).await()
+
+                userDocRef.update("profilePic", imagePath).await()
 
                 Toast.makeText(context, "Profile picture updated successfully.", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
