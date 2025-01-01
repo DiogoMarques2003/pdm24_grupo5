@@ -3,12 +3,14 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 
 @Entity(tableName = "donationsItems")
 data class DonationsItems(
     @PrimaryKey(autoGenerate = false) val id: String,
     val donationID: String,
-    val categoryID: String?,
+    val categoryID: String,
     val picture: String?,
     val state: String,
     val size: String?,
@@ -19,7 +21,7 @@ data class DonationsItems(
         return mapOf(
             "id" to id,
             "donationID" to donationID,
-            "categoryID" to categoryID,
+            "categoryID" to FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.category, categoryID),
             "picture" to picture,
             "state" to state,
             "size" to size,

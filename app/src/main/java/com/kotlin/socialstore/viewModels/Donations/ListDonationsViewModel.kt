@@ -1,4 +1,4 @@
-package com.kotlin.socialstore.viewModels
+package com.kotlin.socialstore.viewModels.Donations
 
 import android.content.Context
 import android.widget.Toast

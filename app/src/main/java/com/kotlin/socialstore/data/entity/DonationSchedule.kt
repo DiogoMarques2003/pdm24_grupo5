@@ -8,17 +8,17 @@ import java.sql.Time
 data class DonationSchedule(
     @PrimaryKey(autoGenerate = false) val id: String,
     val local: String,
-    val weekDay: Int,
-    val startTime: Time,
-    val endTime: Time
+    val weekDay: Long,
+    val startTime: String,
+    val endTime: String
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
             "id" to id,
             "local" to local,
             "weekDay" to weekDay,
-            "startTime" to startTime.toString(),
-            "endTime" to endTime.toString()
+            "startTime" to startTime,
+            "endTime" to endTime
         )
     }
 
@@ -27,9 +27,9 @@ data class DonationSchedule(
             return DonationSchedule(
                 id = data["id"] as String,
                 local = data["local"] as String,
-                weekDay = data["weekDay"] as Int,
-                startTime = Time.valueOf(data["startTime"] as String),
-                endTime = Time.valueOf(data["endTime"] as String)
+                weekDay = data["weekDay"] as Long,
+                startTime = data["startTime"] as String,
+                endTime = data["endTime"] as String,
             )
         }
     }

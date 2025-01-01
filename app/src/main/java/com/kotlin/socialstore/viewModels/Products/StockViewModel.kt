@@ -1,13 +1,11 @@
+package com.kotlin.socialstore.viewModels.Products
+
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.firestore
-import com.google.firebase.storage.storage
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
@@ -20,8 +18,6 @@ import com.kotlin.socialstore.data.repository.StoresRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import java.util.UUID
 
 class StockViewModel(
     private val context: Context

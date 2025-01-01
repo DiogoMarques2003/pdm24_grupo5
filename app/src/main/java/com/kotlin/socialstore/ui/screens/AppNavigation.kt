@@ -1,8 +1,8 @@
 package com.kotlin.socialstore.ui.screens
 
-import DonationViewModel
+import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import ForgotPasswordPage
-import StockViewModel
+import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -31,11 +31,15 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
+import com.kotlin.socialstore.ui.screens.Donations.DonationSuccessPage
+import com.kotlin.socialstore.ui.screens.Donations.SubmitDonationPage
+import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
+import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.DonationDetailsViewModel
-import com.kotlin.socialstore.viewModels.ListDonationsViewModel
+import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
-import com.kotlin.socialstore.viewModels.ProductsCatalogViewModel
+import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 import kotlinx.coroutines.flow.firstOrNull
@@ -115,8 +119,8 @@ fun AppNavigation() {
                     DonationSuccessPage(navController, modifierCustom)
                 }
                 composable("submit_donation") {
-                    val donationViewModel = DonationViewModel(LocalContext.current)
-                    SubmitDonationPage2(navController, donationViewModel)
+                    val donationViewModel = DonationViewModel(LocalContext.current, navController)
+                    SubmitDonationPage(navController, donationViewModel)
 
 //                    SubmitDonationPage(
 //                        navController,
@@ -126,17 +130,7 @@ fun AppNavigation() {
 //
 //                        }
 //                    )
-                }
-                composable("forgot_password_screen") {
-                    ForgotPasswordPage(navController, modifierCustom)
-                }
-                composable("home_screen") {
-                    HomePage(navController, modifierCustom)
-                }
 
-                composable("manage_stock") {
-                    val stockViewModel = StockViewModel(LocalContext.current)
-                    ManageStockPage(navController, modifierCustom, stockViewModel)
                 }
 
                 composable("awaiting_approval_screen") {
@@ -153,6 +147,10 @@ fun AppNavigation() {
                     val profileViewModel = ProfileViewModel(LocalContext.current)
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
+                composable("edit_profile_screen") {
+                    val profileViewModel = ProfileViewModel(context)
+                    EditProfileScreen(navController, modifierCustom, profileViewModel)
+                }
 
                 composable("qrcode_reader_screen") {
                     QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
@@ -168,17 +166,30 @@ fun AppNavigation() {
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)
                 }
+
                 composable("home_screen") {
                     HomePage(navController, modifierCustom)
                 }
+
                 composable("products_screen") {
                     val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
                     ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
-                }
 
-                composable("list_donations_screen") {
-                    val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
-                    ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+                    composable("manage_stock") {
+                        val stockViewModel = StockViewModel(LocalContext.current)
+                        ManageStockPage(navController, modifierCustom, stockViewModel)
+                    }
+
+                    composable("products_screen") {
+                        val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                        ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                    }
+
+                    composable("list_donations_screen") {
+                        val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
+                        ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+
+                    }
                 }
 
                 composable("donation_screen/{donationId}") { backstageEntry ->
@@ -205,4 +216,5 @@ fun AppNavigation() {
     }
 
 }
+
 

@@ -55,4 +55,6 @@ object DataConstants {
                                       "PND" to Icons.Filled.AccessTime,
                                       "DEC" to Icons.Filled.Close,
                                       "DON" to Icons.Filled.DoneAll)
+
+    val donationInitialStatus = "PND"
 }

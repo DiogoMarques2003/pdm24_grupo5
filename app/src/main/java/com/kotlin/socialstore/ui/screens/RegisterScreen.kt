@@ -46,7 +46,7 @@ fun RegisterPage(
     var nationality by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
     var phoneCountryCode by remember { mutableStateOf("") }
-    var isPhoneNumberValid by remember { mutableStateOf(true) }
+    var isPhoneNumberValid by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
     var isEmailValid by remember { mutableStateOf(true) }
     var password by remember { mutableStateOf("") }
