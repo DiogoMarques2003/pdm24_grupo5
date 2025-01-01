@@ -88,28 +88,6 @@ class DashboardViewModel(
                 }
             }
 
-
-//            for (document in donationsListConv) {
-//                // Get the date and format it to month-year
-//                val date = document.creationDate
-//                if (date != null) {
-//                    val calendar = Calendar.getInstance()
-//                    calendar.time = date
-//
-//                    val month = calendar.get(Calendar.MONTH) // 0-11
-//                    val year = calendar.get(Calendar.YEAR)
-//
-//                    // Format as "January 2024" or use SimpleDateFormat
-//                    val monthName = SimpleDateFormat("MMMM yyyy", Locale.getDefault()).format(date)
-//                    // Or shorter format: "Jan 2024"
-//                    // val monthName = SimpleDateFormat("MMM yyyy", Locale.getDefault()).format(date)
-//
-//                    donationCounts[monthName] = donationCounts.getOrDefault(monthName, 0) + 1
-//                } else {
-//                    donationCounts["Unknown"] = donationCounts.getOrDefault("Unknown", 0) + 1
-//                }
-//            }
-
             _donationsDashboardData.value = DonationsDashboardData(
                 donationsByMonth = donationCounts
             )
