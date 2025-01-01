@@ -33,6 +33,13 @@ object DataConstants {
         val donations = "donations"
     }
 
+    object DashboardOptions {
+        val beneficiariesPieChart = "Beneficiaries nationalities"
+        val donationsBarChart = "All-time Donations"
+    }
+
+    val DashboardOptionsList = listOf(DataConstants.DashboardOptions.beneficiariesPieChart, DataConstants.DashboardOptions.donationsBarChart)
+
     val mapProductCondition = mapOf("N" to R.string.product_state_n,
                                     "B" to R.string.product_state_b,
                                     "U" to R.string.product_state_u,
