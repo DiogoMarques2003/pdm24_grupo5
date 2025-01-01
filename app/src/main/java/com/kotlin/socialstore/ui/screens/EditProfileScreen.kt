@@ -43,6 +43,7 @@ fun EditProfileScreen(
     var isEmailValid by remember { mutableStateOf(true) }
     var phoneCountryCode by remember { mutableStateOf("") }
     var isPhoneNumberValid by remember { mutableStateOf(true) }
+    var credencialchanged by remember { mutableStateOf( false) }
 
 
     LaunchedEffect(userInfo) {
@@ -124,25 +125,19 @@ fun EditProfileScreen(
 
             Button(
                 onClick = {
-                    profileViewModel.updateUserInfo(
-                        name = name.value,
-                        email = email.value,
-                        password = password.value,
-                        phoneNumber = phoneNumber.value,
-                        nationality = nationality.value,
-                        context = context
-                    )
+
+
+
                     if (email.value.isNotBlank() && email.value != userInfo?.email) {
                         updateFirebaseEmail(email.value) { success, message ->
                             if (success) {
                                 Toast.makeText(
                                     context,
                                     "Email updated. Please verify your email to log in again.",
-                                    Toast.LENGTH_LONG
+                                    Toast.LENGTH_SHORT
                                 ).show()
+                                credencialchanged = true
 
-                                FirebaseAuth.getInstance().signOut()
-                                profileViewModel.logoutUser(navController)
 
                             } else {
                                 Toast.makeText(
@@ -152,7 +147,6 @@ fun EditProfileScreen(
                                 ).show()
                             }
                         }
-                    //    profileViewModel.logoutUser(navController)
                     }
                         if (password.value.isNotBlank()) {
                             updateFirebasePassword(password.value) { success, message ->
@@ -162,6 +156,7 @@ fun EditProfileScreen(
                                         "Password updated successfully.",
                                         Toast.LENGTH_SHORT
                                     ).show()
+                                    credencialchanged = true
                                 } else {
                                     Toast.makeText(
                                         context,
@@ -172,7 +167,20 @@ fun EditProfileScreen(
                             }
                         }
 
-                      //  navController.popBackStack()
+                    profileViewModel.updateUserInfo(
+                        name = name.value,
+                        email = if ( email.value.isEmpty()) userInfo!!.email else email.value,
+                        password = password.value,
+                        phoneNumber = phoneNumber.value,
+                        nationality = nationality.value,
+                        context = context
+                    )
+
+                    if (credencialchanged) {
+                        FirebaseAuth.getInstance().signOut()
+                        profileViewModel.logoutUser(navController)
+                    }
+
                     navController.navigate("login_screen") {
                         popUpTo(0) { inclusive = true }
                     }

@@ -67,7 +67,6 @@ class ProfileViewModel(context: Context) : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
-                // Atualizar dados no Firestore
                 val updatedData = mapOf(
                     "name" to name,
                     "email" to email,
