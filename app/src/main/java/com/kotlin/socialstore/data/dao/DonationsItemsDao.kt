@@ -12,11 +12,20 @@ interface DonationsItemsDao {
     @Insert
     suspend fun insert(donationsItems: DonationsItems)
 
+    @Insert
+    suspend fun insertList(donationsItems: List<DonationsItems>)
+
     @Query("SELECT * FROM donationsItems")
     fun getAll(): Flow<List<DonationsItems>>
 
     @Query("SELECT * FROM donationsItems WHERE id = :id")
     fun getById(id: String): Flow<DonationsItems>
+
+    @Query("SELECT * FROM donationsItems WHERE donationId = :donationId")
+    fun getByDonationId(donationId: String): Flow<List<DonationsItems>>
+
+    @Query("DELETE FROM donationsItems")
+    suspend fun deleteAll()
 
     @Delete
     suspend fun delete(donationsItems: DonationsItems)

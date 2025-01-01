@@ -1,51 +1,48 @@
-package com.kotlin.socialstore.ui.screens
+package com.kotlin.socialstore.ui.screens.Donations
 
 import AddDonationItemDialog
-import AddItemDialog
-import DonationViewModel
-import androidx.compose.foundation.Image
+import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.entity.DonationsItems
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.TitleTextElement
+import com.togitech.ccp.component.TogiCountryCodePicker
+import formatWeekDay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SubmitDonationPage2(
+fun SubmitDonationPage(
     navController: NavController,
     viewModel: DonationViewModel
 ) {
     var fullName by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
+    var phoneCountryCode by remember { mutableStateOf("") }
+    var isPhoneNumberValid by remember { mutableStateOf(false) }
     var email by remember { mutableStateOf("") }
-    var location by remember { mutableStateOf("") }
+    var locationID by remember { mutableStateOf("") }
+    var locationName by remember { mutableStateOf("") }
     var showLocationDropdown by remember { mutableStateOf(false) }
     var showAddItemDialog by remember { mutableStateOf(false) }
 
     val donationItems = viewModel.donationItems.collectAsState(initial = emptyList())
-    val stores by viewModel.allStores.collectAsState(initial = emptyList())
+    val locations by viewModel.allLocations.collectAsState(initial = emptyList())
 
 
     Column(
@@ -69,13 +66,18 @@ fun SubmitDonationPage2(
 
         Spacer(Modifier.height(UiConstants.inputDialogSpacing))
 
-        OutlinedTextfieldElement(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            labelText = "Phone Number",
-            keyboardType = KeyboardType.Phone,
-            modifier = Modifier
-                .fillMaxWidth()
+        TogiCountryCodePicker(
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = { (code, phone), valid ->
+                phoneNumber = phone
+                phoneCountryCode = code
+                isPhoneNumberValid = valid
+            },
+            label = { Text(stringResource(R.string.phoneNumber_textfield)) },
+            showError = phoneNumber != "",
+            clearIcon = null,
+            initialCountryIsoCode = "PT",
+            shape = UiConstants.outlinedTextFieldElementShape,
         )
 
         Spacer(Modifier.height(UiConstants.inputDialogSpacing))
@@ -96,7 +98,7 @@ fun SubmitDonationPage2(
             onExpandedChange = { showLocationDropdown = it }
         ) {
             OutlinedTextfieldElement(
-                value = location,
+                value = locationName,
                 onValueChange = {},
                 readOnly = true,
                 labelText = "Location",
@@ -110,11 +112,21 @@ fun SubmitDonationPage2(
                 expanded = showLocationDropdown,
                 onDismissRequest = { showLocationDropdown = false }
             ) {
-                stores.forEach { loc ->
+                locations.forEach { loc ->
                     DropdownMenuItem(
-                        text = { Text(loc.name) },
+                        text = {
+                            Column {
+                                Text(loc.local)
+                                Text(
+                                    "${formatWeekDay(loc.weekDay)}, ${loc.startTime} - ${loc.endTime}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        },
                         onClick = {
-                            location = loc.id
+                            locationID = loc.id
+                            locationName = loc.local
                             showLocationDropdown = false
                         }
                     )
@@ -141,9 +153,16 @@ fun SubmitDonationPage2(
         }
 
         ButtonElement(
-            onClick = { /* Handle submission */ },
+            onClick = { viewModel.submitDonation(
+                fullName = fullName,
+                phoneNumber = phoneNumber,
+                phoneCountryCode = phoneCountryCode,
+                email = email,
+                locationID = locationID
+            ) },
             modifier = Modifier.fillMaxWidth(),
-            text = "Submit Donation"
+            text = "Submit Donation",
+            enabled = donationItems.value.isNotEmpty() && isPhoneNumberValid && email.isNotBlank() && fullName.isNotBlank() && locationID.isNotBlank()
         )
     }
 

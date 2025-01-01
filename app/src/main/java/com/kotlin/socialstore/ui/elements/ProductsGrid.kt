@@ -24,7 +24,7 @@ import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.entity.Category
 import com.kotlin.socialstore.data.entity.Stock
-import com.kotlin.socialstore.ui.screens.ProductsPopUp
+import com.kotlin.socialstore.ui.screens.Products.ProductsPopUp
 
 @Composable
 fun ProductsGrid(stock: List<Stock>, categories: List<Category>){

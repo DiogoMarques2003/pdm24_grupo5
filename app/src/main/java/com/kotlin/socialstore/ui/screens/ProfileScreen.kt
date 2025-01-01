@@ -11,21 +11,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.LoadIndicator
+import com.kotlin.socialstore.ui.elements.ButtonElement
+import com.kotlin.socialstore.ui.elements.QrCodePopup
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 
@@ -35,7 +42,13 @@ fun ProfileScreen(
     modifier: Modifier = Modifier,
     profileViewModel: ProfileViewModel
 ) {
-    val userInfo by profileViewModel.userInfo.collectAsState(null)
+    val userInfo by profileViewModel.userData.collectAsState(null)
+    val showQrCodePopup = remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        profileViewModel.getUserInfo(context)
+    }
 
     if (userInfo == null) {
         LaunchedEffect(Unit) {
@@ -50,22 +63,22 @@ fun ProfileScreen(
 
             Column(
                 modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
+                    .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Row(modifier = Modifier.weight(1f)) {
+                    SubcomposeAsyncImage(
+                        model = userInfo?.profilePic ?: R.drawable.product_image_not_found,
+                        contentDescription = null,
+                        loading = { CircularProgressIndicator() },
+                        modifier = Modifier
+                            .size(120.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
-                // Imagem de perfil
-                Image(
-                    painter = painterResource(id = R.drawable.pdmfinal),
-                    contentDescription = "User Profile Picture",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // Nome do usuário
                 Text(
@@ -80,14 +93,13 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 //  "Edit Profile"
-                Button(
-                    onClick = { /* Navegar para edição */ },
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                ) {
-                    Text(text = "Edit profile")
-                }
+                ButtonElement(
+                    onClick = { navController.navigate("edit_profile_screen") },
+                    modifier = Modifier.fillMaxWidth(0.5f),
+                    text = stringResource(R.string.edit_profile_button),
+                )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // "Household"
                 Row(
@@ -133,7 +145,7 @@ fun ProfileScreen(
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                //              Spacer(modifier = Modifier.height(16.dp))
 
                 // Lista de itens
                 val items = listOf(
@@ -192,16 +204,20 @@ fun ProfileScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                //        Spacer(modifier = Modifier.height(24.dp))
 
                 // Botão QR Code
                 Button(
-                    onClick = { /* Abrir QR Code */ },
+                    onClick = { showQrCodePopup.value = true },
                     modifier = Modifier.fillMaxWidth(0.5f)
                 ) {
                     Text(text = "QR Code")
                 }
             }
+        }
+
+        if (showQrCodePopup.value) {
+            QrCodePopup(userInfo!!.id, showQrCodePopup)
         }
     }
 }

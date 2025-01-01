@@ -25,6 +25,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -65,6 +69,7 @@ fun MainScreen(
     modifier: Modifier = Modifier,
     mainPageViewModel: MainPageViewModel
 ) {
+
     val userData by mainPageViewModel.userData.collectAsState(null)
     val productsData by mainPageViewModel.lastProducts.collectAsState(emptyList())
     val categoriesData by mainPageViewModel.allCategories.collectAsState(emptyList())
