@@ -199,4 +199,26 @@
     <string name="donation_pending">Pendente</string>
     <string name="donation_declined">Rejeitada</string>
     <string name="donation_done">Entregue</string>
+    <string name="taken_items_text">Items Adquiridos</string>
+    <string name="this_month">Este mês</string>
+    <string name="taken_items_text_admin">Items Doados</string>
+    <string name="visits">Visitas</string>
+    <string name="submit_visits">Submeter visita</string>
+    <string name="submit_visits_desc">Ler código QR</string>
+    <string name="schedules">Horários</string>
+    <string name="manage_schedules">Gerir horários</string>
+    <string name="manage_user">Gerir utilizadores</string>
+    <string name="manage_user_desc">Editar perfis</string>
+    <string name="add_items">Adicionar items</string>
+    <string name="add_items_desc">Adicionar items ao utilizador</string>
+    <string name="donate">Doar</string>
+    <string name="donate_desc">Ajuda-nos a crescer</string>
+    <string name="donations">Doações</string>
+    <string name="check_last_news">Confira as últimas novidades!!</string>
+    <string name="register_success">Registado com  sucesso</string>
+    <string name="login_success">Logado com sucesso</string>
+    <string name="minutes_ago">minutos atrás</string>
+    <string name="days_ago">dias atrás</string>
+    <string name="hours_ago">horas atrás</string>
+    <string name="manage_stock_desc">Adiociona, remove e atualiza o stock</string>
 </resources>

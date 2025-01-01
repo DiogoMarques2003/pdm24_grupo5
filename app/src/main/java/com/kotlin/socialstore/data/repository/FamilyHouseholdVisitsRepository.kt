@@ -19,6 +19,10 @@ class FamilyHouseholdVisitsRepository(private val familyHouseholdVisitsDao: Fami
         return familyHouseholdVisitsDao.getAllMonthly()
     }
 
+    fun getVisitMonthlyById(id: String): Flow<List<FamilyHouseholdVisits>>{
+        return familyHouseholdVisitsDao.getVisitMonthlyById(id)
+    }
+
     suspend fun deleteAll(){
         familyHouseholdVisitsDao.deleteAll()
     }
