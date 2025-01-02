@@ -17,7 +17,6 @@ data class TakenItems(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "familyHouseholdID" to familyHouseholdID,
             "categoryID" to categoryID,
             "quantity" to quantity,

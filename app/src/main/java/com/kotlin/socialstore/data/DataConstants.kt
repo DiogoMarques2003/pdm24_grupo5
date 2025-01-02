@@ -31,30 +31,43 @@ object DataConstants {
         val donations = "donations"
     }
 
-    val mapProductCondition = mapOf("N" to R.string.product_state_n,
-                                    "B" to R.string.product_state_b,
-                                    "U" to R.string.product_state_u,
-                                    "G" to R.string.product_state_g)
-
-    val mapDonationStatus = mapOf("APR" to R.string.donation_approved,
-                                  "PND" to R.string.donation_pending,
-                                  "DEC" to R.string.donation_declined,
-                                  "DON" to R.string.donation_done)
-
-    val mapDonationStatusBackgroundColor = mapOf("APR" to Color(0xFFECFAF2),
-                                                 "PND" to Color(0xFFFFF6E6),
-                                                 "DEC" to Color(0xFFFFF5F5),
-                                                 "DON" to Color(0xFFECFAF2))
-
-    val mapDonationStatusTextColor = mapOf("APR" to Color(0xFF41C980),
-                                           "PND" to Color(0xFFFFA800),
-                                           "DEC" to Color(0xFFEB5757),
-                                           "DON" to Color(0xFF41C980))
-
-    val mapDonationStatusIcon = mapOf("APR" to Icons.Filled.Done,
-                                      "PND" to Icons.Filled.AccessTime,
-                                      "DEC" to Icons.Filled.Close,
-                                      "DON" to Icons.Filled.DoneAll)
+    val mapProductCondition = mapOf(
+        "N" to R.string.product_state_n,
+        "B" to R.string.product_state_b,
+        "U" to R.string.product_state_u,
+        "G" to R.string.product_state_g
+    )
 
     val donationInitialStatus = "PND"
+    val donationAppprovedStatuus = "APR"
+    val donationDeclinedStatus = "DEC"
+    val donationDoneStatus = "DON"
+
+    val mapDonationStatus = mapOf(
+        donationAppprovedStatuus to R.string.donation_approved,
+        donationInitialStatus to R.string.donation_pending,
+        donationDeclinedStatus to R.string.donation_declined,
+        donationDoneStatus to R.string.donation_done
+    )
+
+    val mapDonationStatusBackgroundColor = mapOf(
+        donationAppprovedStatuus to Color(0xFFECFAF2),
+        donationInitialStatus to Color(0xFFFFF6E6),
+        donationDeclinedStatus to Color(0xFFFFF5F5),
+        donationDoneStatus to Color(0xFFECFAF2)
+    )
+
+    val mapDonationStatusTextColor = mapOf(
+        donationAppprovedStatuus to Color(0xFF41C980),
+        donationInitialStatus to Color(0xFFFFA800),
+        donationDeclinedStatus to Color(0xFFEB5757),
+        donationDoneStatus to Color(0xFF41C980)
+    )
+
+    val mapDonationStatusIcon = mapOf(
+        donationAppprovedStatuus to Icons.Filled.Done,
+        donationInitialStatus to Icons.Filled.AccessTime,
+        donationDeclinedStatus to Icons.Filled.Close,
+        donationDoneStatus to Icons.Filled.DoneAll
+    )
 }

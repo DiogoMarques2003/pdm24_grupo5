@@ -209,4 +209,19 @@
     <string name="donation_items_not_found">Can\'t find donation items</string>
     <string name="donation_details_page_title">Donation Details</string>
     <string name="donation_schedule_not_found">Can\'t find donation schedule</string>
+    <string name="qty">Qty:</string>
+    <string name="name">Name</string>
+    <string name="aprove">Aprove</string>
+    <string name="decline">Decline</string>
+    <string name="contact_details">Contact details</string>
+    <string name="schedule">Schedule:</string>
+    <string name="location">Location:</string>
+    <string name="identifier">Identifier:</string>
+    <string name="information">Information</string>
+    <string name="donation_delivered">Donation delivered</string>
+    <string name="donation_updated">Donation changed successfully</string>
+    <string name="donation_not_updated">An error occurred changing the donation status</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="insert_donation_item">Do you want to put the donation items in stock?</string>
 </resources>

@@ -15,7 +15,6 @@ data class StoresSchedule(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "storesId" to storesId,
             "weekDay" to weekDay,
             "startTime" to startTime.toString(), // Converte Time para String

@@ -208,4 +208,19 @@
     <string name="donation_items_not_found">Não foi possível encontrar artigos para doação</string>
     <string name="donation_details_page_title">Detalhes da doação</string>
     <string name="donation_schedule_not_found">Não foi possível encontrar o calendário de doações</string>
+    <string name="qty">Qtd:</string>
+    <string name="name">Nome</string>
+    <string name="aprove">Aprovar</string>
+    <string name="decline">Recusar</string>
+    <string name="contact_details">Dados de contacto</string>
+    <string name="schedule">Horário:</string>
+    <string name="location">Localização:</string>
+    <string name="identifier">Identificador:</string>
+    <string name="information">Informação</string>
+    <string name="donation_delivered">Doação entregue</string>
+    <string name="donation_updated">Doação alterada com sucesso</string>
+    <string name="donation_not_updated">Ocorreu um erro ao alterar o estado da doação</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="insert_donation_item">Quer inserir os artigos da doação no stock?</string>
 </resources>

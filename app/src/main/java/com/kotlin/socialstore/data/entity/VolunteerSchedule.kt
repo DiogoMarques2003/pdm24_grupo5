@@ -19,7 +19,6 @@ data class VolunteerSchedule(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "userID" to userID,
             "day" to day.time, // Converte a data para timestamp
             "startTime" to startTime.toString(), // Converte Time para String

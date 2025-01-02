@@ -13,7 +13,6 @@ data class Stores(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "name" to name,
             "address" to address,
             "postalCode" to postalCode,
