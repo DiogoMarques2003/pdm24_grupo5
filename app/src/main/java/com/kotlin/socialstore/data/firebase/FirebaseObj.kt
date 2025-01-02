@@ -256,7 +256,7 @@ object FirebaseObj {
     fun updateFirebaseEmail(newEmail: String, onComplete: (Boolean, String?) -> Unit) {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            user.verifyBeforeUpdateEmail(newEmail)
+          user.verifyBeforeUpdateEmail(newEmail)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("UpdateEmail", "User email address updated.")
