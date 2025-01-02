@@ -1,10 +1,12 @@
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,45 +14,49 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.kotlin.socialstore.R
-import com.kotlin.socialstore.data.DataConstants.mapProductCondition
-import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
+import com.kotlin.socialstore.data.DataConstants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItemConditionDropdown(
-    selectedCondition: String,
-    onConditionSelected: (String) -> Unit,
+fun DashboardDropdown(
+    selectedOption: String,
+    onOptionSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val options = DataConstants.DashboardOptionsList
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = { expanded = it }
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
     ) {
-        OutlinedTextfieldElement(
-            value = if (selectedCondition.isNotEmpty()) {
-                stringResource(mapProductCondition[selectedCondition] ?: R.string.product_state_n)
-            } else "",
-            onValueChange = {},
+        OutlinedTextField(
+            value = selectedOption,
+            onValueChange = { },
             readOnly = true,
-            labelText = "Condition",
-            trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+            label = { Text("Select Dashboard") },
+            trailingIcon = {
+                Icon(
+                    imageVector = if (expanded) Icons.Filled.ArrowDropUp else Icons.Filled.ArrowDropDown,
+                    contentDescription = if (expanded) "Close Menu" else "Open Menu"
+                )
+            },
             modifier = modifier
-                .menuAnchor()
                 .fillMaxWidth()
+                .menuAnchor() ,
+            shape = UiConstants.outlinedTextFieldElementShape
         )
+
         ExposedDropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            mapProductCondition.forEach { (key, stringResourceId) ->
+            options.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(stringResource(stringResourceId)) },
+                    text = { Text(text = option) },
                     onClick = {
-                        onConditionSelected(key)
+                        onOptionSelected(option)
                         expanded = false
                     }
                 )

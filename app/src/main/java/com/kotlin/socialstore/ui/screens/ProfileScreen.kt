@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
+import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.QrCodePopup
 import com.kotlin.socialstore.viewModels.LoginViewModel
@@ -50,19 +51,22 @@ fun ProfileScreen(
     }
 
     if (userInfo == null) {
-        CircularProgressIndicator()
+        LoadIndicator()
     } else {
 
-        Box(modifier = modifier.fillMaxSize()) {
+        Box(
+            modifier = modifier.fillMaxSize()
+            ) {
             // Fundo
             BackgroundImageElement()
 
             Column(
-                modifier = modifier
-                    .fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(vertical = 15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(modifier = Modifier.weight(1f)) {
+                Row(modifier = Modifier) {
                     SubcomposeAsyncImage(
                         model = userInfo?.profilePic ?: R.drawable.product_image_not_found,
                         contentDescription = null,
@@ -74,7 +78,7 @@ fun ProfileScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // Nome do usuário
                 Text(
@@ -95,7 +99,7 @@ fun ProfileScreen(
                     text = stringResource(R.string.edit_profile_button),
                 )
 
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
                 // "Household"
                 Row(
@@ -199,9 +203,6 @@ fun ProfileScreen(
                         }
                     }
                 }
-
-                //        Spacer(modifier = Modifier.height(24.dp))
-
                 // Botão QR Code
                 Button(
                     onClick = { showQrCodePopup.value = true },

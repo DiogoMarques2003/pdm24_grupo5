@@ -23,6 +23,8 @@ object DataConstants {
         val category = "category"
         val stock = "stock"
         val stores = "stores"
+        val familyHouseholdVisits = "familyHouseholdVisits"
+        val takenItems = "takenItems"
     }
 
     object FirebaseImageFolders {
@@ -36,6 +38,16 @@ object DataConstants {
         "B" to R.string.product_state_b,
         "U" to R.string.product_state_u,
         "G" to R.string.product_state_g
+    )
+
+    object DashboardOptions {
+        val beneficiariesPieChart = "Beneficiaries nationalities"
+        val donationsBarChart = "All-time Donations"
+    }
+
+    val DashboardOptionsList = listOf(
+        DataConstants.DashboardOptions.beneficiariesPieChart,
+        DataConstants.DashboardOptions.donationsBarChart
     )
 
     val donationInitialStatus = "PND"

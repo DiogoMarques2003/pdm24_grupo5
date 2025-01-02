@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.data.repository
 
 import com.kotlin.socialstore.data.dao.UsersDao
+import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.data.entity.Users
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,16 @@ class UsersRepository(private val usersDao: UsersDao) {
     fun getById(id: String): Flow<Users> {
         return usersDao.getById(id)
     }
+
     suspend fun deleteById(id: String) {
         usersDao.deleteById(id)
+    }
+
+    suspend fun insertList(users: List<Users>){
+        usersDao.insertList(users)
+    }
+
+    suspend fun deleteAll(){
+        usersDao.deleteAll()
     }
 }

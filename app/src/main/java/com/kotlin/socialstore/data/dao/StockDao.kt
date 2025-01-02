@@ -21,6 +21,9 @@ interface StockDao {
     @Query("SELECT * FROM stock WHERE id = :id")
     fun getById(id: String): Flow<Stock>
 
+    @Query("SELECT * FROM stock ORDER BY id DESC LIMIT :number")
+    fun getLastRows(number: Int): Flow<List<Stock>>
+
     @Delete
     suspend fun delete(stock: Stock)
 

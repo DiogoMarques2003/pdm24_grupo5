@@ -17,19 +17,19 @@ fun AdminBottomNavigationBar(navController: NavController) {
 
     NavigationBar {
         NavigationBarItem(
-            selected = currentRoute == "home_screen",
-            onClick = { navController.navigate("home_screen") },
-            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+            selected = currentRoute == "main_screen",
+            onClick = { navController.navigate("main_screen") },
+            icon = { Icon(Icons.Default.Home, contentDescription = "Main") },
             label = { Text("Home") }
         )
         NavigationBarItem(
-            selected = currentRoute == "profile_page_screen",
-            onClick = { navController.navigate("profile_page_screen") },
-            icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Profile") },
+            selected = currentRoute == "products_screen",
+            onClick = { navController.navigate("products_screen") },
+            icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Products") },
             label = { Text("Catalog") }
         )
         NavigationBarItem(
-            selected = currentRoute == "main_screen",
+            selected = currentRoute == "dashboard_screen",
             onClick = { navController.navigate("main_screen") },
             icon = { Icon(Icons.Default.Dashboard, contentDescription = "Dashboard") },
             label = { Text("Dashboard") }

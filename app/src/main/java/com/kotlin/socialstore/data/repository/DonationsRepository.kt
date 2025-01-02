@@ -15,6 +15,10 @@ class DonationsRepository(private val donationsDao: DonationsDao) {
         donationsDao.insertList(donations)
     }
 
+    fun getLastDonations(number: Int): Flow<List<Donations>> {
+        return donationsDao.getLastDonations(number)
+    }
+    
     fun getById(id: String): Flow<Donations> {
         return donationsDao.getById(id)
     }

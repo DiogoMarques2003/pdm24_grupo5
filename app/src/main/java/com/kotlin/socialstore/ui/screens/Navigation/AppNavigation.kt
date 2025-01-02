@@ -1,9 +1,12 @@
-package com.kotlin.socialstore.ui.screens
+package com.kotlin.socialstore.ui.screens.Navigation
 
+import DashboardPage
+import DashboardViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import ForgotPasswordPage
+import ManageUsersPage
+import ManageUsersViewModel
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
@@ -30,15 +33,24 @@ import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.screens.Donations.DonationDetailsScreen
+import com.kotlin.socialstore.ui.screens.AwaitingApprovalScreen
 import com.kotlin.socialstore.ui.screens.Donations.DonationSuccessPage
 import com.kotlin.socialstore.ui.screens.Donations.ListDonationsScreen
 import com.kotlin.socialstore.ui.screens.Donations.SubmitDonationPage
+import com.kotlin.socialstore.ui.screens.Users.EditProfileScreen
+import com.kotlin.socialstore.ui.screens.HomePage
+import com.kotlin.socialstore.ui.screens.LoginPage
+import com.kotlin.socialstore.ui.screens.MainScreen
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
+import com.kotlin.socialstore.ui.screens.ProfileScreen
+import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
+import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
+import com.kotlin.socialstore.viewModels.MainPageViewModel
 import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
@@ -79,7 +91,6 @@ fun AppNavigation() {
                 navController.currentBackStackEntryAsState()?.value?.destination?.route
             if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer) && currentRoute in listOf(
                     "main_screen",
-                    "submit_donation",
                     "list_donations_screen"
                 )
             ) {
@@ -120,17 +131,12 @@ fun AppNavigation() {
                 }
                 composable("submit_donation") {
                     val donationViewModel = DonationViewModel(LocalContext.current, navController)
-                    SubmitDonationPage(navController, donationViewModel)
+                    SubmitDonationPage(navController, modifierCustom, donationViewModel)
+                }
 
-//                    SubmitDonationPage(
-//                        navController,
-//                        modifierCustom,
-//                        stockViewModel,
-//                        onSubmitDonations = { items ->
-//
-//                        }
-//                    )
-
+                composable("dashboard_screen") {
+                    val dashboardViewModel = DashboardViewModel(LocalContext.current, navController)
+                    DashboardPage(navController, modifierCustom, dashboardViewModel)
                 }
 
                 composable("awaiting_approval_screen") {
@@ -140,7 +146,14 @@ fun AppNavigation() {
                 }
 
                 composable("main_screen") {
-                    MainScreen(navController, modifierCustom)
+                    val mainPageViewModel = MainPageViewModel(LocalContext.current)
+                    MainScreen(navController, modifierCustom, mainPageViewModel)
+                }
+
+                composable("manage_users") {
+                    val manageUsersViewModel =
+                        ManageUsersViewModel(LocalContext.current, navController)
+                    ManageUsersPage(navController, modifierCustom, manageUsersViewModel)
                 }
 
                 composable("profile_page_screen") {
@@ -152,16 +165,9 @@ fun AppNavigation() {
                     EditProfileScreen(navController, modifierCustom, profileViewModel)
                 }
 
-                composable("qrcode_reader_screen") {
-                    QRCodeReaderScreen(modifierCustom) { qrCodeContent ->
-                        Log.d("Qr Code result: ", qrCodeContent)
-                        // Pass the result back to the home screen
-                        navController.previousBackStackEntry?.savedStateHandle?.set(
-                            "qrCodeResult",
-                            qrCodeContent
-                        )
-                        navController.popBackStack()
-                    }
+                composable("qrcode_reader_screen/{next_screen}") { backStackEntry ->
+                    val nextScreen = backStackEntry.arguments?.getString("next_screen")
+                    QRCodeReaderScreen(modifierCustom, nextScreen ?: "home_screen", navController)
                 }
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)
@@ -206,7 +212,11 @@ fun AppNavigation() {
                         }
                     } else {
                         val donationDetailsViewModel = DonationDetailsViewModel(context, donationId)
-                        DonationDetailsScreen(navController, modifierCustom, donationDetailsViewModel)
+                        DonationDetailsScreen(
+                            navController,
+                            modifierCustom,
+                            donationDetailsViewModel
+                        )
                     }
                 }
 
@@ -225,7 +235,11 @@ fun AppNavigation() {
                     } else {
                         // TODO: Change for the screen to insert the donation items in the stock
                         val donationDetailsViewModel = DonationDetailsViewModel(context, donationId)
-                        DonationDetailsScreen(navController, modifierCustom, donationDetailsViewModel)
+                        DonationDetailsScreen(
+                            navController,
+                            modifierCustom,
+                            donationDetailsViewModel
+                        )
                     }
 
                 }
@@ -234,7 +248,4 @@ fun AppNavigation() {
             LoadIndicator(modifierCustom)
         }
     }
-
 }
-
-
