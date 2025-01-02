@@ -10,4 +10,12 @@ class VolunteerScheduleRepository(private val volunteerScheduleDao: VolunteerSch
     suspend fun insert(volunteerSchedule: VolunteerSchedule) {
         volunteerScheduleDao.insert(volunteerSchedule)
     }
+
+    suspend fun insertList(volunteerScheduleList: List<VolunteerSchedule>){
+        volunteerScheduleDao.insertList(volunteerScheduleList)
+    }
+
+    suspend fun deleteAll(){
+        volunteerScheduleDao.deleteAll()
+    }
 }

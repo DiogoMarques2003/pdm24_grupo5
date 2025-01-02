@@ -4,10 +4,12 @@ import DashboardScreen
 import DashboardViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import ForgotPasswordPage
+import android.os.Build
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -45,8 +47,11 @@ import com.kotlin.socialstore.viewModels.MainPageViewModel
 import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
+import com.kotlin.socialstore.viewModels.ScheduleViewModel
 import kotlinx.coroutines.flow.firstOrNull
 
+//@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun AppNavigation() {
@@ -68,7 +73,7 @@ fun AppNavigation() {
 
             if (user != null) {
                 userType.value = user.accountType
-                startDestination = if (user.active) "main_screen" else "awaiting_approval_screen"
+                startDestination = if (user.active) "schedule_screen" else "awaiting_approval_screen"
             } else {
                 FirebaseObj.logoutAccount()
                 startDestination = "home_screen"
@@ -204,6 +209,10 @@ fun AppNavigation() {
                             donationDetailsViewModel
                         )
                     }
+                }
+                composable("schedule_screen") {
+                    val scheduleViewModel = ScheduleViewModel(context)
+                    SchedulePage(modifierCustom, navController, scheduleViewModel)
                 }
             }
         } else {
