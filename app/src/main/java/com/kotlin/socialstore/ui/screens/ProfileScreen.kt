@@ -206,6 +206,7 @@ fun ProfileScreen(
                 ) {
                     Text(text = "QR Code")
                 }
+
             }
         }
 

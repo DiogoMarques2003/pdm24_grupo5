@@ -29,7 +29,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
@@ -51,7 +53,7 @@ fun ManageHouseholdScreen(
 
     LaunchedEffect(currentUserId) {
         if (currentUserId != null && !isInitialized) {
-            isInitialized = true // Previne reexecuções
+            isInitialized = true
 
             val user = usersDao.getById(currentUserId).firstOrNull()
 
@@ -67,19 +69,21 @@ fun ManageHouseholdScreen(
                     newHouseholdDocument.set(newHouseholdData).await()
 
                     // Gerar o caminho completo do novo ID
-                    val newFamilyHouseholdID = "/familyHousehold/${newHouseholdDocument.id}"
+                    val newFamilyHouseholdID = FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.familyHousehold, newHouseholdDocument.id)
+
 
                     // Atualizar FamilyHouseholdID no Firestore
                     firestore.collection("users").document(currentUserId)
                         .update("familyHouseholdID", newFamilyHouseholdID).await()
 
                     // Atualizar FamilyHouseholdID na base local
-                    val updatedUser = user?.copy(familyHouseholdID = newFamilyHouseholdID)
+                    val updatedUser = user?.copy(familyHouseholdID = newFamilyHouseholdID.id)
                     if (updatedUser != null) {
+                        usersDao.deleteById(user.id )
                         usersDao.insert(updatedUser) // Atualiza na base local
                     }
 
-                    householdId = newFamilyHouseholdID
+                    householdId = newFamilyHouseholdID.id
                 } catch (e: Exception) {
                     Log.e("ManageHouseholdScreen", "Erro ao criar/atualizar FamilyHousehold", e)
                 }
