@@ -32,13 +32,13 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
+import com.kotlin.socialstore.ui.screens.Donations.DonationDetailsScreen
 import com.kotlin.socialstore.ui.screens.AwaitingApprovalScreen
-import com.kotlin.socialstore.ui.screens.DonationDetailsScreen
 import com.kotlin.socialstore.ui.screens.Donations.DonationSuccessPage
+import com.kotlin.socialstore.ui.screens.Donations.ListDonationsScreen
 import com.kotlin.socialstore.ui.screens.Donations.SubmitDonationPage
 import com.kotlin.socialstore.ui.screens.Users.EditProfileScreen
 import com.kotlin.socialstore.ui.screens.HomePage
-import com.kotlin.socialstore.ui.screens.ListDonationsScreen
 import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.screens.MainScreen
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
@@ -47,7 +47,7 @@ import com.kotlin.socialstore.ui.screens.ProfileScreen
 import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
 import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
-import com.kotlin.socialstore.viewModels.DonationDetailsViewModel
+import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.MainPageViewModel
@@ -151,7 +151,8 @@ fun AppNavigation() {
                 }
 
                 composable("manage_users") {
-                    val manageUsersViewModel = ManageUsersViewModel(LocalContext.current, navController)
+                    val manageUsersViewModel =
+                        ManageUsersViewModel(LocalContext.current, navController)
                     ManageUsersPage(navController, modifierCustom, manageUsersViewModel)
                 }
 
@@ -218,10 +219,33 @@ fun AppNavigation() {
                         )
                     }
                 }
+
+                composable("donation_insert_product/{donationId}") { backstageEntry ->
+                    val donationId = backstageEntry.arguments?.getString("donationId")
+
+                    if (donationId == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.donation_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        // TODO: Change for the screen to insert the donation items in the stock
+                        val donationDetailsViewModel = DonationDetailsViewModel(context, donationId)
+                        DonationDetailsScreen(
+                            navController,
+                            modifierCustom,
+                            donationDetailsViewModel
+                        )
+                    }
+
+                }
             }
         } else {
             LoadIndicator(modifierCustom)
         }
     }
-
 }

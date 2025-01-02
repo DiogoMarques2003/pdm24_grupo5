@@ -3,6 +3,8 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import java.sql.Date
 
 @Entity(tableName = "donations")
@@ -24,7 +26,7 @@ data class Donations(
             "phoneNumber" to phoneNumber,
             "phoneCountryCode" to phoneCountryCode,
             "state" to state,
-            "donationScheduleID" to donationScheduleID,
+            "donationScheduleID" to FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.donationSchedule, donationScheduleID),
             "creationDate" to creationDate,
             "donationId" to donationId
         )

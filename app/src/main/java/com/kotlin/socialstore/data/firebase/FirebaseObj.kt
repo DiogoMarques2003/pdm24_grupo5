@@ -286,8 +286,9 @@ object FirebaseObj {
                 }
         } else {
             onComplete(false, "User not logged in.")
+        }
     }
- }
+
     suspend fun createStorageImage(uri: Uri, folder: String): String? {
         return try {
             val filename = "${folder}/${UUID.randomUUID()}.jpg"

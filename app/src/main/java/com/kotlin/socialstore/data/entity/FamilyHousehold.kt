@@ -10,7 +10,6 @@ data class FamilyHousehold(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "accessKids" to accessKids
         )
     }
