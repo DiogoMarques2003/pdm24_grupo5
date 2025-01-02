@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.data.repository
 
+import com.google.firebase.firestore.auth.User
 import com.kotlin.socialstore.data.dao.UsersDao
 import com.kotlin.socialstore.data.entity.Users
 import kotlinx.coroutines.flow.Flow
@@ -25,4 +26,6 @@ class UsersRepository(private val usersDao: UsersDao) {
     suspend fun deleteById(id: String) {
         usersDao.deleteById(id)
     }
+
+
 }
