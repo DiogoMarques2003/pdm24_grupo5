@@ -48,6 +48,7 @@ import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
 import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
 import com.kotlin.socialstore.ui.screens.RegisterPage
+import com.kotlin.socialstore.ui.screens.SchedulePage
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
