@@ -15,15 +15,15 @@ fun BeneficiaryBottomNavigationBar(navController: NavController) {
 
     NavigationBar {
         NavigationBarItem(
-            selected = currentRoute == "home_screen",
-            onClick = { navController.navigate("home_screen") },
+            selected = currentRoute == "main_screen",
+            onClick = { navController.navigate("main_screen") },
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
             label = { Text("Home") }
         )
         NavigationBarItem(
-            selected = currentRoute == "profile_page_screen",
-            onClick = { navController.navigate("profile_page_screen") },
-            icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Profile") },
+            selected = currentRoute == "products_screen",
+            onClick = { navController.navigate("products_screen") },
+            icon = { Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = "Products") },
             label = { Text("Catalog") }
         )
         NavigationBarItem(
