@@ -9,5 +9,4 @@ object UiConstants {
     val outlinedTextFieldElementShape = RoundedCornerShape(30)
     val titleTextSize = 30.sp
     val inputDialogSpacing = 8.dp
-    val itemConditions = listOf("New", "Like New", "Good", "Fair", "Used")
 }

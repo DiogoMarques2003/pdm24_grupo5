@@ -270,6 +270,7 @@ object FirebaseObj {
             onComplete(false, "User not logged in.")
         }
     }
+
     fun updateFirebasePassword(newPassword: String, onComplete: (Boolean, String?) -> Unit) {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {

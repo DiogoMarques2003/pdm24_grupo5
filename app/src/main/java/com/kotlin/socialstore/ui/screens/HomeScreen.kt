@@ -63,7 +63,7 @@ fun HomePage(
             
             ButtonElement(
                 text = stringResource(R.string.homepage_AddItem),
-                onClick = { navController.navigate("dashboard_screen") },
+                onClick = { navController.navigate("manage_users") },
                 modifier = Modifier.fillMaxWidth()
             )
         }
