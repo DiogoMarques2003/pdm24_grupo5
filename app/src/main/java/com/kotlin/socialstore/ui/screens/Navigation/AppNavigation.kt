@@ -166,7 +166,7 @@ fun AppNavigation() {
 
                 composable("qrcode_reader_screen/{next_screen}") { backStackEntry ->
                     val nextScreen = backStackEntry.arguments?.getString("next_screen")
-                    QRCodeReaderScreen(modifierCustom,nextScreen ?: "home_screen",navController)
+                    QRCodeReaderScreen(modifierCustom, nextScreen ?: "home_screen", navController)
                 }
                 composable("forgot_password_screen") {
                     ForgotPasswordPage(navController, modifierCustom)
@@ -179,22 +179,22 @@ fun AppNavigation() {
                 composable("products_screen") {
                     val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
                     ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                }
 
-                    composable("manage_stock") {
-                        val stockViewModel = StockViewModel(LocalContext.current)
-                        ManageStockPage(navController, modifierCustom, stockViewModel)
-                    }
+                composable("manage_stock") {
+                    val stockViewModel = StockViewModel(LocalContext.current)
+                    ManageStockPage(navController, modifierCustom, stockViewModel)
+                }
 
-                    composable("products_screen") {
-                        val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
-                        ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
-                    }
+                composable("products_screen") {
+                    val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
+                    ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                }
 
-                    composable("list_donations_screen") {
-                        val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
-                        ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
+                composable("list_donations_screen") {
+                    val listDonationsViewModel = ListDonationsViewModel(LocalContext.current)
+                    ListDonationsScreen(navController, modifierCustom, listDonationsViewModel)
 
-                    }
                 }
 
                 composable("donation_screen/{donationId}") { backstageEntry ->
@@ -211,7 +211,11 @@ fun AppNavigation() {
                         }
                     } else {
                         val donationDetailsViewModel = DonationDetailsViewModel(context, donationId)
-                        DonationDetailsScreen(navController, modifierCustom, donationDetailsViewModel)
+                        DonationDetailsScreen(
+                            navController,
+                            modifierCustom,
+                            donationDetailsViewModel
+                        )
                     }
                 }
             }
