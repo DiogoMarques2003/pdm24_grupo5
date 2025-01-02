@@ -185,7 +185,8 @@ fun AppNavigation() {
                 }
 
                 composable("manage_household_screen") {
-                    ManageHouseholdScreen(navController = navController, modifier = modifierCustom)
+                    val profileViewModel = ProfileViewModel(context)
+                    ManageHouseholdScreen(navController = navController, modifier = modifierCustom, profileViewModel )
                 }
 
 
