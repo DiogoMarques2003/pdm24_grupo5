@@ -13,6 +13,9 @@ interface StoresDao {
     @Insert
     suspend fun insert(stores: Stores)
 
+    @Insert
+    suspend fun insertList(stores: List<Stores>)
+
     @Query("SELECT * FROM stores")
     fun getAll(): Flow<List<Stores>>
 
@@ -21,9 +24,6 @@ interface StoresDao {
 
     @Delete
     suspend fun delete(stores: Stores)
-
-    @Insert
-    suspend fun insertList(stores: List<Stores>)
 
     @Query("DELETE FROM stores")
     suspend fun deleteAll()

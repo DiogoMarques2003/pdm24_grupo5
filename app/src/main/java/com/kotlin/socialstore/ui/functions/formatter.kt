@@ -1,3 +1,5 @@
+import com.kotlin.socialstore.data.DataConstants
+
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.LocalDate
@@ -14,6 +16,14 @@ fun formatWeekDay(weekDay: Long): String {
         6L -> "Friday"
         7L -> "Saturday"
         else -> "Invalid Weekday"
+    }
+}
+
+fun formatAccountType(accType: String): String {
+    return when(accType) {
+        DataConstants.AccountType.volunteer -> "Volunteer"
+        DataConstants.AccountType.benefiaryy -> "Beneficiary"
+        else -> "Unknown"
     }
 }
 

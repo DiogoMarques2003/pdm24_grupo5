@@ -16,7 +16,7 @@ import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.ui.elements.TitleTextElement
 
 @Composable
-fun DashboardScreen(
+fun DashboardPage(
     navController: NavController,
     modifier: Modifier = Modifier,
     viewModel: DashboardViewModel
@@ -24,9 +24,8 @@ fun DashboardScreen(
     var selectedOption by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
