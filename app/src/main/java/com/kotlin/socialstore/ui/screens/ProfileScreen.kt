@@ -54,9 +54,7 @@ fun ProfileScreen(
         LoadIndicator()
     } else {
 
-        Box(
-            modifier = modifier.fillMaxSize()
-            ) {
+        Box(modifier = modifier.fillMaxSize()) {
             // Fundo
             BackgroundImageElement()
 
@@ -78,8 +76,6 @@ fun ProfileScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
-
                 // Nome do usuário
                 Text(
                     text = userInfo!!.name,
@@ -99,7 +95,7 @@ fun ProfileScreen(
                     text = stringResource(R.string.edit_profile_button),
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
                 // "Household"
                 Row(
@@ -124,7 +120,7 @@ fun ProfileScreen(
                         )
                     }
 
-                    IconButton(onClick = { /* Navegar para gerenciamento de Household */ }) {
+                    IconButton(onClick = {navController.navigate("manage_household_screen")}) {
                         Icon(
                             imageVector = Icons.Default.ArrowForward,
                             contentDescription = "Arrow Forward"
@@ -210,6 +206,7 @@ fun ProfileScreen(
                 ) {
                     Text(text = "QR Code")
                 }
+
             }
         }
 
@@ -218,3 +215,4 @@ fun ProfileScreen(
         }
     }
 }
+

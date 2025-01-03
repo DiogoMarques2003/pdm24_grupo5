@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.google.firebase.firestore.auth.User
 import com.kotlin.socialstore.data.entity.Users
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +33,5 @@ interface UsersDao {
 
     @Query("DELETE FROM users WHERE id = :id")
     suspend fun deleteById(id: String)
+
 }

@@ -198,6 +198,12 @@ fun AppNavigation() {
 
                 }
 
+                composable("manage_household_screen") {
+                    val profileViewModel = ProfileViewModel(context)
+                    ManageHouseholdScreen(navController = navController, modifier = modifierCustom, profileViewModel )
+                }
+
+
                 composable("donation_screen/{donationId}") { backstageEntry ->
                     val donationId = backstageEntry.arguments?.getString("donationId")
 
