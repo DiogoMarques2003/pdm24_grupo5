@@ -11,8 +11,8 @@ data class VolunteerSchedule(
     @PrimaryKey(autoGenerate = false) val id: String,
     val userID: String,
     val day: Date,
-    val startTime: Time,
-    val endTime: Time,
+    val startTime: String,
+    val endTime: String,
     val accepted: Boolean = false,
     val localId: String?,
     val workFunction: String?
@@ -20,7 +20,7 @@ data class VolunteerSchedule(
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
             "id" to id,
-            "userID" to userID,
+            "userId" to userID,
             "day" to day.time, // Converte a data para timestamp
             "startTime" to startTime.toString(), // Converte Time para String
             "endTime" to endTime.toString(), // Converte Time para String
@@ -32,15 +32,20 @@ data class VolunteerSchedule(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): VolunteerSchedule {
-            val userReference= data["userID"] as? DocumentReference
+            val userReference= data["userId"] as? DocumentReference
             val localReference= data["localId"] as? DocumentReference
+
+            // Convert date
+            val timestamp = data["day"] as com.google.firebase.Timestamp
+            val dateInMillis = timestamp.seconds * 1000 + timestamp.nanoseconds / 1_000_000
+            val date = Date(dateInMillis)
 
             return VolunteerSchedule(
                 id = data["id"] as String,
                 userID = userReference?.id ?: "",
-                day = Date(data["day"] as Long), // Converte timestamp para Date
-                startTime = Time.valueOf(data["startTime"] as String), // Converte String para Time
-                endTime = Time.valueOf(data["endTime"] as String), // Converte String para Time
+                day = date,
+                startTime = data["startTime"] as String, // Converte String para Time
+                endTime = data["endTime"] as String, // Converte String para Time
                 accepted = data["accepted"] as? Boolean ?: false,
                 localId = localReference?.id ?: "",
                 workFunction = data["workFunction"] as? String

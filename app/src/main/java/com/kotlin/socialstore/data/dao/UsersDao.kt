@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import com.google.android.gms.common.internal.AccountType
 import com.kotlin.socialstore.data.entity.Users
 import kotlinx.coroutines.flow.Flow
 
@@ -21,6 +22,9 @@ interface UsersDao {
     @Query("SELECT * FROM users WHERE id =:id")
     fun getById(id: String): Flow<Users>
 
+    @Query("SELECT * FROM users WHERE accountType = :accountType")
+    fun getByTypeAccount(accountType: String): Flow<List<Users>>
+
     @Query("SELECT COUNT(*) > 0 FROM users WHERE id = :id")
     suspend fun existsById(id: String): Boolean
 
@@ -32,4 +36,7 @@ interface UsersDao {
 
     @Query("DELETE FROM users WHERE id = :id")
     suspend fun deleteById(id: String)
+
+    @Query("DELETE FROM users WHERE accountType = :accountType")
+    suspend fun deleteByTypeAccount(accountType: String)
 }

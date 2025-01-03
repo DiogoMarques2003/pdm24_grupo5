@@ -229,5 +229,6 @@
     <string name="donation_items_not_found">Can\'t find donation items</string>
     <string name="donation_details_page_title">Donation Details</string>
     <string name="donation_schedule_not_found">Can\'t find donation schedule</string>
+    <string name="choose_date">Choose Date</string>
 
 </resources>

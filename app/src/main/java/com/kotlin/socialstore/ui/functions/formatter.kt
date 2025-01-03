@@ -29,6 +29,5 @@ fun formatAccountType(accType: String): String {
 
 @RequiresApi(Build.VERSION_CODES.O)
 fun localDateToDate(localDate: LocalDate): Date {
-    val localDateTime = localDate.atStartOfDay()
-    return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant())
+    return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 }

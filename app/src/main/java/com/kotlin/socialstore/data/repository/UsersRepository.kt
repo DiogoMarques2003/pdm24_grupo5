@@ -23,6 +23,10 @@ class UsersRepository(private val usersDao: UsersDao) {
         return usersDao.getById(id)
     }
 
+    fun getByTypeAccount(accountType: String): Flow<List<Users>>{
+        return usersDao.getByTypeAccount(accountType)
+    }
+
     suspend fun deleteById(id: String) {
         usersDao.deleteById(id)
     }
@@ -33,5 +37,9 @@ class UsersRepository(private val usersDao: UsersDao) {
 
     suspend fun deleteAll(){
         usersDao.deleteAll()
+    }
+
+    suspend fun deleteByTypeAccount(accountType: String){
+        usersDao.deleteByTypeAccount(accountType)
     }
 }

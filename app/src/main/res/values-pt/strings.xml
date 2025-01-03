@@ -230,4 +230,5 @@
     <string name="donation_items_not_found">Não foi possível encontrar artigos para doação</string>
     <string name="donation_details_page_title">Detalhes da doação</string>
     <string name="donation_schedule_not_found">Não foi possível encontrar o calendário de doações</string>
+    <string name="choose_date">Choose Date</string>
 </resources>
