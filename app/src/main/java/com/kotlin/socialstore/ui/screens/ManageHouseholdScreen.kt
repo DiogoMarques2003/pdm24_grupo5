@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.storage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
@@ -63,17 +65,51 @@ fun ManageHouseholdScreen(
     // Função para carregar membros do household
     fun loadHouseholdMembers() {
         if (householdId != null) {
-            firestore.collection("familyHousehold").document(householdId!!)
-                .get()
-                .addOnSuccessListener { document ->
-                    val members = document.get("members") as? List<Map<String, Any>> ?: emptyList()
-                    householdMembers = members
-                }
-                .addOnFailureListener { e ->
+            coroutineScope.launch {
+                try {
+                    val membersQuery = FirebaseObj.getData(
+                        collection = "users",
+                        whereField = "familyHouseholdID",
+                        whereEqualTo = "familyHousehold/$householdId"
+                    )
+
+                    Log.d("ManageHouseholdScreen", "Resultado da query: $membersQuery")
+
+                    if (!membersQuery.isNullOrEmpty()) {
+                        val members = membersQuery.mapNotNull { userDocument ->
+                            val userId = userDocument["id"] as? String
+                            val userName = userDocument["name"] as? String ?: "Sem nome"
+                            val profilePic = userDocument["profilePic"] as? String
+
+                            if (userId != null) {
+                                mapOf(
+                                    "id" to userId,
+                                    "name" to userName,
+                                    "profilePic" to profilePic
+                                )
+                            } else {
+                                null
+                            }
+                        }
+
+                        householdMembers = members.map { member ->
+                            member.mapValues { it.value as Any }
+                        }
+
+                        Log.d("ManageHouseholdScreen", "Membros carregados: $householdMembers")
+                    } else {
+                        Log.e(
+                            "ManageHouseholdScreen",
+                            "Nenhum membro encontrado para householdId $householdId"
+                        )
+                    }
+                } catch (e: Exception) {
                     Log.e("ManageHouseholdScreen", "Erro ao carregar membros do household", e)
                 }
+            }
         }
     }
+
 
     LaunchedEffect(currentUserId) {
         if (currentUserId != null && !isInitialized) {
@@ -91,7 +127,10 @@ fun ManageHouseholdScreen(
                     newHouseholdDocument.set(newHouseholdData).await()
 
 
-                    val newFamilyHouseholdID = FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.familyHousehold, newHouseholdDocument.id)
+                    val newFamilyHouseholdID = FirebaseObj.getReferenceById(
+                        DataConstants.FirebaseCollections.familyHousehold,
+                        newHouseholdDocument.id
+                    )
 
 
                     firestore.collection("users").document(currentUserId)
@@ -122,30 +161,18 @@ fun ManageHouseholdScreen(
             if (!userQuery.isNullOrEmpty()) {
                 val userDocument = userQuery.first()
                 val userId = userDocument["id"] as String
-                val userName = userDocument["name"] as? String ?: "Sem nome"
                 val householdPath = "familyHousehold/${householdId!!}"
-                val profilePic = userDocument["profilePic"] as? String
 
-                    if (householdId != null) {
-                    val newMember = mapOf(
-                        "id" to userId,
-                        "name" to userName,
-                        "profilePic" to profilePic
+                try {
+
+                    FirebaseObj.updateData(
+                        "users", userId,
+                        mapOf("familyHouseholdID" to householdPath)
                     )
 
-                    try {
-                        FirebaseObj.updateData(
-                            "familyHousehold",
-                            householdId!!,
-                            mapOf("members" to FieldValue.arrayUnion(newMember))
-                        )
-
-                        FirebaseObj.updateData("users", userId, mapOf("familyHouseholdID" to householdPath))
-
-                        loadHouseholdMembers()
-                    } catch (e: Exception) {
-                        Log.e("ManageHouseholdScreen", "Erro ao adicionar membro ao household", e)
-                    }
+                    loadHouseholdMembers()  // Atualiza a lista de membros, se necessário
+                } catch (e: Exception) {
+                    Log.e("ManageHouseholdScreen", "Erro ao adicionar membro ao household", e)
                 }
             } else {
                 Log.e("ManageHouseholdScreen", "Usuário não encontrado.")
@@ -153,39 +180,25 @@ fun ManageHouseholdScreen(
         }
     }
 
+
     fun removeMemberFromHousehold(memberId: String) {
         coroutineScope.launch {
             if (householdId != null) {
-                val memberToRemove = householdMembers.find { it["id"] == memberId }
-                if (memberToRemove != null) {
-                    try {
-                        // Remover o membro do familyHousehold
-                        FirebaseObj.updateData(
-                            "familyHousehold", householdId!!,
-                            mapOf("members" to FieldValue.arrayRemove(memberToRemove))
-                        )
-                        Log.d("ManageHouseholdScreen", "Membro removido com sucesso do household!")
+                try {
 
-                        // Atualizar o familyHouseholdID no documento do usuário
-                        FirebaseObj.updateData(
-                            "users", memberId,
-                            mapOf("familyHouseholdID" to "")
-                        )
-                        Log.d("ManageHouseholdScreen", "familyHouseholdID removido do usuário $memberId")
+                    FirebaseObj.updateData(
+                        "users", memberId,
+                        mapOf("familyHouseholdID" to "")
+                    )
 
-                        // Atualizar lista local
-                        householdMembers = householdMembers.filterNot { it["id"] == memberId }
+                    householdMembers = householdMembers.filterNot { it["id"] == memberId }
 
-                    } catch (e: Exception) {
-                        Log.e("ManageHouseholdScreen", "Erro ao remover membro do household", e)
-                    }
-                } else {
-                    Log.e("ManageHouseholdScreen", "Membro não encontrado para remoção.")
+                } catch (e: Exception) {
+                    Log.e("ManageHouseholdScreen", "Erro ao remover membro do household", e)
                 }
             }
         }
     }
-
 
 
     Column(
@@ -208,99 +221,136 @@ fun ManageHouseholdScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            LazyColumn(modifier = Modifier.fillMaxHeight().weight(1f)) {
-                items(householdMembers) { member ->
-                    val memberName = member["name"] as? String ?: "Nome não disponível"
-                    val photoUrl = member["profilePic"] as? String ?: R.drawable.product_image_not_found.toString()
-                    var expanded by remember { mutableStateOf(false) }
+            val storage = Firebase.storage
+            val storageReference = storage.reference
 
-                    Row(modifier = Modifier.padding(vertical = 8.dp)) {
-                        SubcomposeAsyncImage(
-                            model = if (photoUrl == R.drawable.product_image_not_found.toString()) {
-                                R.drawable.product_image_not_found
-                            } else {
-                                photoUrl
-                            },
-                            contentDescription = "Profile Picture",
-                            loading = { CircularProgressIndicator() },
-                            modifier = Modifier
-                                .size(30.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
+            ) {
+                if (householdMembers.isEmpty()) {
+                    item {
+                        Text(
+                            text = "Nenhum membro encontrado.",
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.padding(16.dp)
                         )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(text = memberName, style = MaterialTheme.typography.bodyLarge)
                     }
+                } else {
+                    items(householdMembers) { member ->
+                        val memberName = member["name"] as? String ?: "Nome não disponível"
+                        val photoPath = member["profilePic"] as? String
+                        var expanded by remember { mutableStateOf(false) }
+                        var imageUrl by remember { mutableStateOf<String?>(null) }
 
-                    IconButton(onClick = { expanded = !expanded }) {
-                        Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
-                    }
-                    // Menu suspenso
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
-                    ) {
-                        // Opção de apagar membro do household
-                        DropdownMenuItem(onClick = {
-                            expanded = false // Fechar o menu antes da ação
-                            removeMemberFromHousehold(member["id"] as String)
-                        }) {
-                            Text("Apagar do Household")
+                        // Buscar o URL da imagem do Firebase Storage
+                        LaunchedEffect(photoPath) {
+                            if (!photoPath.isNullOrEmpty()) {
+                                try {
+                                    val url = storageReference.child(photoPath).downloadUrl.await()
+                                    imageUrl = url.toString()
+                                } catch (e: Exception) {
+                                    Log.e("ManageHouseholdScreen", "Erro ao carregar imagem: $photoPath", e)
+                                }
+                            }
                         }
 
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            SubcomposeAsyncImage(
+                                model = imageUrl ?: R.drawable.product_image_not_found,
+                                contentDescription = "Profile Picture",
+                                loading = { CircularProgressIndicator() },
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+
+                            Spacer(modifier = Modifier.width(8.dp))
+
+                            // Nome do membro
+                            Text(
+                                text = memberName,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.weight(1f)
+                            )
+
+                            // Botão de opções (menu suspenso)
+                            IconButton(onClick = { expanded = !expanded }) {
+                                Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
+                            }
+
+                            // Menu suspenso
+                            DropdownMenu(
+                                expanded = expanded,
+                                onDismissRequest = { expanded = false }
+                            ) {
+                                DropdownMenuItem(onClick = {
+                                    expanded = false
+                                    removeMemberFromHousehold(member["id"] as String)
+                                }) {
+                                    Text("Apagar do Household")
+                                }
+                            }
+                        }
                     }
                 }
             }
-        }
 
-        FloatingActionButton(
-            onClick = { showDialog = true },
-            modifier = Modifier
-                .align(Alignment.End)
-                .padding(16.dp)
-        ) {
-            Icon(Icons.Filled.Add, contentDescription = "Add User")
-        }
 
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text("Adicionar Usuário ao Household") },
-                text = {
-                    Column {
-                        TextField(
-                            value = emailInput,
-                            onValueChange = { emailInput = it },
-                            label = { Text("Email do Usuário") }
-                        )
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            addUserToHousehold(emailInput)
-                            emailInput = ""
-                            showDialog = false
+
+            FloatingActionButton(
+                onClick = { showDialog = true },
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(16.dp)
+            ) {
+                Icon(Icons.Filled.Add, contentDescription = "Add User")
+            }
+
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text("Adicionar Usuário ao Household") },
+                    text = {
+                        Column {
+                            TextField(
+                                value = emailInput,
+                                onValueChange = { emailInput = it },
+                                label = { Text("Email do Usuário") }
+                            )
                         }
-                    ) {
-                        Text("Adicionar")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                addUserToHousehold(emailInput)
+                                emailInput = ""
+                                showDialog = false
+                            }
+                        ) {
+                            Text("Adicionar")
+                        }
+                    },
+                    dismissButton = {
+                        Button(onClick = { showDialog = false }) {
+                            Text("Cancelar")
+                        }
                     }
-                },
-                dismissButton = {
-                    Button(onClick = { showDialog = false }) {
-                        Text("Cancelar")
-                    }
-                }
-            )
-        }
+                )
+            }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { navController.popBackStack() }) {
-            Text(text = "Back")
+            Button(onClick = { navController.popBackStack() }) {
+                Text(text = "Back")
+            }
         }
     }
 }
