@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -36,7 +37,9 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+
 @Composable
 fun ManageHouseholdScreen(
     navController: NavController,
@@ -49,7 +52,7 @@ fun ManageHouseholdScreen(
     val currentUserId = FirebaseObj.getCurrentUser()?.uid
     val firestore = FirebaseFirestore.getInstance()
     val familyHouseholdCollection = firestore.collection("familyHousehold")
-    val userInfo by profileViewModel.userData.collectAsState(null)
+    val coroutineScope = rememberCoroutineScope()
 
     var householdId by remember { mutableStateOf<String?>(null) }
     var isInitialized by remember { mutableStateOf(false) }
@@ -80,19 +83,17 @@ fun ManageHouseholdScreen(
 
             if (user?.familyHouseholdID.isNullOrEmpty()) {
                 try {
-                    // Criar um novo FamilyHousehold com um ID único
+
                     val newHouseholdDocument = familyHouseholdCollection.document()
                     val newHouseholdData = mapOf(
-                        "kidsStore" to false,
-                        "createdBy" to currentUserId,
-                        "createdAt" to FieldValue.serverTimestamp()
+                        "kidsStore" to false
                     )
                     newHouseholdDocument.set(newHouseholdData).await()
 
-                    // Gerar o caminho completo do novo ID
+
                     val newFamilyHouseholdID = FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.familyHousehold, newHouseholdDocument.id)
 
-                    // Atualizar FamilyHouseholdID no Firestore
+
                     firestore.collection("users").document(currentUserId)
                         .update("familyHouseholdID", newFamilyHouseholdID).await()
 
@@ -100,66 +101,92 @@ fun ManageHouseholdScreen(
                     val updatedUser = user?.copy(familyHouseholdID = newFamilyHouseholdID.id)
                     if (updatedUser != null) {
                         usersDao.deleteById(user.id)
-                        usersDao.insert(updatedUser) // Atualiza na base local
+                        usersDao.insert(updatedUser)
                     }
 
                     householdId = newFamilyHouseholdID.id
-                    loadHouseholdMembers() // Carregar membros do household
+                    loadHouseholdMembers()
                 } catch (e: Exception) {
                     Log.e("ManageHouseholdScreen", "Erro ao criar/atualizar FamilyHousehold", e)
                 }
             } else {
-                householdId = user?.familyHouseholdID // Apenas exibir o ID existente
-                loadHouseholdMembers() // Carregar membros do household
+                householdId = user?.familyHouseholdID
+                loadHouseholdMembers()
             }
         }
     }
 
     fun addUserToHousehold(email: String) {
-        // Verificar se o email é válido e o usuário existe
-        firestore.collection("users")
-            .whereEqualTo("email", email)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                if (querySnapshot.isEmpty) {
-                    Log.e("ManageHouseholdScreen", "Usuário não encontrado.")
-                } else {
-                    val userDocument = querySnapshot.documents[0]
-                    val userId = userDocument.id
-                    val userName = userDocument.getString("name") ?: "Sem nome"
-                    val userPhotoUrl = userDocument.getString("photoUrl")
+        coroutineScope.launch {
+            val userQuery = FirebaseObj.getData("users", whereField = "email", whereEqualTo = email)
+            if (!userQuery.isNullOrEmpty()) {
+                val userDocument = userQuery.first()
+                val userId = userDocument["id"] as String
+                val userName = userDocument["name"] as? String ?: "Sem nome"
+                val householdPath = "familyHousehold/${householdId!!}"
+                val profilePic = userDocument["profilePic"] as? String
 
-                    // Adicionar o usuário ao household
                     if (householdId != null) {
-                        val newMember = mapOf(
-                            "id" to userId,
-                            "name" to userName,
-                            "photoUrl" to userPhotoUrl
+                    val newMember = mapOf(
+                        "id" to userId,
+                        "name" to userName,
+                        "profilePic" to profilePic
+                    )
+
+                    try {
+                        FirebaseObj.updateData(
+                            "familyHousehold",
+                            householdId!!,
+                            mapOf("members" to FieldValue.arrayUnion(newMember))
                         )
 
-                        firestore.collection("familyHousehold").document(householdId!!)
-                            .update("members", FieldValue.arrayUnion(newMember))
-                            .addOnSuccessListener {
-                                val householdPath = "familyHousehold/${householdId!!}"
-                                firestore.collection("users").document(userId)
-                                    .update("familyHouseholdID", householdPath)
-                                    .addOnSuccessListener {
-                                        loadHouseholdMembers()
-                                    }
-                                    .addOnFailureListener { e ->
-                                        Log.e("ManageHouseholdScreen", "Erro ao atualizar householdID do usuário", e)
-                                    }
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("ManageHouseholdScreen", "Erro ao adicionar membro ao household", e)
-                            }
+                        FirebaseObj.updateData("users", userId, mapOf("familyHouseholdID" to householdPath))
+
+                        loadHouseholdMembers()
+                    } catch (e: Exception) {
+                        Log.e("ManageHouseholdScreen", "Erro ao adicionar membro ao household", e)
                     }
                 }
+            } else {
+                Log.e("ManageHouseholdScreen", "Usuário não encontrado.")
             }
-            .addOnFailureListener { e ->
-                Log.e("ManageHouseholdScreen", "Erro ao consultar usuário", e)
-            }
+        }
     }
+
+    fun removeMemberFromHousehold(memberId: String) {
+        coroutineScope.launch {
+            if (householdId != null) {
+                val memberToRemove = householdMembers.find { it["id"] == memberId }
+                if (memberToRemove != null) {
+                    try {
+                        // Remover o membro do familyHousehold
+                        FirebaseObj.updateData(
+                            "familyHousehold", householdId!!,
+                            mapOf("members" to FieldValue.arrayRemove(memberToRemove))
+                        )
+                        Log.d("ManageHouseholdScreen", "Membro removido com sucesso do household!")
+
+                        // Atualizar o familyHouseholdID no documento do usuário
+                        FirebaseObj.updateData(
+                            "users", memberId,
+                            mapOf("familyHouseholdID" to "")
+                        )
+                        Log.d("ManageHouseholdScreen", "familyHouseholdID removido do usuário $memberId")
+
+                        // Atualizar lista local
+                        householdMembers = householdMembers.filterNot { it["id"] == memberId }
+
+                    } catch (e: Exception) {
+                        Log.e("ManageHouseholdScreen", "Erro ao remover membro do household", e)
+                    }
+                } else {
+                    Log.e("ManageHouseholdScreen", "Membro não encontrado para remoção.")
+                }
+            }
+        }
+    }
+
+
 
     Column(
         modifier = modifier
@@ -181,15 +208,13 @@ fun ManageHouseholdScreen(
                 style = MaterialTheme.typography.bodyLarge
             )
 
-            // Exibição dos membros do household
             LazyColumn(modifier = Modifier.fillMaxHeight().weight(1f)) {
                 items(householdMembers) { member ->
                     val memberName = member["name"] as? String ?: "Nome não disponível"
+                    val photoUrl = member["profilePic"] as? String ?: R.drawable.product_image_not_found.toString()
+                    var expanded by remember { mutableStateOf(false) }
 
                     Row(modifier = Modifier.padding(vertical = 8.dp)) {
-
-                        val photoUrl = member["photoUrl"] as? String ?: R.drawable.product_image_not_found.toString()
-
                         SubcomposeAsyncImage(
                             model = if (photoUrl == R.drawable.product_image_not_found.toString()) {
                                 R.drawable.product_image_not_found
@@ -199,7 +224,7 @@ fun ManageHouseholdScreen(
                             contentDescription = "Profile Picture",
                             loading = { CircularProgressIndicator() },
                             modifier = Modifier
-                                .size(50.dp)
+                                .size(30.dp)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
@@ -209,21 +234,37 @@ fun ManageHouseholdScreen(
                         Text(text = memberName, style = MaterialTheme.typography.bodyLarge)
                     }
 
+                    IconButton(onClick = { expanded = !expanded }) {
+                        Icon(Icons.Filled.MoreVert, contentDescription = "Mais opções")
+                    }
+                    // Menu suspenso
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        // Opção de apagar membro do household
+                        DropdownMenuItem(onClick = {
+                            expanded = false // Fechar o menu antes da ação
+                            removeMemberFromHousehold(member["id"] as String)
+                        }) {
+                            Text("Apagar do Household")
+                        }
+
+                    }
                 }
             }
         }
 
-        // Botão flutuante de adicionar membro
         FloatingActionButton(
             onClick = { showDialog = true },
             modifier = Modifier
-                .align(Alignment.End) // Certifique-se que o botão está alinhado à direita
+                .align(Alignment.End)
                 .padding(16.dp)
         ) {
             Icon(Icons.Filled.Add, contentDescription = "Add User")
         }
 
-        // Dialog para inserir o email
         if (showDialog) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
