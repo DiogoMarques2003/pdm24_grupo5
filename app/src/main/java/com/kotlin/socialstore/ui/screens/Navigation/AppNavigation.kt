@@ -41,6 +41,7 @@ import com.kotlin.socialstore.ui.screens.Users.EditProfileScreen
 import com.kotlin.socialstore.ui.screens.HomePage
 import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.screens.MainScreen
+import com.kotlin.socialstore.ui.screens.ManageHouseholdScreen
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
