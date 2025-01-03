@@ -11,7 +11,6 @@ data class Category(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "nome" to nome,
             "kidsStore" to kidsStore
         )

@@ -1,4 +1,4 @@
-package com.kotlin.socialstore.ui.screens
+package com.kotlin.socialstore.ui.screens.Donations
 
 import UiConstants
 import androidx.compose.foundation.background

@@ -13,6 +13,9 @@ interface UsersDao {
     @Insert
     suspend fun insert(users: Users)
 
+    @Insert
+    suspend fun insertList(users: List<Users>)
+
     @Query("SELECT * FROM users")
     fun getAll(): Flow<List<Users>>
 
@@ -24,6 +27,9 @@ interface UsersDao {
 
     @Delete
     suspend fun delete(users: Users)
+
+    @Query("DELETE FROM users")
+    suspend fun deleteAll()
 
     @Query("DELETE FROM users WHERE id = :id")
     suspend fun deleteById(id: String)

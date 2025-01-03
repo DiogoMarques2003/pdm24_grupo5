@@ -235,7 +235,7 @@ fun MainScreen(
             } else {
                 Text(
                     stringResource(R.string.donations),
-                    Modifier.clickable { navController.navigate("main_screen") },
+                    Modifier.clickable { navController.navigate("list_donations_screen") },
                     fontSize = UiConstants.titleTextSize
                 )
                 LazyRow(modifier = Modifier.fillMaxWidth()) {

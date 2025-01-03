@@ -21,6 +21,7 @@ import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.entity.DonationsItems
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
+import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.ui.elements.TitleTextElement
 import com.togitech.ccp.component.TogiCountryCodePicker
 import formatWeekDay
@@ -29,6 +30,7 @@ import formatWeekDay
 @Composable
 fun SubmitDonationPage(
     navController: NavController,
+    modifier: Modifier = Modifier,
     viewModel: DonationViewModel
 ) {
     var fullName by remember { mutableStateOf("") }
@@ -46,14 +48,27 @@ fun SubmitDonationPage(
 
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
+        modifier = modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TitleTextElement(
-            text = "New Donation",
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = UiConstants.defaultPadding),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            PopBackButton(navController)
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+            ) {
+                TitleTextElement(
+                    text = "New Donation"
+                )
+            }
+        }
 
         OutlinedTextfieldElement(
             value = fullName,

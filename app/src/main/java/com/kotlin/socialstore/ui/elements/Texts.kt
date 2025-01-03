@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.elements
 
+import UiConstants
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.DataConstants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,6 +29,7 @@ fun TitleTextElement(
         style = textStyle,
         fontWeight = FontWeight.Bold,
         modifier = modifier,
-        textAlign = textAlign
+        textAlign = textAlign,
+        fontSize = UiConstants.titleTextSize,
     )
 }

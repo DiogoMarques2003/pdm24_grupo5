@@ -14,7 +14,6 @@ data class DonationSchedule(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "local" to local,
             "weekDay" to weekDay,
             "startTime" to startTime,

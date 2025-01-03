@@ -1,17 +1,17 @@
-package com.kotlin.socialstore.ui.screens
+package com.kotlin.socialstore.ui.screens.Navigation
 
-import DashboardScreen
+import DashboardPage
 import DashboardViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import ForgotPasswordPage
+import ManageUsersPage
+import ManageUsersViewModel
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.OptIn
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -33,12 +32,22 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
+import com.kotlin.socialstore.ui.screens.Donations.DonationDetailsScreen
+import com.kotlin.socialstore.ui.screens.AwaitingApprovalScreen
 import com.kotlin.socialstore.ui.screens.Donations.DonationSuccessPage
+import com.kotlin.socialstore.ui.screens.Donations.ListDonationsScreen
 import com.kotlin.socialstore.ui.screens.Donations.SubmitDonationPage
+import com.kotlin.socialstore.ui.screens.Users.EditProfileScreen
+import com.kotlin.socialstore.ui.screens.HomePage
+import com.kotlin.socialstore.ui.screens.LoginPage
+import com.kotlin.socialstore.ui.screens.MainScreen
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
+import com.kotlin.socialstore.ui.screens.ProfileScreen
+import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
+import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
-import com.kotlin.socialstore.viewModels.DonationDetailsViewModel
+import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.MainPageViewModel
@@ -82,7 +91,6 @@ fun AppNavigation() {
                 navController.currentBackStackEntryAsState()?.value?.destination?.route
             if ((userType.value == DataConstants.AccountType.benefiaryy || userType.value == DataConstants.AccountType.volunteer) && currentRoute in listOf(
                     "main_screen",
-                    "submit_donation",
                     "list_donations_screen"
                 )
             ) {
@@ -123,12 +131,12 @@ fun AppNavigation() {
                 }
                 composable("submit_donation") {
                     val donationViewModel = DonationViewModel(LocalContext.current, navController)
-                    SubmitDonationPage(navController, donationViewModel)
+                    SubmitDonationPage(navController, modifierCustom, donationViewModel)
                 }
 
                 composable("dashboard_screen") {
                     val dashboardViewModel = DashboardViewModel(LocalContext.current, navController)
-                    DashboardScreen(navController, modifierCustom, dashboardViewModel)
+                    DashboardPage(navController, modifierCustom, dashboardViewModel)
                 }
 
                 composable("awaiting_approval_screen") {
@@ -140,6 +148,12 @@ fun AppNavigation() {
                 composable("main_screen") {
                     val mainPageViewModel = MainPageViewModel(LocalContext.current)
                     MainScreen(navController, modifierCustom, mainPageViewModel)
+                }
+
+                composable("manage_users") {
+                    val manageUsersViewModel =
+                        ManageUsersViewModel(LocalContext.current, navController)
+                    ManageUsersPage(navController, modifierCustom, manageUsersViewModel)
                 }
 
                 composable("profile_page_screen") {
@@ -211,10 +225,33 @@ fun AppNavigation() {
                         )
                     }
                 }
+
+                composable("donation_insert_product/{donationId}") { backstageEntry ->
+                    val donationId = backstageEntry.arguments?.getString("donationId")
+
+                    if (donationId == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.donation_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        // TODO: Change for the screen to insert the donation items in the stock
+                        val donationDetailsViewModel = DonationDetailsViewModel(context, donationId)
+                        DonationDetailsScreen(
+                            navController,
+                            modifierCustom,
+                            donationDetailsViewModel
+                        )
+                    }
+
+                }
             }
         } else {
             LoadIndicator(modifierCustom)
         }
     }
-
 }
