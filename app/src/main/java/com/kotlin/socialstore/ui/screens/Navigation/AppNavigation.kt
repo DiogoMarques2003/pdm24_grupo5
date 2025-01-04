@@ -44,7 +44,6 @@ import com.kotlin.socialstore.ui.screens.HomePage
 import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.screens.MainScreen
 import com.kotlin.socialstore.ui.screens.ManageHousehold
-import com.kotlin.socialstore.ui.screens.ManageHouseholdScreen
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
@@ -203,16 +202,10 @@ fun AppNavigation() {
 
                 }
 
-           //     composable("manage_household_screen") {
-           //         ManageHouseholdScreen(navController , modifierCustom)
-           //     }
-
                 composable("manage_household") {
                     val manageHouseholdViewModel= ManageHouseholdViewModel(LocalContext.current)
                     ManageHousehold(navController, manageHouseholdViewModel)
                 }
-
-
 
                 composable("donation_screen/{donationId}") { backstageEntry ->
                     val donationId = backstageEntry.arguments?.getString("donationId")
