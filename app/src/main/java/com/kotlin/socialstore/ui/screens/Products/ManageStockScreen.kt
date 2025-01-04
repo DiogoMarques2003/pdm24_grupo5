@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.ui.screens.Products
 
 import AddItemDialog
+import TopBar
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,6 @@ import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.ProductsGrid
-import com.kotlin.socialstore.ui.elements.TitleTextElement
 
 @Composable
 fun ManageStockPage(
@@ -45,20 +45,15 @@ fun ManageStockPage(
     }
 
     LaunchedEffect(Unit) {
-        //Get fresh data
         viewModel.getData(context)
     }
-
 
     Box(modifier = Modifier
         .fillMaxSize()
     ) {
 
         Column(modifier = modifier.fillMaxSize()) {
-            TitleTextElement(
-                text = stringResource(R.string.manageStock_Title),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+            TopBar(navController, stringResource(R.string.manageStock_Title) ,true)
 
             ProductsGrid(allProducts, allCategories)
 

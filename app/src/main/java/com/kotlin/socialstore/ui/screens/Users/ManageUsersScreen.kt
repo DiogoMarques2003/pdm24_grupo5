@@ -26,9 +26,9 @@ import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.ui.elements.PopBackButton
-import com.kotlin.socialstore.ui.elements.TitleTextElement
 import com.kotlin.socialstore.ui.theme.SocialStoreTheme
 import androidx.compose.material3.MaterialTheme
+import TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,26 +42,20 @@ fun ManageUsersPage(
     var state by remember { mutableStateOf(0) }
     val titles = listOf("Volunteers", "Beneficiaries")
 
+    //Stop listeners when leaving screen
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.stopListeners()
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = UiConstants.defaultPadding),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            PopBackButton(navController)
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                TitleTextElement(text = "Manage Users")
-            }
-        }
+        TopBar(navController, "Manage Users", true)
 
 //        PrimaryTabRow(selectedTabIndex = state) {
 //            titles.forEachIndexed { index, title ->

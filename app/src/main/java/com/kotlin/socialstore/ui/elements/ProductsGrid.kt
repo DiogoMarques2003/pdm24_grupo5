@@ -1,13 +1,11 @@
 package com.kotlin.socialstore.ui.elements
 
+import TwoColumnGridList
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
@@ -27,27 +25,52 @@ import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.ui.screens.Products.ProductsPopUp
 
 @Composable
-fun ProductsGrid(stock: List<Stock>, categories: List<Category>){
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+fun ProductsGrid(stock: List<Stock>, categories: List<Category>) {
+    val productID = remember { mutableStateOf<String?>(null) }
+
+    TwoColumnGridList(
+        items = stock,
+        itemContent = { product ->
+            val category = categories.find { it.id == product.categoryID }?.nome ?: ""
+            ProductItemContent(product, category)
+
+            if (productID.value == product.id) {
+                ProductsPopUp(product, productID)
+            }
+        },
+        onItemClick = { product ->
+            productID.value = product.id
+        },
+        pictureProvider = { it.picture ?: R.drawable.product_image_not_found },
         modifier = Modifier.fillMaxSize()
-    ) {
-        items(stock) { item ->
-            ProductCard(item, (categories.find { it.id == item.categoryID }?.nome ?: "").toString(), 200.dp,200.dp)
-        }
-    }
+    )
 }
+
+@Composable
+fun ProductItemContent(product: Stock, category: String) {
+    Text(category, fontWeight = FontWeight.Bold)
+
+    if (!product.size.isNullOrEmpty()) {
+        Text(stringResource(R.string.product_size) + product.size.toString())
+    }
+
+    Text(
+        stringResource(R.string.product_state) + " " + stringResource(DataConstants.mapProductCondition[product.state]
+            ?: R.string.product_state_default)
+    )
+}
+
 
 @Composable
 fun ProductCard(product: Stock, category: String, height: Dp, width: Dp, popUp: Boolean = true ){
     //Ui variables
-    val showProductPopUp = remember { mutableStateOf(false) }
+    val productID = remember { mutableStateOf<String?>(null) }
 
     ElevatedCard(
         modifier = Modifier
             .size(height = height, width = width)
             .padding(UiConstants.itemSpacing),
-        onClick = { showProductPopUp.value = !showProductPopUp.value }
+        onClick = { productID.value = product.id }
     ) {
         Row(modifier = Modifier.weight(1f)) {
             SubcomposeAsyncImage(
@@ -72,8 +95,12 @@ fun ProductCard(product: Stock, category: String, height: Dp, width: Dp, popUp: 
                 )
             )
         }
-        if (showProductPopUp.value && popUp) {
-            ProductsPopUp(product, showProductPopUp)
+        if (productID.value == product.id && popUp) {
+            ProductsPopUp(product, productID)
         }
     }
 }
+
+
+
+
