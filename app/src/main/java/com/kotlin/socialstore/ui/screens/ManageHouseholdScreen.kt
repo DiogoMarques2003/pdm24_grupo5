@@ -45,8 +45,7 @@ import kotlinx.coroutines.tasks.await
 @Composable
 fun ManageHouseholdScreen(
     navController: NavController,
-    modifier: Modifier = Modifier,
-    profileViewModel: ProfileViewModel
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val database = AppDatabase.getDatabase(context)
@@ -67,10 +66,14 @@ fun ManageHouseholdScreen(
         if (householdId != null) {
             coroutineScope.launch {
                 try {
+
+                    val householdRef =
+                        FirebaseObj.getReferenceById("familyHousehold", householdId!!)
+
                     val membersQuery = FirebaseObj.getData(
                         collection = "users",
                         whereField = "familyHouseholdID",
-                        whereEqualTo = "familyHousehold/$householdId"
+                        whereEqualTo = householdRef
                     )
 
                     Log.d("ManageHouseholdScreen", "Resultado da query: $membersQuery")
@@ -110,7 +113,6 @@ fun ManageHouseholdScreen(
         }
     }
 
-
     LaunchedEffect(currentUserId) {
         if (currentUserId != null && !isInitialized) {
             isInitialized = true
@@ -125,7 +127,6 @@ fun ManageHouseholdScreen(
                         "kidsStore" to false
                     )
                     newHouseholdDocument.set(newHouseholdData).await()
-
 
                     val newFamilyHouseholdID = FirebaseObj.getReferenceById(
                         DataConstants.FirebaseCollections.familyHousehold,
@@ -157,25 +158,32 @@ fun ManageHouseholdScreen(
 
     fun addUserToHousehold(email: String) {
         coroutineScope.launch {
-            val userQuery = FirebaseObj.getData("users", whereField = "email", whereEqualTo = email)
-            if (!userQuery.isNullOrEmpty()) {
-                val userDocument = userQuery.first()
-                val userId = userDocument["id"] as String
-                val householdPath = "familyHousehold/${householdId!!}"
+            try {
+                // Buscar usuário pelo email
+                val userQuery =
+                    FirebaseObj.getData("users", whereField = "email", whereEqualTo = email)
 
-                try {
+                if (!userQuery.isNullOrEmpty()) {
+                    val userDocument = userQuery.first()
+                    val userId = userDocument["id"] as String
 
+                    // Criar o caminho como uma referência Firestore
+                    val householdReference =
+                        firestore.collection("familyHousehold").document(householdId!!)
+
+                    // Atualizar o documento do usuário para usar a referência
                     FirebaseObj.updateData(
                         "users", userId,
-                        mapOf("familyHouseholdID" to householdPath)
+                        mapOf("familyHouseholdID" to householdReference)
                     )
 
-                    loadHouseholdMembers()  // Atualiza a lista de membros, se necessário
-                } catch (e: Exception) {
-                    Log.e("ManageHouseholdScreen", "Erro ao adicionar membro ao household", e)
+                    // Recarregar os membros do household após a adição
+                    loadHouseholdMembers()
+                } else {
+                    Log.e("ManageHouseholdScreen", "Usuário não encontrado.")
                 }
-            } else {
-                Log.e("ManageHouseholdScreen", "Usuário não encontrado.")
+            } catch (e: Exception) {
+                Log.e("ManageHouseholdScreen", "Erro ao adicionar membro ao household", e)
             }
         }
     }
@@ -199,10 +207,8 @@ fun ManageHouseholdScreen(
             }
         }
     }
-
-
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -251,7 +257,11 @@ fun ManageHouseholdScreen(
                                     val url = storageReference.child(photoPath).downloadUrl.await()
                                     imageUrl = url.toString()
                                 } catch (e: Exception) {
-                                    Log.e("ManageHouseholdScreen", "Erro ao carregar imagem: $photoPath", e)
+                                    Log.e(
+                                        "ManageHouseholdScreen",
+                                        "Erro ao carregar imagem: $photoPath",
+                                        e
+                                    )
                                 }
                             }
                         }
@@ -354,3 +364,5 @@ fun ManageHouseholdScreen(
         }
     }
 }
+
+

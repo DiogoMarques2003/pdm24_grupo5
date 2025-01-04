@@ -120,7 +120,7 @@ fun ProfileScreen(
                         )
                     }
 
-                    IconButton(onClick = {navController.navigate("manage_household_screen")}) {
+                    IconButton(onClick = {navController.navigate("manage_household")}) {
                         Icon(
                             imageVector = Icons.Default.ArrowForward,
                             contentDescription = "Arrow Forward"
