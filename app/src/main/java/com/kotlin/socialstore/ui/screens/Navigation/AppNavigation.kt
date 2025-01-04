@@ -20,12 +20,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.dao.UsersDao
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.UsersRepository
@@ -41,7 +43,7 @@ import com.kotlin.socialstore.ui.screens.Users.EditProfileScreen
 import com.kotlin.socialstore.ui.screens.HomePage
 import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.screens.MainScreen
-import com.kotlin.socialstore.ui.screens.ManageHouseholdScreen
+import com.kotlin.socialstore.ui.screens.ManageHousehold
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
@@ -52,6 +54,7 @@ import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.MainPageViewModel
+import com.kotlin.socialstore.viewModels.ManageHouseholdViewModel
 import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
@@ -199,11 +202,10 @@ fun AppNavigation() {
 
                 }
 
-                composable("manage_household_screen") {
-                    val profileViewModel = ProfileViewModel(context)
-                    ManageHouseholdScreen(navController = navController, modifier = modifierCustom, profileViewModel )
+                composable("manage_household") {
+                    val manageHouseholdViewModel= ManageHouseholdViewModel(LocalContext.current)
+                    ManageHousehold(navController, manageHouseholdViewModel)
                 }
-
 
                 composable("donation_screen/{donationId}") { backstageEntry ->
                     val donationId = backstageEntry.arguments?.getString("donationId")
