@@ -245,4 +245,5 @@
     <string name="yes">Sim</string>
     <string name="no">Não</string>
     <string name="insert_donation_item">Quer inserir os artigos da doação no stock?</string>
+    <string name="insert_donation_items_page_title">Insert donation items</string>
 </resources>

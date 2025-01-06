@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens.Donations
 
+import TopBar
 import UiConstants
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -86,16 +87,8 @@ fun ListDonationsScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         //Top
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            PopBackButton(navController)
-            Spacer(Modifier.size(UiConstants.itemSpacing))
-            Text(stringResource(R.string.donations_page_title), fontSize = UiConstants.titleTextSize)
-        }
+        TopBar(navController, stringResource(R.string.donations_page_title))
 
-        Spacer(Modifier.size(UiConstants.itemSpacing))
         OutlinedTextfieldElement(
             modifier = Modifier.fillMaxWidth(),
             value = searchId,
