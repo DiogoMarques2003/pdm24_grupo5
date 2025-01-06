@@ -13,14 +13,14 @@ import androidx.navigation.NavController
 import com.kotlin.socialstore.ui.elements.PopBackButton
 
 @Composable
-fun TopBar(navController: NavController, title: String, showBackButoon: Boolean) {
+fun TopBar(navController: NavController, title: String, showBackButton: Boolean = true) {
     Row(
         Modifier
             .fillMaxWidth()
             .padding(bottom = UiConstants.defaultPadding),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if(showBackButoon) {
+        if(showBackButton) {
             PopBackButton(navController)
         }
 

@@ -256,7 +256,7 @@ object FirebaseObj {
     fun updateFirebaseEmail(newEmail: String, onComplete: (Boolean, String?) -> Unit) {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-          user.verifyBeforeUpdateEmail(newEmail)
+            user.verifyBeforeUpdateEmail(newEmail)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Log.d("UpdateEmail", "User email address updated.")
@@ -301,6 +301,24 @@ object FirebaseObj {
             e.printStackTrace()
             null
 
+        }
+    }
+
+    suspend fun copyImageWithSameName(imageUrl: String, newFolder: String): String? {
+        return try {
+            val sourceRef = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+
+            val fileName = "$newFolder/${UUID.randomUUID()}.jpg"
+
+            val newRef = FirebaseStorage.getInstance().reference.child(fileName)
+
+            val fileBytes = sourceRef.getBytes(Long.MAX_VALUE).await()
+            newRef.putBytes(fileBytes).await()
+
+            fileName
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
         }
     }
 }
