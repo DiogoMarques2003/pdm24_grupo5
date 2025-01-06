@@ -246,4 +246,15 @@
     <string name="no">Não</string>
     <string name="insert_donation_item">Quer inserir os artigos da doação no stock?</string>
     <string name="insert_donation_items_page_title">Insert donation items</string>
+    <string name="cancel">Cancel</string>
+    <string name="category">Category</string>
+    <string name="store">Store</string>
+    <string name="default_store">Default store</string>
+    <string name="insert_stock">Add item in stock</string>
+    <string name="add_item">Add Item</string>
+    <string name="fill_category">Fill the cartegory</string>
+    <string name="fill_state">Fill the condition</string>
+    <string name="fill_description">Fill in the description</string>
+    <string name="fill_store">Fill in the item\'s store or default</string>
+    <string name="item_inserted_stock">Items inserted on stock</string>
 </resources>

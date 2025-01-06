@@ -1,7 +1,8 @@
 package com.kotlin.socialstore.ui.screens.Donations
 
-import ImageUploader
+import ItemConditionDropdown
 import TopBar
+import UiConstants
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,7 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
@@ -31,71 +32,102 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddAPhoto
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
-import com.kotlin.socialstore.data.firebase.FirebaseObj
-import kotlinx.coroutines.launch
+import com.kotlin.socialstore.data.entity.Stores
+import com.kotlin.socialstore.ui.elements.ButtonElement
+import com.kotlin.socialstore.ui.elements.LoadIndicator
+import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InsertItemsDonationScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
     insertItemsDonationViewModel: InsertItemsDonationViewModel
 ) {
+    val context = LocalContext.current
+
     val insertItem by insertItemsDonationViewModel.insertItems.collectAsState(emptyList())
+    val categories by insertItemsDonationViewModel.allCategories.collectAsState(emptyList())
+    val stores by insertItemsDonationViewModel.allStores.collectAsState(emptyList())
+    val isLoading by insertItemsDonationViewModel.isLoading.collectAsState(false)
 
-    var selectedItem by remember { mutableStateOf<String?>(null) }
-    var isUploading by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            isUploading = true
-            scope.launch {
-                insertItemsDonationViewModel.uploadDonationImage(it).collect { result ->
-                    result.onSuccess { url ->
-                        insertItemsDonationViewModel.updateItemImage(selectedItem!!, url)
-                        isUploading = false
-                    }.onFailure { error ->
-                        isUploading = false
-                    }
-                }
-            }
-        }
-    }
+    val selectedItem = remember { mutableStateOf<String?>(null) }
+    var expandedDefaultStore by remember { mutableStateOf(false) }
+    var defaultStore by remember { mutableStateOf<Stores?>(null) }
 
     //Add background image
     BackgroundImageElement()
+
+    if (isLoading) {
+        LoadIndicator(modifier)
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
         //Top
         TopBar(navController, stringResource(R.string.insert_donation_items_page_title))
 
-        LazyColumn(Modifier.fillMaxSize()) {
+        ExposedDropdownMenuBox(
+            expanded = expandedDefaultStore,
+            onExpandedChange = { expandedDefaultStore = it }
+        ) {
+            OutlinedTextfieldElement(
+                value = defaultStore?.name ?: "",
+                onValueChange = {},
+                readOnly = true,
+                labelText = stringResource(R.string.default_store),
+                trailingIcon = { Icon(Icons.Default.ArrowDropDown, null) },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth()
+            )
+            ExposedDropdownMenu(
+                expanded = expandedDefaultStore,
+                onDismissRequest = { expandedDefaultStore = false }
+            ) {
+                stores.forEach { store ->
+                    DropdownMenuItem(
+                        text = { Text(store.name) },
+                        onClick = {
+                            defaultStore = store
+                            expandedDefaultStore = false
+                        }
+                    )
+                }
+            }
+        }
+
+        Spacer(Modifier.size(UiConstants.itemSpacing))
+
+        LazyColumn(Modifier.weight(1f)) {
             items(insertItem) { item ->
                 ElevatedCard(
                     modifier = Modifier
@@ -103,123 +135,38 @@ fun InsertItemsDonationScreen(
                         .padding(bottom = UiConstants.itemSpacing),
                     shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                    onClick = { selectedItem = if (selectedItem == item.id) null else item.id }
+                    onClick = { selectedItem.value = if (selectedItem.value == item.id) null else item.id }
                 ) {
-                    if (selectedItem != item.id) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(40.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                SubcomposeAsyncImage(
-                                    model = item.picture ?: R.drawable.product_image_not_found,
-                                    contentDescription = null,
-                                    loading = { CircularProgressIndicator() },
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .size(40.dp),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(UiConstants.itemSpacing))
-
-                            // Item details
-                            Column(
-                                modifier = Modifier.weight(1f)
-                            ) {
-                                Text(
-                                    text = item.description,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Row {
-                                    if (!item.size.isNullOrEmpty()) {
-                                        Text(
-                                            text = "${stringResource(R.string.product_size)} ${item.size} - ",
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                }
-                            }
-                        }
+                    if (selectedItem.value != item.id) {
+                        DisplayItem(item, insertItemsDonationViewModel)
                     } else {
-                        Column(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp)
-                        ) {
-                            Card(
-                                modifier = modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp),
-                                border = BorderStroke(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.outline.copy(alpha = 0.12f)
-                                ),
-                                shape = RoundedCornerShape(12.dp),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = Color(0xFFF5F5F5)
-                                )
-                            ) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    if (isUploading) {
-                                        CircularProgressIndicator()
-                                    } else if (item.picture != null) {
-                                        Box(modifier = Modifier.fillMaxSize()) {
-                                            AsyncImage(
-                                                model = item.picture,
-                                                contentDescription = "Selected photo",
-                                                modifier = Modifier.fillMaxSize(),
-                                                contentScale = ContentScale.Crop
-                                            )
-                                            IconButton(
-                                                onClick = { item.picture = null },
-                                                modifier = Modifier.align(Alignment.TopEnd)
-                                            ) {
-                                                Icon(
-                                                    Icons.Default.Close,
-                                                    contentDescription = "Remove photo",
-                                                    tint = MaterialTheme.colorScheme.error
-                                                )
-                                            }
-                                        }
-                                    } else {
-                                        Button(
-                                            onClick = { launcher.launch("image/*") },
-                                            colors = ButtonDefaults.buttonColors(
-                                                containerColor = MaterialTheme.colorScheme.primary.copy(
-                                                    alpha = 0.1f
-                                                )
-                                            )
-                                        ) {
-                                            Icon(
-                                                Icons.Default.AddAPhoto,
-                                                contentDescription = "Add photo",
-                                                tint = MaterialTheme.colorScheme.primary
-                                            )
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            androidx.compose.material3.Text(
-                                                "Add Photo",
-                                                color = MaterialTheme.colorScheme.primary
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        EditItem(
+                            item,
+                            insertItemsDonationViewModel,
+                            selectedItem,
+                            categories,
+                            stores,
+                            defaultStore
+                        )
                     }
                 }
             }
+        }
+
+        Column(Modifier.fillMaxWidth()) {
+            ButtonElement(
+                text = stringResource(R.string.add_item),
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { insertItemsDonationViewModel.addItem() }
+            )
+
+            Spacer(Modifier.size(UiConstants.itemSpacing))
+
+            ButtonElement(
+                text = stringResource(R.string.insert_stock),
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { insertItemsDonationViewModel.addItemsToStock(selectedItem, defaultStore?.id, context) }
+            )
         }
     }
 }

@@ -9,12 +9,12 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj
 @Entity(tableName = "stock")
 data class Stock(
     @PrimaryKey(autoGenerate = false) var id: String,
-    val categoryID: String,
+    var categoryID: String,
     var picture: String?,
-    val state: String,
-    val size: String?,
-    val description: String,
-    val storesId: String
+    var state: String,
+    var size: String?,
+    var description: String,
+    var storesId: String
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
