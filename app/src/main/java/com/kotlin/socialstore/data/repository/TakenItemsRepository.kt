@@ -2,6 +2,7 @@ package com.kotlin.socialstore.data.repository
 
 import com.kotlin.socialstore.data.dao.TakenItemsDao
 import com.kotlin.socialstore.data.entity.TakenItems
+import com.kotlin.socialstore.data.entity.TakenItemsCategoryCount
 import kotlinx.coroutines.flow.Flow
 
 class TakenItemsRepository(private val takenItemsDao: TakenItemsDao) {
@@ -21,6 +22,10 @@ class TakenItemsRepository(private val takenItemsDao: TakenItemsDao) {
 
     fun getTakenItensMonthly(): Flow<Long>{
         return takenItemsDao.getTakenItensMonthly()
+    }
+
+    fun getTakenItemsByHousehold(userId: String): Flow<List<TakenItemsCategoryCount>> {
+        return takenItemsDao.getTakenItemsByHousehold(userId)
     }
 
     suspend fun deleteAll(){

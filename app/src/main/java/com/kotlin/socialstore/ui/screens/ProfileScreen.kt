@@ -3,6 +3,8 @@ package com.kotlin.socialstore.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -43,6 +45,8 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel
 ) {
     val userInfo by profileViewModel.userData.collectAsState(null)
+    val takenItems by profileViewModel.takenItems.collectAsState(emptyList())
+    val categories by profileViewModel.categories.collectAsState(emptyList())
     val showQrCodePopup = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -143,58 +147,41 @@ fun ProfileScreen(
 
                 //              Spacer(modifier = Modifier.height(16.dp))
 
-                // Lista de itens
-                val items = listOf(
-                    "Hoodie - Quantity: 3",
-                    "Jeans - Quantity: 2",
-                    "T-Shirt - Quantity: 1"
-                )
 
-                items.forEach { item ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 6.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFE3F2FD)
-                        ),
-                        shape = MaterialTheme.shapes.medium,
-                        elevation = CardDefaults.elevatedCardElevation(4.dp)
-                    ) {
-                        Row(
+                LazyColumn(Modifier.weight(1f)) {
+                    items(takenItems) { item ->
+                        val categoryName = categories.firstOrNull { it.id == item.categoryID }?.nome ?: "N/A"
+
+                        Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(vertical = 6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color(0xFFE3F2FD)
+                            ),
+                            shape = MaterialTheme.shapes.medium,
+                            elevation = CardDefaults.elevatedCardElevation(4.dp)
                         ) {
-                            Box(
+                            Row(
                                 modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .background(Color(0xFFBBDEFB)),
-                                contentAlignment = Alignment.Center
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text(
-                                    text = item.first().toString(),
-                                    style = TextStyle(color = Color.White, fontSize = 18.sp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(16.dp))
-
-                            Column {
-                                Text(
-                                    text = item.substringBefore(" - "),
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.Black
+                                Column {
+                                    Text(
+                                        text = categoryName,
+                                        style = TextStyle(
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = Color.Black
+                                        )
                                     )
-                                )
-                                Text(
-                                    text = item.substringAfter(" - "),
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray)
-                                )
+                                    Text(
+                                        text = "Quantity: ${item.quantity}",
+                                        style = TextStyle(fontSize = 14.sp, color = Color.Gray)
+                                    )
+                                }
                             }
                         }
                     }

@@ -2,12 +2,10 @@ package com.kotlin.socialstore.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material3.DividerDefaults.color
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,12 +14,7 @@ import androidx.navigation.NavController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
-import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
-import com.kotlin.socialstore.ui.elements.ButtonElement
-import com.kotlin.socialstore.ui.elements.PopBackButton
 
 
 @Composable
@@ -114,7 +107,6 @@ fun ScheduleItem(dayOfWeek: String, hours: String, location: String, iconLabel: 
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Ícone/label do dia
         Surface(
             shape = MaterialTheme.shapes.small,
             color = Color(0xFF13232C),
