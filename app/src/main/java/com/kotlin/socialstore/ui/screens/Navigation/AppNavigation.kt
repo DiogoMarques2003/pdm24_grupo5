@@ -119,7 +119,7 @@ fun AppNavigation() {
         if (isStartDestinationDetermined) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination
+                startDestination = "manage_stock"
             ) {
                 composable("login_screen") {
                     // Initialize view model

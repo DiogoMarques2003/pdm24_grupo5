@@ -1,4 +1,9 @@
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +17,15 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,26 +77,56 @@ fun <T> RowList(
     onItemClick: (T) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn() {
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         items(items) { item ->
-            ElevatedCard(Modifier.fillMaxWidth()) {
-                Column(Modifier.padding(10.dp)) {
-                    Row {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onItemClick(item) },
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.surface,
+                tonalElevation = 1.dp
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(modifier = Modifier
+                        .size(60.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            shape = CircleShape
+                        ),
+                        contentAlignment = Alignment.Center
+                    ) {
                         SubcomposeAsyncImage(
                             model = pictureProvider(item),
                             contentDescription = null,
-                            loading = { CircularProgressIndicator() },
+                            loading = { CircularProgressIndicator(strokeWidth = 2.dp) },
                             modifier = Modifier
-                                .clip(CircleShape)
-                                .size(80.dp)
-                                .align(Alignment.CenterVertically),
+                                .matchParentSize()
+                                .clip(CircleShape),
                             contentScale = ContentScale.Crop
                         )
-                        Spacer(Modifier.size(UiConstants.itemSpacing))
-                        Column {
-                            itemContent(item)
-                        }
                     }
+
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        itemContent(item)
+                    }
+
+                    // Arrow icon
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }

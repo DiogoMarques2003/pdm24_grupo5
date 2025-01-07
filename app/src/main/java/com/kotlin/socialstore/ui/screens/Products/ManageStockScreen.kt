@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.ui.screens.Products
 
 import AddItemDialog
+import RowList
 import TopBar
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.ProductsGrid
 
@@ -48,34 +52,61 @@ fun ManageStockPage(
         viewModel.getData(context)
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
     ) {
 
         Column(modifier = modifier.fillMaxSize()) {
-            TopBar(navController, stringResource(R.string.manageStock_Title) ,true)
+            TopBar(navController, stringResource(R.string.manageStock_Title), true)
 
-            ProductsGrid(allProducts, allCategories)
-
-            if (showAddDialog) {
-                AddItemDialog(
-                    viewModel = viewModel,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    onDismiss = { showAddDialog = false }
+            Box(modifier = Modifier.weight(1f)) {
+                RowList(
+                    items = allProducts,
+                    itemContent = { item ->
+                        ItemContent(item)
+                    },
+                    pictureProvider = { item ->
+                        item.picture ?: R.drawable.product_image_not_found
+                    },
+                    onItemClick = { }
                 )
             }
+
+
+            ButtonElement(
+                onClick = { showAddDialog = true },
+                text = stringResource(R.string.manageStock_AddItem),
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
+
         }
     }
-    Box(modifier = modifier
-        .fillMaxSize()
-    ) {
-        ButtonElement(
-            onClick = { showAddDialog = true },
-            text = stringResource(R.string.manageStock_AddItem),
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
+
+
+
+    if (showAddDialog) {
+        AddItemDialog(
+            viewModel = viewModel,
+            modifier = Modifier.padding(horizontal = 16.dp),
+            onDismiss = { showAddDialog = false }
         )
     }
+}
+
+@Composable
+fun ItemContent(item: Stock) {
+    Text(
+        text = item.description,
+        style = MaterialTheme.typography.bodyLarge
+    )
+
+    Text(
+        text = "${stringResource(R.string.product_size)} ${item.size?.takeIf { it.isNotEmpty() } ?: "N/A"}",
+        style = MaterialTheme.typography.bodyMedium
+    )
+
+    // add category then
 }
 
