@@ -23,8 +23,6 @@ fun SettingsScreen(navController: NavController) {
         topBar = {
             TopAppBar(
                 title = { Text("Settings") },
-                backgroundColor = Color(0xFF13232C),
-                contentColor = Color.White
             )
         }
 
@@ -74,10 +72,6 @@ fun SettingsScreen(navController: NavController) {
             Button(
                 onClick = { navController.navigate("profile_page_screen") },
                 modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                     Color(0xFF13232C),
-                    contentColor = Color.White
-                )
             ) {
                 Text(text = "Manage Profile")
             }
@@ -91,7 +85,7 @@ fun ContactItem(icon: ImageVector, text: String) {
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color(0xFF13232C)
+            tint = MaterialTheme.colorScheme.primary
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
@@ -109,8 +103,8 @@ fun ScheduleItem(dayOfWeek: String, hours: String, location: String, iconLabel: 
     ) {
         Surface(
             shape = MaterialTheme.shapes.small,
-            color = Color(0xFF13232C),
-            modifier = Modifier.size(50.dp)
+            modifier = Modifier.size(50.dp),
+            color = MaterialTheme.colorScheme.primary,
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
@@ -129,7 +123,6 @@ fun ScheduleItem(dayOfWeek: String, hours: String, location: String, iconLabel: 
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Localização (Braga)
         Text(text = location, style = MaterialTheme.typography.bodyMedium)
     }
 }

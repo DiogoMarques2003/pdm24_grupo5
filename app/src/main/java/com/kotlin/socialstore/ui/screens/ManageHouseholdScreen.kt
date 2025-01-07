@@ -24,8 +24,6 @@ import com.kotlin.socialstore.viewModels.ManageHouseholdViewModel
 import kotlinx.coroutines.tasks.await
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import com.kotlin.socialstore.ui.elements.PopBackButton
 
 
 @Composable
@@ -59,10 +57,10 @@ fun ManageHousehold(
                 viewModel.initialize(currentUserId)
             }
         } else {
-            Text(
-                text = "Household ID: $householdId",
-                style = MaterialTheme.typography.bodyLarge
-            )
+         //   Text(
+         //       text = "Household ID: $householdId",
+         //       style = MaterialTheme.typography.bodyLarge
+          //  )
 
             val storage = FirebaseStorage.getInstance()
             val storageReference = storage.reference
