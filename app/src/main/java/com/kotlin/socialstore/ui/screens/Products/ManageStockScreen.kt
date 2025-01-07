@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.ProductsGrid
@@ -103,10 +104,10 @@ fun ItemContent(item: Stock) {
     )
 
     Text(
-        text = "${stringResource(R.string.product_size)} ${item.size?.takeIf { it.isNotEmpty() } ?: "N/A"}",
+        text = "${stringResource(R.string.product_size)} ${item.size?.takeIf { it.isNotEmpty() } ?: "N/A"}" +
+                " · ${stringResource(R.string.condition)}: " +
+                stringResource(DataConstants.mapProductCondition[item.state] ?: R.string.product_state_default),
         style = MaterialTheme.typography.bodyMedium
     )
-
-    // add category then
 }
 

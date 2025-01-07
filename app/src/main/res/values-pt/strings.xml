@@ -257,4 +257,5 @@
     <string name="fill_description">Fill in the description</string>
     <string name="fill_store">Fill in the item\'s store or default</string>
     <string name="item_inserted_stock">Items inserted on stock</string>
+    <string name="condition">Condição</string>
 </resources>
