@@ -23,7 +23,9 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.viewModels.ManageHouseholdViewModel
 import kotlinx.coroutines.tasks.await
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.kotlin.socialstore.ui.elements.PopBackButton
 
 
 @Composable
@@ -47,7 +49,7 @@ fun ManageHousehold(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Manage Household",
+            stringResource(R.string.Manage_Household),
             style = MaterialTheme.typography.headlineMedium
         )
 
@@ -188,9 +190,6 @@ fun ManageHousehold(
                     }
                 )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(onClick = { navController.popBackStack() }) {
                 Text(text = "Back")
             }

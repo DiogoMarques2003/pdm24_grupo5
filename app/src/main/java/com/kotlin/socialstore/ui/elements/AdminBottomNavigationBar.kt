@@ -35,9 +35,9 @@ fun AdminBottomNavigationBar(navController: NavController) {
             label = { Text("Dashboard") }
         )
         NavigationBarItem(
-            selected = currentRoute == "profile_page_screen",
-            onClick = { navController.navigate("profile_page_screen") },
-            icon = { Icon(Icons.Default.Settings, contentDescription = "Profile") },
+            selected = currentRoute == "settings_screen",
+            onClick = { navController.navigate("settings_screen") },
+            icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
             label = { Text("Settings") }
         )
     }

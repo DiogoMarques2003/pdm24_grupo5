@@ -49,6 +49,7 @@ import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
 import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
 import com.kotlin.socialstore.ui.screens.RegisterPage
+import com.kotlin.socialstore.ui.screens.SettingsScreen
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
@@ -164,6 +165,11 @@ fun AppNavigation() {
                     val profileViewModel = ProfileViewModel(LocalContext.current)
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
+
+                composable("settings_screen"){
+                    SettingsScreen(navController = navController)
+                }
+
                 composable("edit_profile_screen") {
                     val profileViewModel = ProfileViewModel(context)
                     EditProfileScreen(navController, modifierCustom, profileViewModel)
