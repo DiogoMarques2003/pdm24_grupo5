@@ -35,6 +35,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -95,16 +96,22 @@ fun <T> RowList(
     onItemClick: (T) -> Unit,
     modifier: Modifier = Modifier,
     setSelectMultipleBehaviour: Boolean = false,
-    onItemsSelected: (List<T>) -> Unit = {}
+    onItemsSelected: (List<T>) -> Unit = {},
+    resetSelection: Boolean = false
 ) {
-    var itemsSelectedByIndex by remember { mutableStateOf(mutableSetOf<Int>()) }
-    //var itemsSelected by remember { mutableStateOf(mutableSetOf<T>()) }
+    var itemsSelected by remember { mutableStateOf<List<T>>(emptyList()) }
+
+    LaunchedEffect(resetSelection) {
+        if (resetSelection) {
+            itemsSelected = emptyList()
+        }
+    }
 
     LazyColumn(
         modifier = modifier
     ) {
-        itemsIndexed(items) { index, item ->
-            var isSelected by remember { mutableStateOf(false) }
+        items(items) { item ->
+            val isSelected = itemsSelected.contains(item)
 
             ElevatedCard(
                 modifier = Modifier
@@ -114,18 +121,12 @@ fun <T> RowList(
                         onLongClick = {
                             if(!setSelectMultipleBehaviour) return@combinedClickable
 
-                            if (isSelected) {
-                                itemsSelectedByIndex.remove(index)
-                                //itemsSelected.remove(item)
+                            itemsSelected = if (isSelected) {
+                                itemsSelected.filter { it != item }
                             } else {
-                                itemsSelectedByIndex.add(index)
-                                //itemsSelected.add(item)
+                                itemsSelected + item
                             }
-
-                            //onItemsSelected(itemsSelected.toList())
-                            isSelected = !isSelected
-
-
+                            onItemsSelected(itemsSelected)
                         },
                         onClick = { },
                     ),
@@ -151,31 +152,25 @@ fun <T> RowList(
                                 .clickable {
                                     if(!setSelectMultipleBehaviour) return@clickable
 
-                                    if (itemsSelectedByIndex.isNotEmpty()) {
-                                        isSelected = true
-                                        itemsSelectedByIndex.add(index)
-                                        //itemsSelected.add(item)
+                                    if (itemsSelected.isNotEmpty()) {
+                                        itemsSelected = itemsSelected + item
+                                        onItemsSelected(itemsSelected)
                                     }
                                 }
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop,
                         )
                     } else {
-                        IconButton(modifier = Modifier
-                            .size(60.dp)
-                            .clip(CircleShape),
+                        IconButton(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(CircleShape),
                             onClick = {
                                 if(!setSelectMultipleBehaviour) return@IconButton
 
-                                if(itemsSelectedByIndex.isNotEmpty()) {
-                                    if (isSelected) {
-                                        itemsSelectedByIndex.remove(index)
-                                        //itemsSelected.remove(item)
-                                    } else {
-                                        itemsSelectedByIndex.add(index)
-                                        //itemsSelected.add(item)
-                                    }
-                                    isSelected = !isSelected
+                                if(itemsSelected.isNotEmpty()) {
+                                    itemsSelected = itemsSelected.filter{ it != item }
+                                    onItemsSelected(itemsSelected)
                                 }
                             }
                         ) {
@@ -188,7 +183,6 @@ fun <T> RowList(
                         }
                     }
 
-
                     Column(
                         modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -198,7 +192,6 @@ fun <T> RowList(
 
                     itemEndContet(item)
                 }
-
             }
         }
     }

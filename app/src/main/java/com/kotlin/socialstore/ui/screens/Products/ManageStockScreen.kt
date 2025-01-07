@@ -4,6 +4,7 @@ import AddItemDialog
 import EditItemDialog
 import RowList
 import TopBar
+import androidx.compose.foundation.layout.Arrangement
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,12 +48,13 @@ fun ManageStockPage(
     viewModel: StockViewModel
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
-    //var productsSelected by remember { mutableStateOf(emptyList<Stock>())}
+    var productsSelected by remember { mutableStateOf(emptyList<Stock>()) }
     val allProducts by viewModel.allStock.collectAsState(emptyList())
     val allCategories by viewModel.allCategories.collectAsState(emptyList())
     val context = LocalContext.current
 
     val isLoading = viewModel.isLoading.collectAsState(false)
+    var resetSelection by remember { mutableStateOf(false) }
 
     //Stop listeners when leaving screen
     DisposableEffect(Unit) {
@@ -65,7 +67,7 @@ fun ManageStockPage(
         viewModel.getData(context)
     }
 
-    if(isLoading.value) {
+    if (isLoading.value) {
         LoadIndicator(modifier)
     }
 
@@ -90,30 +92,42 @@ fun ManageStockPage(
                         item.picture ?: R.drawable.product_image_not_found
                     },
                     onItemClick = { },
-                    setSelectMultipleBehaviour = true
-
+                    setSelectMultipleBehaviour = true,
+                    onItemsSelected = { items ->
+                        productsSelected = items
+                    },
+                    resetSelection = resetSelection
                 )
             }
 
 
-            ButtonElement(
-                onClick = { showAddDialog = true },
-                text = stringResource(R.string.manageStock_AddItem),
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
+            Column(
+                modifier = Modifier,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ButtonElement(
+                    onClick = { showAddDialog = true },
+                    text = stringResource(R.string.manageStock_AddItem),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
 
-//            ButtonElement(
-//                onClick = {
-//                    for (stock in productsSelected) {
-//                        viewModel.onDelete(stock)
-//                    }
-//                },
-//                enabled = productsSelected.isNotEmpty(),
-//                text = "Delete items selected",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//            )
+                ButtonElement(
+                    onClick = {
+                        for (stock in productsSelected) {
+                            viewModel.onDelete(stock)
+                        }
+
+                        resetSelection = true
+                        productsSelected = emptyList()
+                    },
+                    enabled = productsSelected.isNotEmpty(),
+                    text = "Delete items selected",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+
 
         }
     }
@@ -181,8 +195,8 @@ fun ItemEndContent(item: Stock, viewModel: StockViewModel) {
         }
     }
 
-    if(showEditItemDialog == true) {
-        EditItemDialog(item, viewModel, {showEditItemDialog = false})
+    if (showEditItemDialog == true) {
+        EditItemDialog(item, viewModel, { showEditItemDialog = false })
     }
 }
 
