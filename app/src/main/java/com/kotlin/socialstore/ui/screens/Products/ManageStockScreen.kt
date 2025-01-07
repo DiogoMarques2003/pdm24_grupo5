@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.ui.screens.Products
 
 import AddItemDialog
+import EditItemDialog
 import RowList
 import TopBar
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
@@ -9,6 +10,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +36,9 @@ import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.ui.elements.ButtonElement
+import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.ProductsGrid
+import kotlin.math.exp
 
 @Composable
 fun ManageStockPage(
@@ -38,9 +47,12 @@ fun ManageStockPage(
     viewModel: StockViewModel
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
+    //var productsSelected by remember { mutableStateOf(emptyList<Stock>())}
     val allProducts by viewModel.allStock.collectAsState(emptyList())
     val allCategories by viewModel.allCategories.collectAsState(emptyList())
     val context = LocalContext.current
+
+    val isLoading = viewModel.isLoading.collectAsState(false)
 
     //Stop listeners when leaving screen
     DisposableEffect(Unit) {
@@ -51,6 +63,10 @@ fun ManageStockPage(
 
     LaunchedEffect(Unit) {
         viewModel.getData(context)
+    }
+
+    if(isLoading.value) {
+        LoadIndicator(modifier)
     }
 
     Box(
@@ -67,10 +83,15 @@ fun ManageStockPage(
                     itemContent = { item ->
                         ItemContent(item)
                     },
+                    itemEndContet = { item ->
+                        ItemEndContent(item, viewModel)
+                    },
                     pictureProvider = { item ->
                         item.picture ?: R.drawable.product_image_not_found
                     },
-                    onItemClick = { }
+                    onItemClick = { },
+                    setSelectMultipleBehaviour = true
+
                 )
             }
 
@@ -82,10 +103,20 @@ fun ManageStockPage(
                     .fillMaxWidth()
             )
 
+//            ButtonElement(
+//                onClick = {
+//                    for (stock in productsSelected) {
+//                        viewModel.onDelete(stock)
+//                    }
+//                },
+//                enabled = productsSelected.isNotEmpty(),
+//                text = "Delete items selected",
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//            )
+
         }
     }
-
-
 
     if (showAddDialog) {
         AddItemDialog(
@@ -106,8 +137,53 @@ fun ItemContent(item: Stock) {
     Text(
         text = "${stringResource(R.string.product_size)} ${item.size?.takeIf { it.isNotEmpty() } ?: "N/A"}" +
                 " · ${stringResource(R.string.condition)}: " +
-                stringResource(DataConstants.mapProductCondition[item.state] ?: R.string.product_state_default),
+                stringResource(
+                    DataConstants.mapProductCondition[item.state] ?: R.string.product_state_default
+                ),
         style = MaterialTheme.typography.bodyMedium
     )
 }
+
+@Composable
+fun ItemEndContent(item: Stock, viewModel: StockViewModel) {
+    var expanded by remember { mutableStateOf(false) }
+    var showEditItemDialog by remember { mutableStateOf(false) }
+
+    Box {
+        IconButton(
+            onClick = { expanded = true }
+        ) {
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    showEditItemDialog = true
+                }
+            ) {
+                Text(text = "Edit")
+            }
+
+            DropdownMenuItem(
+                onClick = {
+                    expanded = false
+                    viewModel.onDelete(item)
+                }
+            ) {
+                Text(text = "Delete")
+            }
+        }
+    }
+
+    if(showEditItemDialog == true) {
+        EditItemDialog(item, viewModel, {showEditItemDialog = false})
+    }
+}
+
 
