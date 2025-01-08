@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens.Donations
 
+import TopBar
 import UiConstants
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -112,19 +113,7 @@ fun DonationDetailsScreen(
 
     Column(modifier = modifier.fillMaxSize()) {
         //Top
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            PopBackButton(navController)
-            Spacer(Modifier.size(UiConstants.itemSpacing))
-            Text(
-                stringResource(R.string.donation_details_page_title),
-                fontSize = UiConstants.titleTextSize
-            )
-        }
-
-        Spacer(modifier = Modifier.size(UiConstants.itemSpacing))
+        TopBar(navController, stringResource(R.string.donation_details_page_title))
 
         if (donationData == null || donationItems.isEmpty() || allDonationSchedule.isEmpty()) {
             LoadIndicator(modifier)

@@ -37,6 +37,7 @@ import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.screens.Donations.DonationDetailsScreen
 import com.kotlin.socialstore.ui.screens.AwaitingApprovalScreen
 import com.kotlin.socialstore.ui.screens.Donations.DonationSuccessPage
+import com.kotlin.socialstore.ui.screens.Donations.InsertItemsDonationScreen
 import com.kotlin.socialstore.ui.screens.Donations.ListDonationsScreen
 import com.kotlin.socialstore.ui.screens.Donations.SubmitDonationPage
 import com.kotlin.socialstore.ui.screens.Users.EditProfileScreen
@@ -52,6 +53,7 @@ import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.ui.screens.SettingsScreen
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
+import com.kotlin.socialstore.viewModels.Donations.InsertItemsDonationViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.MainPageViewModel
@@ -118,7 +120,7 @@ fun AppNavigation() {
         if (isStartDestinationDetermined) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination
+                startDestination = "manage_stock"
             ) {
                 composable("login_screen") {
                     // Initialize view model
@@ -209,7 +211,7 @@ fun AppNavigation() {
                 }
 
                 composable("manage_household") {
-                    val manageHouseholdViewModel= ManageHouseholdViewModel(LocalContext.current)
+                    val manageHouseholdViewModel = ManageHouseholdViewModel(LocalContext.current)
                     ManageHousehold(navController, manageHouseholdViewModel)
                 }
 
@@ -249,11 +251,12 @@ fun AppNavigation() {
                         }
                     } else {
                         // TODO: Change for the screen to insert the donation items in the stock
-                        val donationDetailsViewModel = DonationDetailsViewModel(context, donationId)
-                        DonationDetailsScreen(
+                        val insertItemsDonationViewModel =
+                            InsertItemsDonationViewModel(context, navController, donationId)
+                        InsertItemsDonationScreen(
                             navController,
                             modifierCustom,
-                            donationDetailsViewModel
+                            insertItemsDonationViewModel
                         )
                     }
 

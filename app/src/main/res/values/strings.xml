@@ -30,6 +30,7 @@
     <string name="back_button">Back</string>
     <string name="error_generate_qrcode">Failed to generate QR Code</string>
     <string name="item_added_success">Item added successfully!</string>
+    <string name="item_updated_success">Item updated successfully!</string>
     <string name="item_added_error">An error occurred. Please try again.</string>
     <string-array name="nationalities">
         <item>Afghan|AF</item>
@@ -246,4 +247,17 @@
     <string name="insert_donation_item">Do you want to put the donation items in stock?</string>
     <string name="Manage_Household">Manage Household</string>
     <string name="profile_page_screen">Profile</string>
+    <string name="insert_donation_items_page_title">Insert donation items</string>
+    <string name="cancel">Cancel</string>
+    <string name="category">Category</string>
+    <string name="store">Store</string>
+    <string name="default_store">Default store</string>
+    <string name="insert_stock">Add items in stock</string>
+    <string name="add_item">Add Item</string>
+    <string name="fill_category">Fill the cartegory</string>
+    <string name="fill_state">Fill the condition</string>
+    <string name="fill_description">Fill in the description</string>
+    <string name="fill_store">Fill in the item\'s store or default</string>
+    <string name="item_inserted_stock">Items inserted on stock</string>
+    <string name="condition">Condition</string>
 </resources>
