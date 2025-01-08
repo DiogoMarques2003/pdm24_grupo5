@@ -275,4 +275,7 @@
     <string name="error_insert_schedule">Error creating new schedule</string>
     <string name="confirm">Confirm</string>
     <string name="to">to</string>
+    <string name="status">Estado:</string>
+    <string name="household_notes">Notas do agregado familiar:</string>
+    <string name="edit_user">Editar utilizador</string>
 </resources>

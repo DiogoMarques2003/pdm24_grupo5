@@ -55,7 +55,9 @@ import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.ui.screens.Users.EditUserAsAdminScreen
 import com.kotlin.socialstore.ui.screens.SchedulePage
 import com.kotlin.socialstore.ui.screens.SettingsScreen
+import com.kotlin.socialstore.ui.screens.Users.CheckInScreen
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
+import com.kotlin.socialstore.viewModels.CheckInViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.InsertItemsDonationViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
@@ -278,7 +280,6 @@ fun AppNavigation() {
                             navController.popBackStack()
                         }
                     } else {
-                        // TODO: Change for the screen to insert the donation items in the stock
                         val insertItemsDonationViewModel =
                             InsertItemsDonationViewModel(context, navController, donationId)
                         InsertItemsDonationScreen(
@@ -286,6 +287,24 @@ fun AppNavigation() {
                             modifierCustom,
                             insertItemsDonationViewModel
                         )
+                    }
+                }
+
+                composable("check_in/{userId}") { backstageEntry ->
+                    val userId = backstageEntry.arguments?.getString("userId")
+
+                    if (userId == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.user_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        val checkInViewModel = CheckInViewModel(context, userId)
+                        CheckInScreen(navController, modifierCustom, checkInViewModel)
                     }
                 }
             }

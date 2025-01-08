@@ -6,6 +6,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import java.sql.Date
+import java.sql.Timestamp
 
 @Entity(tableName = "familyHouseholdVisits")
 data class FamilyHouseholdVisits(
@@ -19,7 +20,7 @@ data class FamilyHouseholdVisits(
                 DataConstants.FirebaseCollections.familyHousehold,
                 familyHouseholdId
             ),
-            "date" to date.time // Converte a data para timestamp (milissegundos)
+            "date" to date
         )
     }
 
