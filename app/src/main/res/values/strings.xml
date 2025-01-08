@@ -280,4 +280,24 @@
     <string name="status">Status:</string>
     <string name="household_notes">Household Notes:</string>
     <string name="edit_user">Edit User</string>
+    <string name="function">Function</string>
+    <string name="delete">Delete</string>
+    <string name="schdeule_removed">Schedule removed successfully</string>
+    <string name="error_remove_schedule">Error removing schedule</string>
+    <string name="error_update_schedule">Error updating schedule</string>
+    <string name="work_function">Function</string>
+    <string name="choose_work_function">Choose work function</string>
+    <string name="schedule_update">Schedule updated</string>
+    <string name="fill_fields">Fill mandatory fields</string>
+    <string name="valid_hours">Insert valid hours</string>
+    <string name="user_already_exists">User already exists</string>
+    <string name="add_people_to_your_household">Add people to your household</string>
+    <string name="Please_verify_your_email">Please verify your email. Changes will apply after verification</string>
+    <string name="Failed_to_update_email">Failed to update email</string>
+    <string name="picture_updated_successfully">Picture updated successfully</string>
+    <string name="failed_to_update_user_info">failed to update user info\n</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="error">Error</string>
+    <string name="erro_ao_apagar_o_produto">Error when turning off the product</string>
+    <string name="erro_ao_editar_o_produto">Error when turning off the product</string>
 </resources>

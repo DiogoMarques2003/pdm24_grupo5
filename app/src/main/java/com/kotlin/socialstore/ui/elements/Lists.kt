@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +22,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.MoreVert
@@ -58,29 +60,69 @@ fun <T> TwoColumnGridList(
     itemContent: @Composable (T) -> Unit,
     pictureProvider: (T) -> Any?,
     onItemClick: (T) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    columns: Int = 2,
+    showAddButton: Boolean = false,
+    onAddButtonClick: (T) -> Unit = {},
+    isItemSelected: (T) -> Boolean = { false }
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+        columns = GridCells.Fixed(columns),
         modifier = Modifier.fillMaxSize()
     ) {
         items(items) { item ->
             ElevatedCard(
                 modifier = Modifier
-                    .size(height = 200.dp, width = 200.dp)
+                    .size(height = 250.dp, width = 200.dp)
                     .padding(UiConstants.itemSpacing),
                 onClick = { onItemClick(item) }
             ) {
-                Row(modifier = Modifier.weight(1f)) {
-                    SubcomposeAsyncImage(
-                        model = pictureProvider(item),
-                        contentDescription = null,
-                        loading = { CircularProgressIndicator() },
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-                Column(modifier = Modifier.padding(5.dp)) {
-                    itemContent(item)
+                Column(modifier = Modifier.fillMaxSize()) {
+
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            SubcomposeAsyncImage(
+                                model = pictureProvider(item),
+                                contentDescription = null,
+                                loading = { CircularProgressIndicator() },
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        if(showAddButton) {
+                            Box(
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(8.dp)
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(MaterialTheme.colorScheme.primary)
+                            ) {
+                                IconButton(
+                                    onClick = { onAddButtonClick(item) },
+                                    modifier = Modifier.size(100.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(25.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    Column(modifier = Modifier.padding(5.dp)) {
+                        itemContent(item)
+                    }
                 }
             }
         }

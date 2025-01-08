@@ -3,16 +3,17 @@ package com.kotlin.socialstore.data.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kotlin.socialstore.data.entity.Category
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(category: Category)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertList(categories: List<Category>)
 
     @Query("SELECT * FROM category")

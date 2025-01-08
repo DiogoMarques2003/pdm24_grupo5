@@ -4,7 +4,9 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.sql.Date as sqlDate
 import java.util.Locale
@@ -34,16 +36,6 @@ fun formatAccountType(accType: String): String {
 fun localDateToDate(localDate: LocalDate): Date {
     return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 }
-/*
-fun convertStringToDate(date: String): java.sql.Date ? {
-    return try {
-        val utilDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(date)
-        utilDate?.let { java.sql.Date (it.time) }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}*/
 
 fun convertStringToDate(date: String): sqlDate? {
     return try {
@@ -53,4 +45,16 @@ fun convertStringToDate(date: String): sqlDate? {
         e.printStackTrace()
         null
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun compareTimes(time1: String, time2: String): Int {
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
+    val localTime1 = LocalTime.parse(time1, formatter)
+    val localTime2 = LocalTime.parse(time2, formatter)
+
+    return localTime1.compareTo(localTime2)
+    //-1 if localTime1 < localTime2
+    // 0 if localTime1 = localTime2
+    // 1 if localTime1 > localTime2
 }

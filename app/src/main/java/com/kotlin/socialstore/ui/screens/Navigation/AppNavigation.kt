@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens.Navigation
 
+import CheckOutViewModel
 import DashboardPage
 import DashboardViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
@@ -22,19 +23,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
-import com.kotlin.socialstore.data.dao.UsersDao
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.UsersRepository
-import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
-import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
+import com.kotlin.socialstore.ui.elements.navigationBar.AdminBottomNavigationBar
+import com.kotlin.socialstore.ui.elements.navigationBar.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.screens.Donations.DonationDetailsScreen
 import com.kotlin.socialstore.ui.screens.AwaitingApprovalScreen
@@ -47,6 +46,7 @@ import com.kotlin.socialstore.ui.screens.HomePage
 import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.screens.MainScreen
 import com.kotlin.socialstore.ui.screens.ManageHousehold
+import com.kotlin.socialstore.ui.screens.Products.CheckOutScreen
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
@@ -215,9 +215,22 @@ fun AppNavigation() {
                     HomePage(navController, modifierCustom)
                 }
 
-                composable("products_screen") {
-                    val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
-                    ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                composable("checkout/{userID}") { backstageEntry ->
+                    val userID = backstageEntry.arguments?.getString("userID")
+
+                    if (userID == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.user_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        val checkOutViewModel = CheckOutViewModel(context, userID)
+                        CheckOutScreen(navController, modifierCustom, checkOutViewModel)
+                    }
                 }
 
                 composable("manage_stock") {
