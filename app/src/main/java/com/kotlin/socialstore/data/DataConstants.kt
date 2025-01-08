@@ -2,9 +2,12 @@ package com.kotlin.socialstore.data
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.DoneAll
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.ui.graphics.Color
 import com.kotlin.socialstore.R
 
@@ -39,6 +42,23 @@ object DataConstants {
         "B" to R.string.product_state_b,
         "U" to R.string.product_state_u,
         "G" to R.string.product_state_g
+    )
+
+    // Status options
+    val StatusOptions = listOf("Green", "Red", "Yellow")
+
+    // Mapping status to icons
+    val mapStatusIcons = mapOf(
+        "Green" to Icons.Filled.CheckCircle,
+        "Red" to Icons.Filled.Error,
+        "Yellow" to Icons.Filled.Warning
+    )
+
+    // Mapping status to colors
+    val mapStatusColors = mapOf(
+        "Green" to Color.Green,
+        "Red" to Color.Red,
+        "Yellow" to Color.Yellow
     )
 
     object DashboardOptions {

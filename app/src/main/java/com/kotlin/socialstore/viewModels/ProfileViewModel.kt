@@ -31,13 +31,14 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-class ProfileViewModel(context: Context) : ViewModel() {
+class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
     private var userListener: ListenerRegistration? = null
     private val userRepository = UsersRepository(database.usersDao())
     private val currUser = FirebaseAuth.getInstance().currentUser
 
     val userData = userRepository.getById(currUser!!.uid)
+    val userToEditAsAdmin = userRepository.getById(userID ?: "")
 
     fun getUserInfo(context: Context) {
         userListener = FirebaseObj.listenToData(
@@ -140,6 +141,28 @@ class ProfileViewModel(context: Context) : ViewModel() {
                     .show()
             }
         }
+    }
+
+    fun updateUserInfoAsAdmin(userID: String?, notas: String, selectedWarningText: String, context: Context, navController: NavController) {
+        val updatedData = mapOf(
+            "notes" to notas,
+            "warningsLevel" to selectedWarningText
+        )
+
+        if(userID == null) return
+
+        try {
+            viewModelScope.launch {
+                FirebaseObj.updateData(DataConstants.FirebaseCollections.users, userID, updatedData)
+                navController.popBackStack()
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to update user info", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+
     }
 }
 

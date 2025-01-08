@@ -13,8 +13,11 @@
     <string name="full_name_text_field">Nome Completo</string>
     <string name="nationality_text_field">Nacionalidade</string>
     <string name="confirmpassword_textfield">Confirmar palavra-passe</string>
+    <string name="user_not_found">Utilizador não encontrado</string>
     <string name="reference_textfield">Referência</string>
     <string name="phoneNumber_textfield">Número de telefone</string>
+    <string name="notes_textfield">Notas</string>
+    <string name="warning_textfield">Aviso</string>
     <string name="homepage_Donate">Doação</string>
     <string name="homepage_AddItem">Adiciona um novo item</string>
     <string name="manageStock_AddItem">Adiciona um novo item</string>
