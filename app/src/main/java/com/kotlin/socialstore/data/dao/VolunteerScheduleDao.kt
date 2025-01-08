@@ -12,11 +12,17 @@ interface VolunteerScheduleDao {
     @Insert
     suspend fun insert(volunteerSchedule: VolunteerSchedule)
 
+    @Insert
+    suspend fun insertList(volunteerScheduleList: List<VolunteerSchedule>)
+
     @Query("SELECT * FROM volunteerSchedule")
     fun getAll(): Flow<List<VolunteerSchedule>>
 
     @Query("SELECT * FROM volunteerSchedule WHERE id = :id")
     fun getById(id: String): Flow<VolunteerSchedule>
+
+    @Query("DELETE FROM volunteerSchedule")
+    suspend fun deleteAll()
 
     @Delete
     suspend fun delete(volunteerSchedule: VolunteerSchedule)

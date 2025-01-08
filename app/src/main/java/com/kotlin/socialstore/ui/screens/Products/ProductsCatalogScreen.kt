@@ -101,10 +101,3 @@ fun ProductsCatalogPage(
         }
     }
 }
-
-@Preview(showSystemUi = true, showBackground = true)
-@Composable
-fun Preview() {
-    val productsCatalogViewModel = ProductsCatalogViewModel(LocalContext.current)
-    ProductsCatalogPage(navController = rememberNavController(), Modifier, productsCatalogViewModel)
-}
