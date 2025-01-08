@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens.Navigation
 
+import CheckOutViewModel
 import DashboardPage
 import DashboardViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
@@ -47,6 +48,7 @@ import com.kotlin.socialstore.ui.screens.HomePage
 import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.screens.MainScreen
 import com.kotlin.socialstore.ui.screens.ManageHousehold
+import com.kotlin.socialstore.ui.screens.Products.CheckOutScreen
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
@@ -213,9 +215,22 @@ fun AppNavigation() {
                     HomePage(navController, modifierCustom)
                 }
 
-                composable("products_screen") {
-                    val productsViewmodel = ProductsCatalogViewModel(LocalContext.current)
-                    ProductsCatalogPage(navController, modifierCustom, productsViewmodel)
+                composable("checkout/{userID}") { backstageEntry ->
+                    val userID = backstageEntry.arguments?.getString("userID")
+
+                    if (userID == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.user_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        val checkOutViewModel = CheckOutViewModel(context, userID)
+                        CheckOutScreen(navController, modifierCustom, checkOutViewModel)
+                    }
                 }
 
                 composable("manage_stock") {
