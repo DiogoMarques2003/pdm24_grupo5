@@ -71,7 +71,7 @@ class ManageUsersViewModel(
                 filterUsers()
 
             } catch (e: Exception) {
-                //Toast.makeText(context, "Error loading data", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error loading data", Toast.LENGTH_SHORT).show()
             } finally {
                 _userManagementState.value = _userManagementState.value.copy(isLoading = false)
             }
@@ -85,7 +85,10 @@ class ManageUsersViewModel(
             DataConstants.FirebaseCollections.users,
             null,
             { updateUsersListener(it, context) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() }
+            { Toast.makeText(context,
+              context.getString(R.string.error), Toast.LENGTH_SHORT)
+                .show()
+            }
         )
     }
 

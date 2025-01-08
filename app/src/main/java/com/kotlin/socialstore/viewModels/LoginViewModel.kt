@@ -49,7 +49,7 @@ class LoginViewModel(context: Context, val navController: NavController, val use
                 var userId: String? = FirebaseObj.loginAccount(email, password)
                     ?: return@launch Toast.makeText(
                         context,
-                        "Authentication failed.",
+                        context.getString(R.string.authentication_failed),
                         Toast.LENGTH_SHORT,
                     ).show()
 
@@ -58,7 +58,7 @@ class LoginViewModel(context: Context, val navController: NavController, val use
                     FirebaseObj.getData(DataConstants.FirebaseCollections.users, userId)
                         ?: return@launch Toast.makeText(
                             context,
-                            "Authentication failed.",
+                            context.getString(R.string.authentication_failed),
                             Toast.LENGTH_SHORT,
                         ).show()
 

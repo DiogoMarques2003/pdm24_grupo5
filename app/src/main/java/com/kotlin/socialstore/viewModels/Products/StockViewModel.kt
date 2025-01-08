@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.firestore.ListenerRegistration
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
@@ -98,19 +99,26 @@ class StockViewModel(
             DataConstants.FirebaseCollections.category,
             null,
             { updateCategoriesListener(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context, context.getString(R.string.error),
+                Toast.LENGTH_SHORT)
+                .show() })
 
         productsListener = FirebaseObj.listenToData(
             DataConstants.FirebaseCollections.stock,
             null,
             { updateProductsListener(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context, context.getString(R.string.error),
+                Toast.LENGTH_SHORT)
+                .show()
+            })
 
         storesListener = FirebaseObj.listenToData(
             DataConstants.FirebaseCollections.stores,
             null,
             { updateStoresListener(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context, context.getString(R.string.error),
+                Toast.LENGTH_SHORT)
+                .show() })
     }
 
     fun onDelete(item: Stock) {
@@ -118,7 +126,10 @@ class StockViewModel(
             try {
                 FirebaseObj.deleteData(DataConstants.FirebaseCollections.stock, item.id)
             } catch (e: Exception) {
-                Toast.makeText(context, "Erro ao apagar o produto", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,
+                    context.getString(R.string.erro_ao_apagar_o_produto),
+                    Toast.LENGTH_LONG).
+                show()
             }
         }
     }
@@ -129,7 +140,10 @@ class StockViewModel(
             try {
                 FirebaseObj.updateData(DataConstants.FirebaseCollections.stock, id, stock)
             } catch (e: Exception) {
-                Toast.makeText(context, "Erro ao editar o produto", Toast.LENGTH_LONG).show()
+                Toast.makeText(context,
+                    context.getString(R.string.erro_ao_editar_o_produto),
+                    Toast.LENGTH_LONG).
+                show()
             } finally {
                 isLoading.value = false
             }

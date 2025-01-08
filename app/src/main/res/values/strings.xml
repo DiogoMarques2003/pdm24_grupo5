@@ -277,4 +277,14 @@
     <string name="error_insert_schedule">Error creating new schedule</string>
     <string name="confirm">Confirm</string>
     <string name="to">to</string>
+    <string name="user_already_exists">User already exists</string>
+    <string name="add_people_to_your_household">Add people to your household</string>
+    <string name="Please_verify_your_email">Please verify your email. Changes will apply after verification</string>
+    <string name="Failed_to_update_email">Failed to update email</string>
+    <string name="picture_updated_successfully">Picture updated successfully</string>
+    <string name="failed_to_update_user_info">failed to update user info\n</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="error">Error</string>
+    <string name="erro_ao_apagar_o_produto">Error when turning off the product</string>
+    <string name="erro_ao_editar_o_produto">Error when turning off the product</string>
 </resources>

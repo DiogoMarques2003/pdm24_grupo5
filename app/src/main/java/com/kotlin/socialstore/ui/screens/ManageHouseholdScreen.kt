@@ -23,6 +23,7 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.viewModels.ManageHouseholdViewModel
 import kotlinx.coroutines.tasks.await
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 
 
@@ -34,9 +35,11 @@ fun ManageHousehold(
     val householdId by viewModel._householdId.collectAsState(null)
     val householdMembers by viewModel.householdMembers.collectAsState(emptyList())
     val currentUserId = FirebaseObj.getCurrentUser()?.uid
+    val context = LocalContext.current
 
     var showDialog by remember { mutableStateOf(false) }
     var emailInput by remember { mutableStateOf("") }
+
 
 
     Column(
@@ -173,12 +176,12 @@ fun ManageHousehold(
                     confirmButton = {
                         Button(
                             onClick = {
-                                viewModel.addUserToHousehold(emailInput)
+                                viewModel.addUserToHousehold(emailInput, context)
                                 emailInput = ""
                                 showDialog = false
                             }
                         ) {
-                            Text("Adicionar")
+                            Text(stringResource(R.string.add_people_to_your_household))
                         }
                     },
                     dismissButton = {
