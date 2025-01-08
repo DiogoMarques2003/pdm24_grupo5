@@ -4,21 +4,29 @@ import AddItemDialog
 import EditItemDialog
 import RowList
 import TopBar
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -54,7 +62,6 @@ fun ManageStockPage(
     val context = LocalContext.current
 
     val isLoading = viewModel.isLoading.collectAsState(false)
-    var resetSelection by remember { mutableStateOf(false) }
 
     //Stop listeners when leaving screen
     DisposableEffect(Unit) {
@@ -77,7 +84,59 @@ fun ManageStockPage(
     ) {
 
         Column(modifier = modifier.fillMaxSize()) {
-            TopBar(navController, stringResource(R.string.manageStock_Title), true)
+            AnimatedVisibility(visible = productsSelected.isEmpty()) {
+                TopBar(navController, stringResource(R.string.manageStock_Title), true)
+            }
+
+            AnimatedVisibility(visible = productsSelected.isNotEmpty()) {
+                Column {
+                    SelectionTopBar(
+                        selectedCount = productsSelected.size,
+                        totalCount = allProducts.size,
+                        onSelectAllClick = { isChecked ->
+                            productsSelected = if (isChecked) {
+                                allProducts.toList()
+                            } else {
+                                emptyList()
+                            }
+                        },
+                        onCloseSelection = {
+                            productsSelected = emptyList()
+                        },
+                        onDeleteClick = {
+                            for (stock in productsSelected) {
+                                viewModel.onDelete(stock)
+                            }
+
+                            productsSelected = emptyList()
+                        }
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = productsSelected.size == allProducts.size,
+                            onCheckedChange = { isChecked ->
+                                productsSelected = if (isChecked) {
+                                    allProducts.toList() // Select all
+                                } else {
+                                    emptyList() // Deselect all
+                                }
+                                //onSelectAllClick(isChecked)
+                            }
+                        )
+                        Text(
+                            text = "Select All",
+                            modifier = Modifier.padding(start = 0.dp),
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
 
             Box(modifier = Modifier.weight(1f)) {
                 RowList(
@@ -92,43 +151,22 @@ fun ManageStockPage(
                         item.picture ?: R.drawable.product_image_not_found
                     },
                     onItemClick = { },
-                    setSelectMultipleBehaviour = true,
-                    onItemsSelected = { items ->
-                        productsSelected = items
-                    },
-                    resetSelection = resetSelection
+                    selectionBehavior = SelectionBehavior(
+                        enabled = true,
+                        onItemsSelected = { items ->
+                            productsSelected = items
+                        },
+                        selectedItems = productsSelected
+                    )
                 )
             }
 
-
-            Column(
-                modifier = Modifier,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                ButtonElement(
-                    onClick = { showAddDialog = true },
-                    text = stringResource(R.string.manageStock_AddItem),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-
-                ButtonElement(
-                    onClick = {
-                        for (stock in productsSelected) {
-                            viewModel.onDelete(stock)
-                        }
-
-                        resetSelection = true
-                        productsSelected = emptyList()
-                    },
-                    enabled = productsSelected.isNotEmpty(),
-                    text = "Delete items selected",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                )
-            }
-
-
+            ButtonElement(
+                onClick = { showAddDialog = true },
+                text = stringResource(R.string.manageStock_AddItem),
+                modifier = Modifier
+                    .fillMaxWidth()
+            )
         }
     }
 
@@ -199,5 +237,63 @@ fun ItemEndContent(item: Stock, viewModel: StockViewModel) {
         EditItemDialog(item, viewModel, { showEditItemDialog = false })
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectionTopBar(
+    selectedCount: Int,
+    totalCount: Int,
+    onDeleteClick: () -> Unit,
+    onSelectAllClick: (Boolean) -> Unit,
+    onCloseSelection: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TopAppBar(
+        navigationIcon = {
+            IconButton(onClick = onCloseSelection) {
+                Icon(Icons.Default.Close, contentDescription = "Close selection")
+            }
+        },
+        title = {
+            Text("$selectedCount selected")
+        },
+        actions = {
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//                modifier = Modifier.padding(end = 8.dp)
+//            ) {
+//                Checkbox(
+//                    checked = selectedCount == totalCount && totalCount > 0,
+//                    onCheckedChange = { isChecked ->
+//                        onSelectAllClick(isChecked)
+//                    }
+//                )
+//                Text(
+//                    text = "Select All",
+//                    style = MaterialTheme.typography.bodyMedium
+//                )
+//            }
+
+            IconButton(onClick = onDeleteClick, enabled = selectedCount > 0) {
+                Icon(Icons.Default.Delete, contentDescription = "Delete selected items")
+            }
+
+//            // Select All / Deselect All button
+//            TextButton(onClick = onSelectAllClick) {
+//                Text(
+//                    text = if (selectedCount == totalCount) "Deselect All" else "Select All",
+//                    color = MaterialTheme.colorScheme.primary
+//                )
+//            }
+        },
+        modifier = Modifier
+    )
+}
+
+data class SelectionBehavior<T>(
+    val enabled: Boolean = false,
+    val onItemsSelected: (List<T>) -> Unit = {},
+    val selectedItems: List<T> = emptyList()
+)
 
 
