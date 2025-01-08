@@ -23,6 +23,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerLayoutType
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,13 +45,13 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerWithDialog(
-    modifier: Modifier = Modifier
+    timeSelected: MutableState<String>,
+    label: String,
 ) {
     val focusManager = LocalFocusManager.current
     val timeState = rememberTimePickerState(
         is24Hour = true
     )
-    var timeSelected by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     OutlinedTextfieldElement(
         modifier = Modifier
@@ -62,9 +63,9 @@ fun TimePickerWithDialog(
                     focusManager.clearFocus(force = true)
                 }
             },
-        onValueChange = { timeSelected = it },
-        value = timeSelected,
-        labelText = stringResource(R.string.date),
+        onValueChange = { timeSelected.value = it },
+        value = timeSelected.value,
+        labelText = label,
         leadingIcon = Icons.Filled.AccessTime,
         trailingIcon = {}
     )
@@ -91,7 +92,7 @@ fun TimePickerWithDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        text = "Select time"
+                        text = stringResource(R.string.select_time)
                     )
                     TimePicker(
                         state = timeState,
@@ -106,17 +107,17 @@ fun TimePickerWithDialog(
                             onClick = { showDialog = false }
                         ) {
                             Text(
-                                text = "Cancel"
+                                text = stringResource(R.string.cancel)
                             )
                         }
                         Button(
                             modifier = Modifier.padding(start = 8.dp),
                             onClick = {
-                                timeSelected = formattedTime(timeState.hour, timeState.minute)
+                                timeSelected.value = formattedTime(timeState.hour, timeState.minute)
                                 showDialog = false
                             }
                         ) {
-                            Text(text = "OK")
+                            Text(text = stringResource(R.string.ok))
                         }
                     }
                 }

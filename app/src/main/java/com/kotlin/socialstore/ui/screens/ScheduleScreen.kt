@@ -1,7 +1,9 @@
 package com.kotlin.socialstore.ui.screens
 
 import UiConstants
+import android.icu.text.SimpleDateFormat
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -51,38 +53,33 @@ import java.util.Locale
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DisplayMode
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.entity.Stores
+import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.data.entity.VolunteerSchedule
 import com.kotlin.socialstore.ui.elements.DatePickerElement
+import com.kotlin.socialstore.ui.elements.DropDownBox
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.TimePickerWithDialog
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Date
-import java.util.TimeZone
+import convertStringToDate
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SchedulePage(
@@ -94,9 +91,11 @@ fun SchedulePage(
     val context = LocalContext.current
     val allSchedules by scheduleViewModel.allSchedules.collectAsState(emptyList())
     val allVolunteers by scheduleViewModel.allVolunteers.collectAsState(emptyList())
+    val allStores by scheduleViewModel.allStores.collectAsState(emptyList())
+    val currUser by scheduleViewModel.currUser.collectAsState(null)
 
     //Ui variables
-    var currentdate by remember { mutableStateOf(LocalDate.now().withDayOfMonth(1)) }
+    var currentdate by remember { mutableStateOf(LocalDate.now()) }
     val monthName = currentdate.month.getDisplayName(TextStyle.FULL, Locale.getDefault())
         .replaceFirstChar { it.titlecaseChar() }
     val firstDayWeek = currentdate.minusDays(currentdate.dayOfWeek.value.toLong() - 1)
@@ -105,7 +104,15 @@ fun SchedulePage(
     var filteredSchedules by remember { mutableStateOf(emptyList<VolunteerSchedule>()) }
     var selectedData by remember { mutableStateOf<LocalDate>(LocalDate.now()) }
     var showDialog by remember { mutableStateOf(false) }
-    var expanded by remember { mutableStateOf(false) }
+    val selectedDate = remember { mutableStateOf("") }
+    val selectedInTime = remember { mutableStateOf("") }
+    val selectedOutTime = remember { mutableStateOf("") }
+    val expandedVol = remember { mutableStateOf(false) }
+    val expandedStore = remember { mutableStateOf(false) }
+    val selectedVol = remember { mutableStateOf("") }
+    val selectedVolId = remember { mutableStateOf("") }
+    val selectedStore = remember { mutableStateOf("") }
+    val selectedStoreId = remember { mutableStateOf("") }
 
     //get data
     LaunchedEffect(Unit) {
@@ -117,7 +124,9 @@ fun SchedulePage(
         val dateConv = localDateToDate(selectedData)
 
         filteredSchedules = allSchedules.filter {
-            it.day.date == dateConv.date
+            it.day.date == dateConv.date &&
+                    it.day.month == dateConv.month &&
+                    it.day.year == dateConv.year
         }
     }
 
@@ -139,7 +148,7 @@ fun SchedulePage(
                 )
             }
             Text(
-                monthName,
+                "$monthName ${currentdate.year}",
                 modifier = Modifier.align(Alignment.CenterVertically),
                 fontWeight = FontWeight.Bold
             )
@@ -193,7 +202,7 @@ fun SchedulePage(
                             Spacer(Modifier.size(UiConstants.itemSpacing))
                             Column {
                                 if (vol != null) {
-                                    Text(vol.name)
+                                    Text(vol.name, fontWeight = FontWeight.Bold)
                                 }
                                 Text(item.workFunction ?: "N/A")
                                 Text("Local: " + item.localId.toString())
@@ -214,26 +223,48 @@ fun SchedulePage(
         ) {
             Icon(Icons.Filled.Add, "Floating action button.")
         }
-
         if (showDialog) {
-            AddScheduleDialog(onDissmiss = {
-                showDialog = false
-            },
-                dropDown = {
-                    Button(onClick = {
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            allVolunteers.forEach { option ->
-                                DropdownMenuItem(
-                                    text  = { Text(option.name) },
-                                    onClick = { /* Do something... */ }
-                                )
-                            }
-                        }
-                    } ) { Text("Test") }
-                })
+            if (currUser != null) {
+                AddScheduleDialog(
+                    onDissmiss = {
+                        showDialog = false
+                    },
+                    volunteersList = allVolunteers,
+                    selectedDate = selectedDate,
+                    selectedInTime = selectedInTime,
+                    selectedOutTime = selectedOutTime,
+                    selectedVol = selectedVol,
+                    selectedVolId = selectedVolId,
+                    expandedVol = expandedVol,
+                    usertype = currUser!!.accountType,
+                    storesList = allStores,
+                    selectStore = selectedStore,
+                    selectStoreId = selectedStoreId,
+                    expandedStore = expandedStore
+                ) {
+                    val dateConv = convertStringToDate(selectedDate.value)
+                    if (dateConv != null) {
+                        scheduleViewModel.insertNewSchedule(
+                            VolunteerSchedule(
+                                id = "",
+                                accepted = false,
+                                day = dateConv,
+                                startTime = selectedInTime.value,
+                                endTime = selectedOutTime.value,
+                                localId = selectedStoreId.value,
+                                userID = selectedVolId.value,
+                                workFunction = null
+                            )
+                        )
+                    }
+                }
+            } else {
+                Toast.makeText(
+                    context,
+                    stringResource(R.string.error_creating_schedule),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 }
@@ -241,18 +272,79 @@ fun SchedulePage(
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScheduleDialog(onDissmiss: () -> Unit, dropDown: @Composable () -> Unit) {
-    var text by remember { mutableStateOf("Hello") }
-    val selectedDate = remember { mutableStateOf("") }
-
+fun AddScheduleDialog(
+    onDissmiss: () -> Unit, volunteersList: List<Users>,
+    storesList: List<Stores> = emptyList(),
+    selectStore: MutableState<String>,
+    selectStoreId: MutableState<String>,
+    selectedDate: MutableState<String>,
+    selectedInTime: MutableState<String>,
+    selectedOutTime: MutableState<String>,
+    selectedVol: MutableState<String>,
+    selectedVolId: MutableState<String>,
+    expandedVol: MutableState<Boolean>,
+    expandedStore: MutableState<Boolean>,
+    usertype: String,
+    onClick: () -> Unit
+) {
     BasicAlertDialog(onDismissRequest = onDissmiss,
         modifier = Modifier.fillMaxWidth(0.92f),
         properties = DialogProperties(dismissOnClickOutside = true),
         content = {
             Card(Modifier.fillMaxWidth()) {
-                dropDown()
-                DatePickerElement(selectedDate)
-                TimePickerWithDialog()
+                Column(
+                    modifier = Modifier.padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(stringResource(R.string.create_new_schedule), fontSize = 20.sp)
+                    if (usertype == DataConstants.AccountType.admin) {
+                        DropDownBox(expandedVol, selectedVol, stringResource(R.string.volunteer)) {
+                            volunteersList.forEach { vol ->
+                                DropdownMenuItem(
+                                    text = { Text(vol.name) },
+                                    onClick = {
+                                        expandedVol.value = false
+                                        selectedVol.value = vol.name
+                                        selectedVolId.value = vol.id
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    DatePickerElement(selectedDate)
+                    TimePickerWithDialog(selectedInTime, stringResource(R.string.start_time))
+                    TimePickerWithDialog(selectedOutTime, stringResource(R.string.end_time))
+                    if (storesList.isNotEmpty()) {
+                        DropDownBox(
+                            expandedStore,
+                            selectStore,
+                            stringResource(R.string.store_Sched)
+                        ) {
+                            storesList.forEach { store ->
+                                DropdownMenuItem(
+                                    text = { Text(store.name) },
+                                    onClick = {
+                                        expandedStore.value = false
+                                        selectStore.value = store.name
+                                        selectStoreId.value = store.id
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { onDissmiss() }) {
+                            Text(stringResource(R.string.cancel))
+                        }
+                        TextButton(onClick = {}) {
+                            Text("Confirm")
+                        }
+                    }
+
+                }
             }
         }
     )

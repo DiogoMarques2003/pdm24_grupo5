@@ -261,4 +261,11 @@
     <string name="fill_store">Fill in the item\'s store or default</string>
     <string name="item_inserted_stock">Items inserted on stock</string>
     <string name="condition">Condition</string>
+    <string name="select_time">Select time</string>
+    <string name="ok">Ok</string>
+    <string name="start_time">Start time</string>
+    <string name="end_time">End time</string>
+    <string name="store_Sched">Store</string>
+    <string name="create_new_schedule">Create new schedule</string>
+    <string name="error_creating_schedule">Error creating new schedule</string>
 </resources>

@@ -90,7 +90,7 @@ fun AppNavigation() {
 
             if (user != null) {
                 userType.value = user.accountType
-                startDestination = if (user.active) "schedule_screen" else "awaiting_approval_screen"
+                startDestination = if (user.active) "main_screen" else "awaiting_approval_screen"
             } else {
                 FirebaseObj.logoutAccount()
                 startDestination = "home_screen"
@@ -126,7 +126,7 @@ fun AppNavigation() {
         if (isStartDestinationDetermined) {
             NavHost(
                 navController = navController,
-                startDestination = "manage_stock"
+                startDestination = startDestination
             ) {
                 composable("login_screen") {
                     // Initialize view model

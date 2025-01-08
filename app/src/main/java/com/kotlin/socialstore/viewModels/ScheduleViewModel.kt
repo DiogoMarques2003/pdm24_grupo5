@@ -12,6 +12,7 @@ import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.data.entity.VolunteerSchedule
 import com.kotlin.socialstore.data.firebase.FirebaseObj
+import com.kotlin.socialstore.data.repository.StoresRepository
 import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.data.repository.VolunteerScheduleRepository
 import kotlinx.coroutines.launch
@@ -22,9 +23,12 @@ class ScheduleViewModel(context: Context) : ViewModel() {
     private var scheduleListener: ListenerRegistration? = null
     private val scheduleRepository = VolunteerScheduleRepository(database.volunteerScheduleDao())
     private val usersRepository = UsersRepository(database.usersDao())
+    private val storesRepository = StoresRepository(database.storesDao())
 
     val allSchedules = scheduleRepository.allVolunteerSchedule
     val allVolunteers = usersRepository.getByTypeAccount(DataConstants.AccountType.volunteer)
+    val allStores = storesRepository.allStores
+    val currUser = usersRepository.getById(FirebaseObj.getCurrentUser()!!.uid)
 
     fun getSchedules(context: Context) {
         scheduleListener = FirebaseObj.listenToData(
@@ -69,6 +73,16 @@ class ScheduleViewModel(context: Context) : ViewModel() {
 
             //Insert new data
             usersRepository.insertList(volunteersConv)
+        }
+    }
+
+    fun insertNewSchedule(data: VolunteerSchedule){
+        viewModelScope.launch {
+            /*
+           var volSched = data
+            volSched.
+            val volConv = VolunteerSchedule.firebaseMapToClass(it)
+            FirebaseObj.insertData(DataConstants.FirebaseCollections.volunteerSchedule,volConv)*/
         }
     }
 }
