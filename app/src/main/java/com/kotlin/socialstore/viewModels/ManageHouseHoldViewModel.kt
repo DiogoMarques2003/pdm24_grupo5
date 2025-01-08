@@ -2,9 +2,12 @@ package com.kotlin.socialstore.viewModels
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.database.AppDatabase
@@ -13,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.lang.ref.Reference
 
 class ManageHouseholdViewModel(context: Context) : ViewModel() {
 
@@ -105,7 +109,7 @@ class ManageHouseholdViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun addUserToHousehold(email: String) {
+    fun addUserToHousehold(email: String, context: Context) {
         val id = _householdId.value ?: return
 
         viewModelScope.launch {
@@ -114,6 +118,14 @@ class ManageHouseholdViewModel(context: Context) : ViewModel() {
                 if (!userQuery.isNullOrEmpty()) {
                     val userDocument = userQuery.first()
                     val userId = userDocument["id"] as String
+                    val userHouseholdId = userDocument["familyHouseholdID"] as? DocumentReference
+
+
+                    if (userHouseholdId!=null) {
+                        Toast.makeText(context, context.getString(R.string.user_already_exists), Toast.LENGTH_SHORT)
+                            .show()
+                        return@launch
+                    }
 
                     val householdReference = firestore.collection("familyHousehold").document(id)
                     FirebaseObj.updateData("users", userId, mapOf("familyHouseholdID" to householdReference))

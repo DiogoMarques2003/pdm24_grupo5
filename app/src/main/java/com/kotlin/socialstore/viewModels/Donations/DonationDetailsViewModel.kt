@@ -39,7 +39,9 @@ class DonationDetailsViewModel(context: Context, val donationId: String) : ViewM
             DataConstants.FirebaseCollections.donations,
             donationId,
             {updateDonationsListener(it)},
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context, context.getString(R.string.error),
+                Toast.LENGTH_SHORT)
+                .show() })
 
         viewModelScope.launch {
             try {

@@ -12,6 +12,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.auth.User
 import com.google.firebase.storage.FirebaseStorage
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
@@ -140,13 +142,12 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
                         logoutUser.value = true
                         Toast.makeText(
                             context,
-                            "Please verify your email. Changes will apply after verification.",
-                            Toast.LENGTH_LONG
-                        ).show()
+                            context.getString(R.string.Please_verify_your_email),
+                            Toast.LENGTH_LONG).show()
                     } else {
                         Toast.makeText(
                             context,
-                            "Failed to update email",
+                            context.getString(R.string.Failed_to_update_email),
                             Toast.LENGTH_LONG
                         ).show()
                     }
@@ -199,7 +200,10 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
                     .update("profilePic", imagePath)
                     .await()
 
-                Toast.makeText(context, "Profile picture updated successfully.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.picture_updated_successfully),
+                    Toast.LENGTH_SHORT)
                     .show()
             } catch (e: Exception) {
                 Log.e("ProfilePicture", "Error uploading profile picture: ${e.message}", e)
@@ -224,7 +228,10 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
             }
 
         } catch (e: Exception) {
-            Toast.makeText(context, "Failed to update user info", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                context.getString(R.string.failed_to_update_user_info),
+                Toast.LENGTH_SHORT)
                 .show()
         }
 

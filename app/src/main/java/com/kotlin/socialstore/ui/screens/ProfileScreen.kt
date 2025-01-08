@@ -149,8 +149,6 @@ fun ProfileScreen(
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
 
-                    //              Spacer(modifier = Modifier.height(16.dp))
-
 
                     LazyColumn(Modifier.weight(1f)) {
                         items(takenItems) { item ->

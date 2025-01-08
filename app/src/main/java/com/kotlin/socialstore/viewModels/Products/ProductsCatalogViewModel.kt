@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.ListenerRegistration
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
@@ -32,13 +33,18 @@ class ProductsCatalogViewModel(context: Context) : ViewModel() {
             DataConstants.FirebaseCollections.category,
             null,
             { updateCategoriesListener(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context,context.getString(R.string.error),
+                Toast.LENGTH_SHORT)
+                .show() })
 
         productsListener = FirebaseObj.listenToData(
             DataConstants.FirebaseCollections.stock,
             null,
             { updateProductsListener(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context,context.getString(R.string.error),
+                Toast.LENGTH_SHORT)
+                .show()
+            })
     }
 
     private fun updateCategoriesListener(categoriesList: List<Map<String, Any>>?) {
