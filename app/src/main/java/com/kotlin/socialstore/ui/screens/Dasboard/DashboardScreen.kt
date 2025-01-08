@@ -24,6 +24,9 @@ fun DashboardPage(
 ) {
     var selectedOption by remember { mutableStateOf("") }
 
+    //Background element
+    BackgroundImageElement()
+
     Column(
         modifier = modifier
             .fillMaxSize(),

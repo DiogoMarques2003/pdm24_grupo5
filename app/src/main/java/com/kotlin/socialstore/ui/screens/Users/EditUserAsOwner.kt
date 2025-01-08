@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebaseEmail
 import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebasePassword
-import com.kotlin.socialstore.ui.elements.NationalityDropdown
+import com.kotlin.socialstore.ui.elements.dropDown.NationalityDropdown
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PasswordTextField
 import com.kotlin.socialstore.ui.elements.PopBackButton
