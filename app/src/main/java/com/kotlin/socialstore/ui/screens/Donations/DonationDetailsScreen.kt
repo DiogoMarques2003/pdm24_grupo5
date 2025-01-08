@@ -28,7 +28,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,9 +42,8 @@ import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.ButtonElement
-import com.kotlin.socialstore.ui.elements.ConfirmPopup
+import com.kotlin.socialstore.ui.elements.dialogs.ConfirmPopup
 import com.kotlin.socialstore.ui.elements.LoadIndicator
-import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import formatWeekDay
 

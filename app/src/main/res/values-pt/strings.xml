@@ -275,6 +275,9 @@
     <string name="error_insert_schedule">"Erro ao criar novo agendamento "</string>
     <string name="confirm">Confirma</string>
     <string name="to">to</string>
+    <string name="status">Estado:</string>
+    <string name="household_notes">Notas do agregado familiar:</string>
+    <string name="edit_user">Editar utilizador</string>
     <string name="user_already_exists">O utilizador já existe</string>
     <string name="Manage_Household">"Gerenciar família "</string>
     <string name="profile_page_screen">Perfil</string>

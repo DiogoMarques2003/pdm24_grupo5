@@ -3,16 +3,17 @@ package com.kotlin.socialstore.data.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kotlin.socialstore.data.entity.VolunteerSchedule
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface VolunteerScheduleDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(volunteerSchedule: VolunteerSchedule)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertList(volunteerScheduleList: List<VolunteerSchedule>)
 
     @Query("SELECT * FROM volunteerSchedule")

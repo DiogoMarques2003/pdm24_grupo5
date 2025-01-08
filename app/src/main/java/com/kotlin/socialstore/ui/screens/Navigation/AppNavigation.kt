@@ -23,19 +23,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
-import com.kotlin.socialstore.data.dao.UsersDao
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.UsersRepository
-import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
-import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
+import com.kotlin.socialstore.ui.elements.navigationBar.AdminBottomNavigationBar
+import com.kotlin.socialstore.ui.elements.navigationBar.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.screens.Donations.DonationDetailsScreen
 import com.kotlin.socialstore.ui.screens.AwaitingApprovalScreen
@@ -57,7 +55,9 @@ import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.ui.screens.Users.EditUserAsAdminScreen
 import com.kotlin.socialstore.ui.screens.SchedulePage
 import com.kotlin.socialstore.ui.screens.SettingsScreen
+import com.kotlin.socialstore.ui.screens.Users.CheckInScreen
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
+import com.kotlin.socialstore.viewModels.CheckInViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.InsertItemsDonationViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
@@ -293,7 +293,6 @@ fun AppNavigation() {
                             navController.popBackStack()
                         }
                     } else {
-                        // TODO: Change for the screen to insert the donation items in the stock
                         val insertItemsDonationViewModel =
                             InsertItemsDonationViewModel(context, navController, donationId)
                         InsertItemsDonationScreen(
@@ -301,6 +300,24 @@ fun AppNavigation() {
                             modifierCustom,
                             insertItemsDonationViewModel
                         )
+                    }
+                }
+
+                composable("check_in/{userId}") { backstageEntry ->
+                    val userId = backstageEntry.arguments?.getString("userId")
+
+                    if (userId == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.user_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        val checkInViewModel = CheckInViewModel(context, userId)
+                        CheckInScreen(navController, modifierCustom, checkInViewModel)
                     }
                 }
             }
