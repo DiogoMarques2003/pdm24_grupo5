@@ -3,8 +3,10 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import java.sql.Date
-import java.sql.Time
+import java.sql.Timestamp
 
 @Entity(tableName = "volunteerSchedule")
 data class VolunteerSchedule(
@@ -19,13 +21,12 @@ data class VolunteerSchedule(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
-            "userId" to userID,
-            "day" to day.time, // Converte a data para timestamp
+            "userId" to FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.users, userID),
+            "day" to Timestamp(day.time), // Converte a data para timestamp
             "startTime" to startTime.toString(), // Converte Time para String
             "endTime" to endTime.toString(), // Converte Time para String
             "accepted" to accepted,
-            "localId" to localId,
+            "localId" to if (localId.isNullOrEmpty()) null else FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.stores, localId),
             "workFunction" to workFunction
         )
     }

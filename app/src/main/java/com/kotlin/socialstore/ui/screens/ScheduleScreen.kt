@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens
 
+import TopBar
 import UiConstants
 import android.icu.text.SimpleDateFormat
 import android.os.Build
@@ -61,6 +62,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -113,6 +115,7 @@ fun SchedulePage(
     val selectedVolId = remember { mutableStateOf("") }
     val selectedStore = remember { mutableStateOf("") }
     val selectedStoreId = remember { mutableStateOf("") }
+    val error = stringResource(R.string.error_insert_schedule)
 
     //get data
     LaunchedEffect(Unit) {
@@ -130,12 +133,23 @@ fun SchedulePage(
         }
     }
 
+    val dateConv = localDateToDate(selectedData)
+    filteredSchedules = allSchedules.filter {
+        it.day.date == dateConv.date &&
+                it.day.month == dateConv.month &&
+                it.day.year == dateConv.year
+    }
+
     //BackgroundImage
     BackgroundImageElement()
 
     Column(modifier.fillMaxSize()) {
+        TopBar(navController, stringResource(R.string.schedule_title))
+        HorizontalDivider()
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.Start),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -204,9 +218,11 @@ fun SchedulePage(
                                 if (vol != null) {
                                     Text(vol.name, fontWeight = FontWeight.Bold)
                                 }
+                                val storeName =
+                                    allStores.firstOrNull { it.id == item.localId }?.name
                                 Text(item.workFunction ?: "N/A")
-                                Text("Local: " + item.localId.toString())
-                                Text(item.startTime + " ás " + item.endTime)
+                                Text("${stringResource(R.string.store)}: $storeName")
+                                Text("${item.startTime} ${stringResource(R.string.to)} ${item.endTime}")
                             }
                         }
                     }
@@ -254,9 +270,10 @@ fun SchedulePage(
                                 localId = selectedStoreId.value,
                                 userID = selectedVolId.value,
                                 workFunction = null
-                            )
+                            ), context, error
                         )
                     }
+                    showDialog = false
                 }
             } else {
                 Toast.makeText(
@@ -339,8 +356,10 @@ fun AddScheduleDialog(
                         TextButton(onClick = { onDissmiss() }) {
                             Text(stringResource(R.string.cancel))
                         }
-                        TextButton(onClick = {}) {
-                            Text("Confirm")
+                        TextButton(onClick = {
+                            onClick()
+                        }) {
+                            Text(stringResource(R.string.confirm))
                         }
                     }
 
