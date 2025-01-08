@@ -14,6 +14,9 @@
     <string name="confirmpassword_textfield">Confirm Password</string>
     <string name="reference_textfield">Reference</string>
     <string name="phoneNumber_textfield">Phone Number</string>
+    <string name="notes_textfield">Notes</string>
+    <string name="warning_textfield">Warning</string>
+
     <string name="homepage_Donate">Donation</string>
     <string name="homepage_AddItem">Add new item</string>
     <string name="manageStock_AddItem">Add new item</string>
@@ -227,6 +230,7 @@
     <string name="date">Date</string>
     <string name="search_by_id">Search By Id</string>
     <string name="donation_not_found">Donation not found</string>
+    <string name="user_not_found">User not found</string>
     <string name="donation_items_not_found">Can\'t find donation items</string>
     <string name="donation_details_page_title">Donation Details</string>
     <string name="donation_schedule_not_found">Can\'t find donation schedule</string>
@@ -269,4 +273,8 @@
     <string name="create_new_schedule">Create new schedule</string>
     <string name="error_creating_schedule">Error creating new schedule</string>
     <string name="contactus">Contact Us</string>
+    <string name="schedule_title">Schedules</string>
+    <string name="error_insert_schedule">Error creating new schedule</string>
+    <string name="confirm">Confirm</string>
+    <string name="to">to</string>
 </resources>

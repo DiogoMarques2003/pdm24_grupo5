@@ -6,7 +6,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import java.sql.Date
-import java.sql.Time
+import java.sql.Timestamp
 
 @Entity(tableName = "volunteerSchedule")
 data class VolunteerSchedule(

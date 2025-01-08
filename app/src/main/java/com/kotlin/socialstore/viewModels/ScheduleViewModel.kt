@@ -2,11 +2,13 @@ package com.kotlin.socialstore.viewModels
 
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.auth.User
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Users
@@ -76,13 +78,14 @@ class ScheduleViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun insertNewSchedule(data: VolunteerSchedule){
+    fun insertNewSchedule(data: VolunteerSchedule, context: Context, errorString: String) {
         viewModelScope.launch {
-            /*
-           var volSched = data
-            volSched.
-            val volConv = VolunteerSchedule.firebaseMapToClass(it)
-            FirebaseObj.insertData(DataConstants.FirebaseCollections.volunteerSchedule,volConv)*/
+            val volConv = data.toFirebaseMap()
+            val result =
+                FirebaseObj.insertData(DataConstants.FirebaseCollections.volunteerSchedule, volConv)
+            if (result.isNullOrEmpty()) {
+                Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

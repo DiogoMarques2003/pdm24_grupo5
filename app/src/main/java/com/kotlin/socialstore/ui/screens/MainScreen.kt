@@ -183,14 +183,14 @@ fun MainScreen(
                             SubMenuSubmitVisit { navController.navigate("qrcode_reader_screen/profile_screen") }
                         }
                         item {
-                            SubMenuSchedules { navController.navigate("home_screen") }
+                            SubMenuSchedules { navController.navigate("schedule_screen") }
                         }
                         item {
-                            SubMenuAddItemsUser { navController.navigate("home_screen") }
+                            SubMenuAddItemsUser { navController.navigate("manage_st") }
                         }
                         item {
                             if (userData!!.accountType == DataConstants.AccountType.admin) {
-                                SubMenuManageUser { navController.navigate("home_screen") }
+                                SubMenuManageUser { navController.navigate("manage_users") }
                             }
                         }
                     }

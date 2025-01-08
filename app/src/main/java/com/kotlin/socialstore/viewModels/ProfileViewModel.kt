@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-class ProfileViewModel(context: Context) : ViewModel() {
+class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
     private var userListener: ListenerRegistration? = null
     private var takenItemsListener: ListenerRegistration? = null
@@ -48,8 +48,11 @@ class ProfileViewModel(context: Context) : ViewModel() {
     private val categoryRepository = CategoryRepository(database.categoryDao())
     private val currUser = FirebaseAuth.getInstance().currentUser
 
+
     val userData = userRepository.getById(currUser?.uid ?: "")
     var takenItems = takenItemsRepository.getTakenItemsByHousehold(currUser?.uid ?: "")
+    val userToEditAsAdmin = userRepository.getById(userID ?: "")
+
     val categories = categoryRepository.allCategories
 
     fun getUserInfo(context: Context) {
@@ -204,6 +207,28 @@ class ProfileViewModel(context: Context) : ViewModel() {
                     .show()
             }
         }
+    }
+
+    fun updateUserInfoAsAdmin(userID: String?, notas: String, selectedWarningText: String, context: Context, navController: NavController) {
+        val updatedData = mapOf(
+            "notes" to notas,
+            "warningsLevel" to selectedWarningText
+        )
+
+        if(userID == null) return
+
+        try {
+            viewModelScope.launch {
+                FirebaseObj.updateData(DataConstants.FirebaseCollections.users, userID, updatedData)
+                navController.popBackStack()
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to update user info", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+
     }
 }
 

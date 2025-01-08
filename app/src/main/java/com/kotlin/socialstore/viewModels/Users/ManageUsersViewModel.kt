@@ -58,7 +58,8 @@ class ManageUsersViewModel(
 
                 val usersConv = usersList.map {
                     Users.firebaseMapToClass(it).copy(
-                        profilePic = (it["profilePic"]?.toString()?.let { FirebaseObj.getImageUrl(it) })
+                        profilePic = (it["profilePic"]?.toString()
+                            ?.let { FirebaseObj.getImageUrl(it) })
                     )
                 }
 
@@ -70,24 +71,22 @@ class ManageUsersViewModel(
                 filterUsers()
 
             } catch (e: Exception) {
-                Toast.makeText(context, "Error loading data", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Error loading data", Toast.LENGTH_SHORT).show()
             } finally {
                 _userManagementState.value = _userManagementState.value.copy(isLoading = false)
             }
         }
     }
 
-    private fun fetchAllData(context: Context) {
-        viewModelScope.launch {
-            _userManagementState.value = _userManagementState.value.copy(isLoading = true)
+    fun fetchAllData(context: Context) {
+        _userManagementState.value = _userManagementState.value.copy(isLoading = true)
 
-            usersListener = FirebaseObj.listenToData(
-                DataConstants.FirebaseCollections.users,
-                null,
-                { updateUsersListener(it, context) },
-                { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() }
-            )
-        }
+        usersListener = FirebaseObj.listenToData(
+            DataConstants.FirebaseCollections.users,
+            null,
+            { updateUsersListener(it, context) },
+            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() }
+        )
     }
 
     fun setTabIndex(index: Int) {
@@ -116,17 +115,26 @@ class ManageUsersViewModel(
     fun updateUserStatus(userId: String, choice: Boolean) {
         viewModelScope.launch {
             try {
-                if(choice == false) {
+                if (choice == false) {
                     deleteUser(userId)
-                } else if(choice == true) {
-                    val updatedUser = _userManagementState.value.users.find { it.id == userId }?.copy(active = choice)
+                } else if (choice == true) {
+                    val updatedUser = _userManagementState.value.users.find { it.id == userId }
+                        ?.copy(active = choice)
                     if (updatedUser != null) {
-                        FirebaseObj.updateData(DataConstants.FirebaseCollections.users, userId, updatedUser.toFirebaseMap())
+                        FirebaseObj.updateData(
+                            DataConstants.FirebaseCollections.users,
+                            userId,
+                            updatedUser.toFirebaseMap()
+                        )
                     }
                 }
                 //fetchAllData(navController.context)
             } catch (e: Exception) {
-                Toast.makeText(navController.context, "Error updating user status", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    navController.context,
+                    "Error updating user status",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
