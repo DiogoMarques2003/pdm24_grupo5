@@ -59,6 +59,7 @@ fun CheckOutScreen(
     modifier: Modifier = Modifier,
     viewModel: CheckOutViewModel
 ) {
+    var selectedItems = viewModel.selectedItems.collectAsState()
     val userData by viewModel.userData.collectAsState(null)
     val allCategories by viewModel.allCategories.collectAsState(emptyList())
     val allProducts by viewModel.allStock.collectAsState(emptyList())
@@ -176,7 +177,7 @@ fun CheckOutScreen(
                                 viewModel.toggleItemSelection(item.id)
                             },
                             isItemSelected = { item ->
-                                viewModel.isItemSelected(item.id)
+                                selectedItems.value.contains(item.id)
                             }
                         )
                     }

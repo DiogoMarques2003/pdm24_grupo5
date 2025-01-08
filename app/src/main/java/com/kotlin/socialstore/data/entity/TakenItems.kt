@@ -28,7 +28,7 @@ data class TakenItems(
                 categoryID
             ),
             "quantity" to quantity,
-            "date" to date.time, // Converte a data para timestamp
+            "date" to date, // Converte a data para timestamp
             "voluntierId" to FirebaseObj.getReferenceById(
                 DataConstants.FirebaseCollections.users,
                 voluntierID

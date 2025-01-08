@@ -40,7 +40,6 @@ class CheckOutViewModel(
     private var productsListener: ListenerRegistration? = null
     private val categoriesRepository = CategoryRepository(database.categoryDao())
     private val productsRepository = StockRepository(database.stockDao())
-    private val currUser = FirebaseObj.getCurrentUser()
 
     private var userListener: ListenerRegistration? = null
 
@@ -48,34 +47,49 @@ class CheckOutViewModel(
     val allCategories = categoriesRepository.allCategories
     val allStock = productsRepository.allStock
 
-    private val _selectedItems = MutableStateFlow<Map<String, Int>>(emptyMap())
-    val selectedItems = _selectedItems.asStateFlow()
+    // Using MutableStateSet for better set operations
+    private val _selectedItems = MutableStateFlow<Set<String>>(emptySet())
+    val selectedItems: StateFlow<Set<String>> = _selectedItems
 
     private val _isConfirmEnabled = MutableStateFlow(false)
     val isConfirmEnabled: StateFlow<Boolean> = _isConfirmEnabled
 
+    // Track quantities separately
+    private val _itemQuantities = MutableStateFlow<Map<String, Int>>(emptyMap())
+    val itemQuantities: StateFlow<Map<String, Int>> = _itemQuantities
+
     fun isItemSelected(itemId: String): Boolean {
-        return _selectedItems.value.containsKey(itemId)
+        return _selectedItems.value.contains(itemId)
     }
 
-    // Toggle item selection with quantity management
     fun toggleItemSelection(itemId: String) {
-        _selectedItems.update { currentItems ->
-            if (currentItems.containsKey(itemId)) {
-                currentItems - itemId // Remove item
-            } else {
-                currentItems + (itemId to 1) // Add item with default quantity 1
-            }
+        val currentItems = _selectedItems.value.toMutableSet()
+        val currentQuantities = _itemQuantities.value.toMutableMap()
+
+        if (currentItems.contains(itemId)) {
+            // Remove item
+            currentItems.remove(itemId)
+            currentQuantities.remove(itemId)
+        } else {
+            // Add item with default quantity
+            currentItems.add(itemId)
+            currentQuantities[itemId] = 1
         }
+
+        _selectedItems.value = currentItems
+        _itemQuantities.value = currentQuantities
         updateConfirmButtonState()
     }
 
-    // Update item quantity
     fun updateItemQuantity(itemId: String, quantity: Int) {
         if (quantity <= 0) {
-            _selectedItems.update { it - itemId }
+            // Remove item if quantity is 0 or negative
+            _selectedItems.value = _selectedItems.value - itemId
+            _itemQuantities.value = _itemQuantities.value - itemId
         } else {
-            _selectedItems.update { it + (itemId to quantity) }
+            // Ensure item is in selected set and update quantity
+            _selectedItems.value = _selectedItems.value + itemId
+            _itemQuantities.value = _itemQuantities.value + (itemId to quantity)
         }
         updateConfirmButtonState()
     }
@@ -107,22 +121,14 @@ class CheckOutViewModel(
         )
     }
 
-
-
     private fun updateUserInfo(users: List<Map<String, Any>>?) {
         viewModelScope.launch {
-            //Get user
             val user = users?.firstOrNull() ?: return@launch
-
             val userConv = Users.firebaseMapToClass(user)
-
             userRepository.deleteById(userConv.id)
-
-            //Get Image
             if (userConv.profilePic != null) {
                 userConv.profilePic = FirebaseObj.getImageUrl(userConv.profilePic!!)
             }
-
             userRepository.insert(userConv)
         }
     }
@@ -130,14 +136,10 @@ class CheckOutViewModel(
     private fun updateCategoriesListener(categoriesList: List<Map<String, Any>>?) {
         viewModelScope.launch {
             if (categoriesList == null) {
-                //Delete all local data
                 return@launch categoriesRepository.deleteAll()
             }
-
             val categoriesConv = categoriesList.map { Category.firebaseMapToClass(it) }
-
             categoriesRepository.deleteAll()
-
             categoriesRepository.insertList(categoriesConv)
         }
     }
@@ -145,22 +147,17 @@ class CheckOutViewModel(
     private fun updateProductsListener(productsList: List<Map<String, Any>>?) {
         viewModelScope.launch {
             if (productsList == null) {
-                //Delete all local data
                 return@launch productsRepository.deleteAll()
             }
-
             val productsConv = productsList.map {
                 val stock = Stock.firebaseMapToClass(it)
-                if (stock.picture != null){
-                    stock.picture =  FirebaseObj.getImageUrl(stock.picture!!)
+                if (stock.picture != null) {
+                    stock.picture = FirebaseObj.getImageUrl(stock.picture!!)
                 }
                 stock
             }
-
             productsRepository.deleteAll()
-
             productsRepository.insertList(productsConv)
-
         }
     }
 
@@ -168,15 +165,16 @@ class CheckOutViewModel(
         viewModelScope.launch {
             val currentUser = userData.first() ?: return@launch
 
-            _selectedItems.value.forEach { (stockId, quantity) ->
+            _selectedItems.value.forEach { stockId ->
+                val quantity = _itemQuantities.value[stockId] ?: 1
                 val stockItem = allStock.first().find { it.id == stockId } ?: return@forEach
 
                 val takenItem = currentUser.familyHouseholdID?.let {
                     TakenItems(
                         id = "",
-                        voluntierID = currentUser.id,
                         familyHouseholdID = it,
                         categoryID = stockItem.categoryID,
+                        voluntierID = currentUser.id,
                         quantity = quantity,
                         date = Date(System.currentTimeMillis())
                     )
@@ -192,7 +190,9 @@ class CheckOutViewModel(
                 FirebaseObj.deleteData(DataConstants.FirebaseCollections.stock, stockId)
             }
 
-            _selectedItems.value = emptyMap()
+            // Clear selections after checkout
+            _selectedItems.value = emptySet()
+            _itemQuantities.value = emptyMap()
             updateConfirmButtonState()
         }
     }
