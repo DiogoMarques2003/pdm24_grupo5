@@ -158,8 +158,7 @@ fun CheckOutScreen(
                         TwoColumnGridList(
                             items = displayProducts,
                             itemContent = { product ->
-                                val category =
-                                    allCategories.find { it.id == product.categoryID }?.nome ?: ""
+                                val category = allCategories.find { it.id == product.categoryID }?.nome ?: ""
                                 ProductItemContent(product, category)
 
                                 if (productID.value == product.id) {
@@ -175,6 +174,9 @@ fun CheckOutScreen(
                             showAddButton = true,
                             onAddButtonClick = { item ->
                                 viewModel.toggleItemSelection(item.id)
+                            },
+                            isItemSelected = { item ->
+                                viewModel.isItemSelected(item.id)
                             }
                         )
                     }

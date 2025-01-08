@@ -129,7 +129,7 @@ fun AppNavigation() {
         if (isStartDestinationDetermined) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination
+                startDestination = "checkout/koYxXM2gQ7NCOy4PKsf3FCXUMOe2"
             ) {
                 composable("login_screen") {
                     // Initialize view model

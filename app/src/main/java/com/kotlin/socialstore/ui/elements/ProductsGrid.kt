@@ -42,7 +42,8 @@ fun ProductsGrid(stock: List<Stock>, categories: List<Category>) {
             productID.value = product.id
         },
         pictureProvider = { it.picture ?: R.drawable.product_image_not_found },
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        isItemSelected = { _ -> false }
     )
 }
 

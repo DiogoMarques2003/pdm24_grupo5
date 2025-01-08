@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
@@ -64,7 +65,7 @@ fun <T> TwoColumnGridList(
     columns: Int = 2,
     showAddButton: Boolean = false,
     onAddButtonClick: (T) -> Unit = {},
-    isItemSelected: (T) -> Boolean = { false }
+    isItemSelected: (T) -> Boolean
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
@@ -78,15 +79,12 @@ fun <T> TwoColumnGridList(
                 onClick = { onItemClick(item) }
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
-
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                        ) {
+                        Box(modifier = Modifier.fillMaxSize()) {
                             SubcomposeAsyncImage(
                                 model = pictureProvider(item),
                                 contentDescription = null,
@@ -96,7 +94,7 @@ fun <T> TwoColumnGridList(
                             )
                         }
 
-                        if(showAddButton) {
+                        if (showAddButton) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.BottomEnd)
@@ -110,8 +108,16 @@ fun <T> TwoColumnGridList(
                                     modifier = Modifier.size(100.dp)
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Default.Add,
-                                        contentDescription = "",
+                                        imageVector = if (isItemSelected(item)) {
+                                            Icons.Default.Delete
+                                        } else {
+                                            Icons.Default.Add
+                                        },
+                                        contentDescription = if (isItemSelected(item)) {
+                                            "Remove item"
+                                        } else {
+                                            "Add item"
+                                        },
                                         tint = Color.White,
                                         modifier = Modifier.size(25.dp)
                                     )

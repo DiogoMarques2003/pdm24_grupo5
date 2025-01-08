@@ -20,9 +20,11 @@ import com.kotlin.socialstore.data.repository.UsersRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -43,46 +45,77 @@ class CheckOutViewModel(
     private var userListener: ListenerRegistration? = null
 
     val userData = userRepository.getById(userID)
-
     val allCategories = categoriesRepository.allCategories
     val allStock = productsRepository.allStock
 
-    val selectedItemsSet = mutableSetOf<String>()
-    val _selectedItems = MutableStateFlow<Set<String>>(emptySet())
+    private val _selectedItems = MutableStateFlow<Map<String, Int>>(emptyMap())
     val selectedItems = _selectedItems.asStateFlow()
+
     private val _isConfirmEnabled = MutableStateFlow(false)
     val isConfirmEnabled: StateFlow<Boolean> = _isConfirmEnabled
 
+    fun isItemSelected(itemId: String): Boolean {
+        return _selectedItems.value.containsKey(itemId)
+    }
+
+    // Toggle item selection with quantity management
+    fun toggleItemSelection(itemId: String) {
+        _selectedItems.update { currentItems ->
+            if (currentItems.containsKey(itemId)) {
+                currentItems - itemId // Remove item
+            } else {
+                currentItems + (itemId to 1) // Add item with default quantity 1
+            }
+        }
+        updateConfirmButtonState()
+    }
+
+    // Update item quantity
+    fun updateItemQuantity(itemId: String, quantity: Int) {
+        if (quantity <= 0) {
+            _selectedItems.update { it - itemId }
+        } else {
+            _selectedItems.update { it + (itemId to quantity) }
+        }
+        updateConfirmButtonState()
+    }
+
+    private fun updateConfirmButtonState() {
+        _isConfirmEnabled.value = _selectedItems.value.isNotEmpty()
+    }
+
     fun getData(context: Context) {
-        //Add listener to firebase
         categoryListener = FirebaseObj.listenToData(
             DataConstants.FirebaseCollections.category,
             null,
             { updateCategoriesListener(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context, "Error loading categories", Toast.LENGTH_SHORT).show() }
+        )
 
         productsListener = FirebaseObj.listenToData(
             DataConstants.FirebaseCollections.stock,
             null,
             { updateProductsListener(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context, "Error loading products", Toast.LENGTH_SHORT).show() }
+        )
 
         userListener = FirebaseObj.listenToData(
             DataConstants.FirebaseCollections.users,
             userID,
             { updateUserInfo(it) },
-            { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+            { Toast.makeText(context, "Error loading user info", Toast.LENGTH_SHORT).show() }
+        )
     }
+
+
 
     private fun updateUserInfo(users: List<Map<String, Any>>?) {
         viewModelScope.launch {
             //Get user
             val user = users?.firstOrNull() ?: return@launch
 
-            //Convert firebase data to local db data
             val userConv = Users.firebaseMapToClass(user)
 
-            //Delete local data
             userRepository.deleteById(userConv.id)
 
             //Get Image
@@ -90,7 +123,6 @@ class CheckOutViewModel(
                 userConv.profilePic = FirebaseObj.getImageUrl(userConv.profilePic!!)
             }
 
-            //Insert new data
             userRepository.insert(userConv)
         }
     }
@@ -102,13 +134,10 @@ class CheckOutViewModel(
                 return@launch categoriesRepository.deleteAll()
             }
 
-            //Convert firebase data to local db data
             val categoriesConv = categoriesList.map { Category.firebaseMapToClass(it) }
 
-            //Delete all local data
             categoriesRepository.deleteAll()
 
-            //Insert new data
             categoriesRepository.insertList(categoriesConv)
         }
     }
@@ -120,7 +149,6 @@ class CheckOutViewModel(
                 return@launch productsRepository.deleteAll()
             }
 
-            //Convert firebase data to local db data
             val productsConv = productsList.map {
                 val stock = Stock.firebaseMapToClass(it)
                 if (stock.picture != null){
@@ -129,49 +157,52 @@ class CheckOutViewModel(
                 stock
             }
 
-            //Delete all local data
             productsRepository.deleteAll()
 
-            //Insert new data
             productsRepository.insertList(productsConv)
 
         }
     }
 
-    fun toggleItemSelection(itemId: String) {
-        _selectedItems.update { currentItems ->
-            if (currentItems.contains(itemId)) {
-                currentItems - itemId
-            } else {
-                currentItems + itemId
-            }
-        }
-
-        _isConfirmEnabled.value = _selectedItems.value.isNotEmpty()
-    }
-
     fun onCheckOut() {
         viewModelScope.launch {
-            for (stockID in selectedItemsSet) {
-                FirebaseObj.deleteData(DataConstants.FirebaseCollections.stock, stockID)
+            val currentUser = userData.first() ?: return@launch
 
-//                val updatedData = TakenItems(
-//                    id = "",
-//                    familyHouseholdID = userData,
-//                    categoryID =
-//                )
-//                FirebaseObj.insertData(DataConstants.FirebaseCollections.takenItems, )
+            _selectedItems.value.forEach { (stockId, quantity) ->
+                val stockItem = allStock.first().find { it.id == stockId } ?: return@forEach
+
+                val takenItem = currentUser.familyHouseholdID?.let {
+                    TakenItems(
+                        id = "",
+                        voluntierID = currentUser.id,
+                        familyHouseholdID = it,
+                        categoryID = stockItem.categoryID,
+                        quantity = quantity,
+                        date = Date(System.currentTimeMillis())
+                    )
+                }
+
+                if (takenItem != null) {
+                    FirebaseObj.insertData(
+                        DataConstants.FirebaseCollections.takenItems,
+                        takenItem.toFirebaseMap()
+                    )
+                }
+
+                FirebaseObj.deleteData(DataConstants.FirebaseCollections.stock, stockId)
             }
 
-
+            _selectedItems.value = emptyMap()
+            updateConfirmButtonState()
         }
-
     }
 
     fun stopListeners() {
         categoryListener?.remove()
-        categoryListener = null
         productsListener?.remove()
+        userListener?.remove()
+        categoryListener = null
         productsListener = null
+        userListener = null
     }
 }
