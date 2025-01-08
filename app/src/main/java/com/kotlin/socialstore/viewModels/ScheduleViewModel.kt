@@ -1,7 +1,9 @@
 package com.kotlin.socialstore.viewModels
 
 import android.content.Context
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +19,7 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.StoresRepository
 import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.data.repository.VolunteerScheduleRepository
+import compareTimes
 import kotlinx.coroutines.launch
 
 class ScheduleViewModel(context: Context) : ViewModel() {
@@ -84,13 +87,133 @@ class ScheduleViewModel(context: Context) : ViewModel() {
         }
     }
 
-    fun insertNewSchedule(data: VolunteerSchedule, context: Context, errorString: String) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun insertNewSchedule(data: VolunteerSchedule, context: Context) {
         viewModelScope.launch {
+            if ( data.endTime.isEmpty() || data.startTime.isEmpty() || data.localId.isNullOrEmpty() ){
+                Toast.makeText(context, context.getString(R.string.fill_fields), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            val compareTimes = compareTimes(data.startTime,data.endTime)
+            if (compareTimes == 0 || compareTimes == 1){
+                Toast.makeText(context, context.getString(R.string.valid_hours), Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+
             val volConv = data.toFirebaseMap()
             val result =
                 FirebaseObj.insertData(DataConstants.FirebaseCollections.volunteerSchedule, volConv)
             if (result.isNullOrEmpty()) {
-                Toast.makeText(context, errorString, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.error_insert_schedule), Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun editSchedule(
+        scheduleId: String,
+        delete: Boolean = false,
+        context: Context,
+        workFunction: String? = null
+    ) {
+        viewModelScope.launch {
+            if (delete  && workFunction.isNullOrEmpty()) {
+                val res = FirebaseObj.deleteData(
+                    DataConstants.FirebaseCollections.volunteerSchedule,
+                    scheduleId
+                )
+                if (res) {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.schdeule_removed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.error_remove_schedule),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else if(!delete  && workFunction.isNullOrEmpty()) {
+                val freshVolSchedData = FirebaseObj.getData(
+                    DataConstants.FirebaseCollections.volunteerSchedule,
+                    scheduleId
+                )
+                if (!freshVolSchedData.isNullOrEmpty()) {
+                    val firstVol = freshVolSchedData.firstOrNull()
+                    if (firstVol.isNullOrEmpty()) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.error_update_schedule),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@launch
+                    }
+                    var dataConv = VolunteerSchedule.firebaseMapToClass(firstVol)
+                    dataConv.accepted = !dataConv.accepted
+                    val res = FirebaseObj.updateData(
+                        DataConstants.FirebaseCollections.volunteerSchedule,
+                        scheduleId,
+                        dataConv.toFirebaseMap()
+                    )
+                    if (res) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.schedule_update),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.error_update_schedule),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.error_update_schedule),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            if (!workFunction.isNullOrEmpty()) {
+                val freshSchedData = FirebaseObj.getData(
+                    DataConstants.FirebaseCollections.volunteerSchedule,
+                    scheduleId
+                )
+                if (!freshSchedData.isNullOrEmpty()) {
+                    val firstVol = freshSchedData.firstOrNull()
+                    if (firstVol.isNullOrEmpty()) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.error_update_schedule),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@launch
+                    }
+                    var dataConvWork = VolunteerSchedule.firebaseMapToClass(firstVol)
+                    dataConvWork.workFunction = workFunction
+                    val res = FirebaseObj.updateData(
+                        DataConstants.FirebaseCollections.volunteerSchedule,
+                        scheduleId,
+                        dataConvWork.toFirebaseMap()
+                    )
+                    if (res) {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.schedule_update),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.error_update_schedule),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
     }

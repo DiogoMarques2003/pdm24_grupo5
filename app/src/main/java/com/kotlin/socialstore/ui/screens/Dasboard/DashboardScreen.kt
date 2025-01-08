@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.PopBackButton
 
 @Composable
@@ -22,6 +23,9 @@ fun DashboardPage(
     viewModel: DashboardViewModel
 ) {
     var selectedOption by remember { mutableStateOf("") }
+
+    //Background element
+    BackgroundImageElement()
 
     Column(
         modifier = modifier

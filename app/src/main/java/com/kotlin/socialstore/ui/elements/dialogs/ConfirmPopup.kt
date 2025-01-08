@@ -1,4 +1,4 @@
-package com.kotlin.socialstore.ui.elements
+package com.kotlin.socialstore.ui.elements.dialogs
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.AlertDialog
@@ -8,6 +8,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.ui.elements.ButtonElement
 
 @Composable
 fun ConfirmPopup(

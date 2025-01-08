@@ -277,4 +277,13 @@
     <string name="confirm">Confirm</string>
     <string name="to">to</string>
     <string name="function">Function</string>
+    <string name="delete">Delete</string>
+    <string name="schdeule_removed">Schedule removed successfully</string>
+    <string name="error_remove_schedule">Error removing schedule</string>
+    <string name="error_update_schedule">Error updating schedule</string>
+    <string name="work_function">Function</string>
+    <string name="choose_work_function">Choose work function</string>
+    <string name="schedule_update">Schedule updated</string>
+    <string name="fill_fields">Fill mandatory fields</string>
+    <string name="valid_hours">Insert valid hours</string>
 </resources>

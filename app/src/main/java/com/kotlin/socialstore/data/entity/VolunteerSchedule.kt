@@ -15,9 +15,9 @@ data class VolunteerSchedule(
     val day: Date,
     val startTime: String,
     val endTime: String,
-    val accepted: Boolean = false,
+    var accepted: Boolean = false,
     val localId: String?,
-    val workFunction: String?
+    var workFunction: String?
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
