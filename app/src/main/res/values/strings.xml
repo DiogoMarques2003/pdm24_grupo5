@@ -277,6 +277,9 @@
     <string name="error_insert_schedule">Error creating new schedule</string>
     <string name="confirm">Confirm</string>
     <string name="to">to</string>
+    <string name="status">Status:</string>
+    <string name="household_notes">Household Notes:</string>
+    <string name="edit_user">Edit User</string>
     <string name="function">Function</string>
     <string name="delete">Delete</string>
     <string name="schdeule_removed">Schedule removed successfully</string>

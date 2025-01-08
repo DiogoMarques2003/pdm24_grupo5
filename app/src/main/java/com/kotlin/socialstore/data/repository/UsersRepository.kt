@@ -4,6 +4,7 @@ import com.google.firebase.firestore.auth.User
 import com.kotlin.socialstore.data.dao.UsersDao
 import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.data.entity.Users
+import com.kotlin.socialstore.data.entity.UsersNotes
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -39,5 +40,9 @@ class UsersRepository(private val usersDao: UsersDao) {
 
     suspend fun deleteByTypeAccount(accountType: String){
         usersDao.deleteByTypeAccount(accountType)
+    }
+
+    fun getHouseholdNotes(householdId: String): Flow<List<UsersNotes>> {
+        return usersDao.getHouseholdNotes(householdId)
     }
 }

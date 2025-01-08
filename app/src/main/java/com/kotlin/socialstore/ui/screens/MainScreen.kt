@@ -180,13 +180,13 @@ fun MainScreen(
                             .height(220.dp)
                     ) {
                         item {
-                            SubMenuSubmitVisit { navController.navigate("qrcode_reader_screen/profile_screen") }
+                            SubMenuSubmitVisit { navController.navigate("qrcode_reader_screen/check_in") }
                         }
                         item {
                             SubMenuSchedules { navController.navigate("schedule_screen") }
                         }
                         item {
-                            SubMenuAddItemsUser { navController.navigate("manage_st") }
+                            SubMenuAddItemsUser { navController.navigate("qrcode_reader_screen/checkout") }
                         }
                         item {
                             if (userData!!.accountType == DataConstants.AccountType.admin) {

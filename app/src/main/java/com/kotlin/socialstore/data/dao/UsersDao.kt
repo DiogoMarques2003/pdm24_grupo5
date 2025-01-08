@@ -8,6 +8,7 @@ import androidx.room.Query
 import com.google.android.gms.common.internal.AccountType
 import com.google.firebase.firestore.auth.User
 import com.kotlin.socialstore.data.entity.Users
+import com.kotlin.socialstore.data.entity.UsersNotes
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -38,4 +39,7 @@ interface UsersDao {
 
     @Query("DELETE FROM users WHERE accountType = :accountType")
     suspend fun deleteByTypeAccount(accountType: String)
+
+    @Query("SELECT name, notes FROM users WHERE familyHouseholdID = :householdId")
+    fun getHouseholdNotes(householdId: String): Flow<List<UsersNotes>>
 }
