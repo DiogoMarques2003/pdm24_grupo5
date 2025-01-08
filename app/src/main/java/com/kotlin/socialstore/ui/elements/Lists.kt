@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
+import com.kotlin.socialstore.ui.screens.Products.SelectionBehavior
 
 @Composable
 fun <T> TwoColumnGridList(
@@ -91,46 +92,48 @@ fun <T> TwoColumnGridList(
 fun <T> RowList(
     items: List<T>,
     itemContent: @Composable (T) -> Unit,
-    itemEndContet: @Composable (T) -> Unit,
+    itemEndContet: @Composable (T) -> Unit = {},
     pictureProvider: (T) -> Any?,
     onItemClick: (T) -> Unit,
     modifier: Modifier = Modifier,
-    setSelectMultipleBehaviour: Boolean = false,
-    onItemsSelected: (List<T>) -> Unit = {},
-    resetSelection: Boolean = false
+    selectionBehavior: SelectionBehavior<T>? = null
 ) {
     var itemsSelected by remember { mutableStateOf<List<T>>(emptyList()) }
 
-    LaunchedEffect(resetSelection) {
-        if (resetSelection) {
-            itemsSelected = emptyList()
+    LaunchedEffect(selectionBehavior?.selectedItems) {
+        selectionBehavior?.selectedItems?.let {
+            itemsSelected = it
         }
     }
 
-    LazyColumn(
-        modifier = modifier
-    ) {
-        items(items) { item ->
+    LazyColumn(modifier = modifier) {
+        items(
+            items = items,
+            key = { it.hashCode() }
+        ) { item ->
             val isSelected = itemsSelected.contains(item)
 
             ElevatedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = UiConstants.itemSpacing)
+                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                    .animateItemPlacement()
                     .combinedClickable(
                         onLongClick = {
-                            if(!setSelectMultipleBehaviour) return@combinedClickable
+                            if (selectionBehavior?.enabled != true) return@combinedClickable
 
                             itemsSelected = if (isSelected) {
-                                itemsSelected.filter { it != item }
+                                itemsSelected - item
                             } else {
                                 itemsSelected + item
                             }
-                            onItemsSelected(itemsSelected)
+                            selectionBehavior.onItemsSelected(itemsSelected)
                         },
-                        onClick = { },
+                        onClick = { onItemClick(item) },
                     ),
-                colors = if (isSelected) CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) else
+                colors = if (isSelected)
+                    CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+                else
                     CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
                 shape = RoundedCornerShape(8.dp),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -138,7 +141,7 @@ fun <T> RowList(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
+                        .padding(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(13.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -150,11 +153,11 @@ fun <T> RowList(
                             modifier = Modifier
                                 .size(60.dp)
                                 .clickable {
-                                    if(!setSelectMultipleBehaviour) return@clickable
+                                    if (selectionBehavior?.enabled != true) return@clickable
 
                                     if (itemsSelected.isNotEmpty()) {
                                         itemsSelected = itemsSelected + item
-                                        onItemsSelected(itemsSelected)
+                                        selectionBehavior.onItemsSelected(itemsSelected)
                                     }
                                 }
                                 .clip(CircleShape),
@@ -166,12 +169,10 @@ fun <T> RowList(
                                 .size(60.dp)
                                 .clip(CircleShape),
                             onClick = {
-                                if(!setSelectMultipleBehaviour) return@IconButton
+                                if (selectionBehavior?.enabled != true) return@IconButton
 
-                                if(itemsSelected.isNotEmpty()) {
-                                    itemsSelected = itemsSelected.filter{ it != item }
-                                    onItemsSelected(itemsSelected)
-                                }
+                                itemsSelected = itemsSelected - item
+                                selectionBehavior.onItemsSelected(itemsSelected)
                             }
                         ) {
                             Icon(

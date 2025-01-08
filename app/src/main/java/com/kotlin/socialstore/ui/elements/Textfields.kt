@@ -13,15 +13,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import com.kotlin.socialstore.R
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
@@ -32,25 +31,29 @@ fun OutlinedTextfieldElement(
     onValueChange: (String) -> Unit,
     labelText: String,
     leadingIcon: ImageVector? = null,
+    leadingIconColor: Color = Color.Unspecified,
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     isError: Boolean = false,
-    readOnly: Boolean = false
+    readOnly: Boolean = false,
+    enabled: Boolean = true,
+    singleLine: Boolean = true
 ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(labelText) },
         modifier = modifier,
-        leadingIcon = if (leadingIcon != null) {{Icon(imageVector = leadingIcon, null) } }else null ,
-        singleLine = true,
+        leadingIcon = if (leadingIcon != null) {{Icon(imageVector = leadingIcon, null, tint = leadingIconColor) } }else null ,
+        singleLine = singleLine,
         trailingIcon = trailingIcon,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
         visualTransformation = visualTransformation,
         shape = UiConstants.outlinedTextFieldElementShape,
         isError = isError,
-        readOnly = readOnly
+        readOnly = readOnly,
+        enabled = enabled
     )
 }
 

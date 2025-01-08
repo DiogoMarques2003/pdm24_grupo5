@@ -29,6 +29,8 @@ import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.ui.theme.SocialStoreTheme
 import androidx.compose.material3.MaterialTheme
 import TopBar
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,6 +43,7 @@ fun ManageUsersPage(
 
     var state by remember { mutableStateOf(0) }
     val titles = listOf("Volunteers", "Beneficiaries")
+    val context = LocalContext.current
 
     //Stop listeners when leaving screen
     DisposableEffect(Unit) {
@@ -116,8 +119,8 @@ fun ManageUsersPage(
                         viewModel.updateUserStatus(user.id, true)
                     }, onDeny = {
                         viewModel.updateUserStatus(user.id, false)
-                    }, onEdit = {
-                        // composable para a outra tela
+                    }, onEdit = { userID ->
+                        navController.navigate("edit_profile_as_admin_screen/" + user.id)
                     })
                 }
             }
@@ -130,7 +133,7 @@ fun UserCard(
     user: Users,
     onApprove: () -> Unit,
     onDeny: () -> Unit,
-    onEdit: () -> Unit
+    onEdit: (userID: String) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
@@ -140,7 +143,8 @@ fun UserCard(
             Image(
                 painter = rememberAsyncImagePainter(user.profilePic ?: R.drawable.profile_image_not_found ),
                 contentDescription = null,
-                modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Gray)
+                modifier = Modifier.size(48.dp).clip(CircleShape).background(Color.Gray),
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -163,7 +167,7 @@ fun UserCard(
                 }
                 true -> {
                     if (user.accountType == DataConstants.AccountType.benefiaryy) {
-                        IconButton(onClick = onEdit) {
+                        IconButton(onClick = { onEdit(user.id) }) {
                             Icon(Icons.Default.Edit, contentDescription = "Edit")
                         }
                     }

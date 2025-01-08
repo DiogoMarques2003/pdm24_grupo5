@@ -52,6 +52,7 @@ import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
 import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
 import com.kotlin.socialstore.ui.screens.RegisterPage
+import com.kotlin.socialstore.ui.screens.Users.EditUserAsAdminScreen
 import com.kotlin.socialstore.ui.screens.SchedulePage
 import com.kotlin.socialstore.ui.screens.SettingsScreen
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
@@ -181,6 +182,23 @@ fun AppNavigation() {
                 composable("edit_profile_screen") {
                     val profileViewModel = ProfileViewModel(context)
                     EditProfileScreen(navController, modifierCustom, profileViewModel)
+                }
+                composable("edit_profile_as_admin_screen/{userID}") { backstageEntry ->
+                    val userID = backstageEntry.arguments?.getString("userID")
+
+                    if (userID == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.user_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        val profileViewModel = ProfileViewModel(context, userID)
+                        EditUserAsAdminScreen(navController, modifierCustom, profileViewModel)
+                    }
                 }
 
                 composable("qrcode_reader_screen/{next_screen}") { backStackEntry ->
