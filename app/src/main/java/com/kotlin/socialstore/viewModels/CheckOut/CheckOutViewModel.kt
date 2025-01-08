@@ -169,7 +169,7 @@ class CheckOutViewModel(
                 val quantity = _itemQuantities.value[stockId] ?: 1
                 val stockItem = allStock.first().find { it.id == stockId } ?: return@forEach
 
-                val takenItem = currentUser.familyHouseholdID?.let {
+                val takenItem = userData.first().familyHouseholdID?.let {
                     TakenItems(
                         id = "",
                         familyHouseholdID = it,
