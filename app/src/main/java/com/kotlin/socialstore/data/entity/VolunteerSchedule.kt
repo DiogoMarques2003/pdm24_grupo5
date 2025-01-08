@@ -21,20 +21,28 @@ data class VolunteerSchedule(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "userId" to FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.users, userID),
-            "day" to Timestamp(day.time), // Converte a data para timestamp
+            "id" to id,
+            "userId" to FirebaseObj.getReferenceById(
+                DataConstants.FirebaseCollections.users,
+                userID
+            ),
+            "day" to day.time, // Converte a data para timestamp
             "startTime" to startTime.toString(), // Converte Time para String
             "endTime" to endTime.toString(), // Converte Time para String
             "accepted" to accepted,
-            "localId" to if (localId.isNullOrEmpty()) null else FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.stores, localId),
+            "localId" to if (localId.isNullOrEmpty()) null
+            else FirebaseObj.getReferenceById(
+                DataConstants.FirebaseCollections.stores,
+                localId
+            ),
             "workFunction" to workFunction
         )
     }
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): VolunteerSchedule {
-            val userReference= data["userId"] as? DocumentReference
-            val localReference= data["localId"] as? DocumentReference
+            val userReference = data["userId"] as? DocumentReference
+            val localReference = data["localId"] as? DocumentReference
 
             // Convert date
             val timestamp = data["day"] as com.google.firebase.Timestamp

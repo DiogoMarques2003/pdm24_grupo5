@@ -38,6 +38,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+
 class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
     private var userListener: ListenerRegistration? = null
@@ -47,9 +48,11 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     private val categoryRepository = CategoryRepository(database.categoryDao())
     private val currUser = FirebaseAuth.getInstance().currentUser
 
-    val userData = userRepository.getById(currUser!!.uid)
+
+    val userData = userRepository.getById(currUser?.uid ?: "")
+    var takenItems = takenItemsRepository.getTakenItemsByHousehold(currUser?.uid ?: "")
     val userToEditAsAdmin = userRepository.getById(userID ?: "")
-    var takenItems = takenItemsRepository.getTakenItemsByHousehold(currUser!!.uid)
+
     val categories = categoryRepository.allCategories
 
     fun getUserInfo(context: Context) {
@@ -112,13 +115,16 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
         password: String,
         phoneNumber: String,
         nationality: String,
-        context: Context
+        context: Context,
+        navController: NavController
     ) {
         viewModelScope.launch {
             try {
+                val userDataDB = userData.first()
+                val logoutUser = mutableStateOf(false)
+
                 val updatedData = mapOf(
                     "name" to name,
-                    "email" to email,
                     "phoneNumber" to phoneNumber,
                     "nationality" to nationality
                 )
@@ -128,16 +134,36 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
                     .update(updatedData)
                     .await()
 
-                updateFirebaseEmail(email) { emailSuccess, emailError ->
-                    if (!emailSuccess) {
-                        Log.e("ProfileUpdate", "Failed to update email: $emailError")
+                if (email.isNotEmpty() && email != userDataDB.email) {
+                    val success = updateFirebaseEmail(email)
+                    if (success) {
+                        logoutUser.value = true
+                        Toast.makeText(
+                            context,
+                            "Please verify your email. Changes will apply after verification.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Failed to update email",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
 
-                updateFirebasePassword(password) { passwordSuccess, passwordError ->
-                    if (!passwordSuccess) {
-                        Log.e("ProfileUpdate", "Failed to update password: $passwordError")
+                if (password.isNotEmpty()) {
+                    updateFirebasePassword(password) { passwordSuccess, passwordError ->
+                        if (!passwordSuccess) {
+                            Log.e("ProfileUpdate", "Failed to update password: $passwordError")
+                        }
                     }
+                }
+
+                if (logoutUser.value) {
+                    logoutUser(navController)
+                } else {
+                    navController.popBackStack()
                 }
 
             } catch (e: Exception) {
@@ -149,7 +175,7 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     fun logoutUser(navController: NavController) {
         viewModelScope.launch {
             userRepository.deleteById(currUser!!.uid)
-            FirebaseAuth.getInstance().signOut()
+            FirebaseObj.logoutAccount()
             navController.navigate("login_screen") {
                 popUpTo(0) { inclusive = true }
             }

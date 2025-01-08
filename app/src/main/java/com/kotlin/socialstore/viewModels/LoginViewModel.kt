@@ -66,6 +66,17 @@ class LoginViewModel(context: Context, val navController: NavController, val use
                 val usersConverted = firebaseUser.map { Users.firebaseMapToClass(it) }
                 val user = usersConverted.first()
 
+                // Check if auth user is changed
+                val authEmail = FirebaseObj.getCurrentUser()?.email
+                if (!authEmail.isNullOrBlank() && authEmail != user.email) {
+                    user.email = authEmail
+                    FirebaseObj.updateData(
+                        DataConstants.FirebaseCollections.users,
+                        user.id,
+                        user.toFirebaseMap()
+                    )
+                }
+
                 // Inserir na base de dados local
                 usersRepository.insert(user)
 
