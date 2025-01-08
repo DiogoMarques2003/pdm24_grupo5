@@ -30,7 +30,7 @@ fun AdminBottomNavigationBar(navController: NavController) {
         )
         NavigationBarItem(
             selected = currentRoute == "dashboard_screen",
-            onClick = { navController.navigate("main_screen") },
+            onClick = { navController.navigate("dashboard_screen") },
             icon = { Icon(Icons.Default.Dashboard, contentDescription = "Dashboard") },
             label = { Text("Dashboard") }
         )
