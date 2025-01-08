@@ -11,7 +11,7 @@ data class DonationsItems(
     @PrimaryKey(autoGenerate = false) val id: String,
     val donationID: String,
     val categoryID: String,
-    val picture: String?,
+    var picture: String?,
     val state: String,
     val size: String?,
     val description: String?,
@@ -19,8 +19,7 @@ data class DonationsItems(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
-            "donationID" to donationID,
+            "donationID" to FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.donations, donationID),
             "categoryID" to FirebaseObj.getReferenceById(DataConstants.FirebaseCollections.category, categoryID),
             "picture" to picture,
             "state" to state,
@@ -32,8 +31,10 @@ data class DonationsItems(
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): DonationsItems {
-            val donationReference = data["donationScheduleID"] as? DocumentReference
+            val donationReference = data["donationID"] as? DocumentReference
             val categoryReference = data["categoryID"] as? DocumentReference
+
+            val quantity = data["quantity"] as Long
 
             return DonationsItems(
                 id = data["id"] as String,
@@ -43,7 +44,7 @@ data class DonationsItems(
                 state = data["state"] as String,
                 size = data["size"] as? String,
                 description = data["description"] as? String,
-                quantity = data["quantity"] as Int
+                quantity = quantity.toInt()
             )
         }
     }

@@ -1,6 +1,7 @@
 package com.kotlin.socialstore.ui.screens.Donations
 
 import AddDonationItemDialog
+import TopBar
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +23,6 @@ import com.kotlin.socialstore.data.entity.DonationsItems
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PopBackButton
-import com.kotlin.socialstore.ui.elements.TitleTextElement
 import com.togitech.ccp.component.TogiCountryCodePicker
 import formatWeekDay
 
@@ -53,22 +53,7 @@ fun SubmitDonationPage(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = UiConstants.defaultPadding),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            PopBackButton(navController)
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                TitleTextElement(
-                    text = "New Donation"
-                )
-            }
-        }
+        TopBar(navController, "New Donation", true)
 
         OutlinedTextfieldElement(
             value = fullName,

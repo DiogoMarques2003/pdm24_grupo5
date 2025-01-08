@@ -22,38 +22,45 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.dao.UsersDao
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.repository.UsersRepository
 import com.kotlin.socialstore.ui.elements.AdminBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.BeneficiaryBottomNavigationBar
 import com.kotlin.socialstore.ui.elements.LoadIndicator
+import com.kotlin.socialstore.ui.screens.Donations.DonationDetailsScreen
 import com.kotlin.socialstore.ui.screens.AwaitingApprovalScreen
-import com.kotlin.socialstore.ui.screens.DonationDetailsScreen
 import com.kotlin.socialstore.ui.screens.Donations.DonationSuccessPage
+import com.kotlin.socialstore.ui.screens.Donations.InsertItemsDonationScreen
+import com.kotlin.socialstore.ui.screens.Donations.ListDonationsScreen
 import com.kotlin.socialstore.ui.screens.Donations.SubmitDonationPage
 import com.kotlin.socialstore.ui.screens.Users.EditProfileScreen
 import com.kotlin.socialstore.ui.screens.HomePage
-import com.kotlin.socialstore.ui.screens.ListDonationsScreen
 import com.kotlin.socialstore.ui.screens.LoginPage
 import com.kotlin.socialstore.ui.screens.MainScreen
+import com.kotlin.socialstore.ui.screens.ManageHousehold
 import com.kotlin.socialstore.ui.screens.Products.ManageStockPage
 import com.kotlin.socialstore.ui.screens.Products.ProductsCatalogPage
 import com.kotlin.socialstore.ui.screens.ProfileScreen
 import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
 import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.ui.screens.SchedulePage
+import com.kotlin.socialstore.ui.screens.SettingsScreen
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
-import com.kotlin.socialstore.viewModels.DonationDetailsViewModel
+import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
+import com.kotlin.socialstore.viewModels.Donations.InsertItemsDonationViewModel
 import com.kotlin.socialstore.viewModels.Donations.ListDonationsViewModel
 import com.kotlin.socialstore.viewModels.LoginViewModel
 import com.kotlin.socialstore.viewModels.MainPageViewModel
+import com.kotlin.socialstore.viewModels.ManageHouseholdViewModel
 import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
@@ -119,7 +126,7 @@ fun AppNavigation() {
         if (isStartDestinationDetermined) {
             NavHost(
                 navController = navController,
-                startDestination = startDestination
+                startDestination = "manage_stock"
             ) {
                 composable("login_screen") {
                     // Initialize view model
@@ -157,7 +164,8 @@ fun AppNavigation() {
                 }
 
                 composable("manage_users") {
-                    val manageUsersViewModel = ManageUsersViewModel(LocalContext.current, navController)
+                    val manageUsersViewModel =
+                        ManageUsersViewModel(LocalContext.current, navController)
                     ManageUsersPage(navController, modifierCustom, manageUsersViewModel)
                 }
 
@@ -165,6 +173,11 @@ fun AppNavigation() {
                     val profileViewModel = ProfileViewModel(LocalContext.current)
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
+
+                composable("settings_screen"){
+                    SettingsScreen(navController = navController)
+                }
+
                 composable("edit_profile_screen") {
                     val profileViewModel = ProfileViewModel(context)
                     EditProfileScreen(navController, modifierCustom, profileViewModel)
@@ -203,6 +216,11 @@ fun AppNavigation() {
 
                 }
 
+                composable("manage_household") {
+                    val manageHouseholdViewModel = ManageHouseholdViewModel(LocalContext.current)
+                    ManageHousehold(navController, manageHouseholdViewModel)
+                }
+
                 composable("donation_screen/{donationId}") { backstageEntry ->
                     val donationId = backstageEntry.arguments?.getString("donationId")
 
@@ -228,10 +246,33 @@ fun AppNavigation() {
                     val scheduleViewModel = ScheduleViewModel(context)
                     SchedulePage(modifierCustom, navController, scheduleViewModel)
                 }
+
+                composable("donation_insert_product/{donationId}") { backstageEntry ->
+                    val donationId = backstageEntry.arguments?.getString("donationId")
+
+                    if (donationId == null) {
+                        LaunchedEffect(Unit) {
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.donation_not_found),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.popBackStack()
+                        }
+                    } else {
+                        // TODO: Change for the screen to insert the donation items in the stock
+                        val insertItemsDonationViewModel =
+                            InsertItemsDonationViewModel(context, navController, donationId)
+                        InsertItemsDonationScreen(
+                            navController,
+                            modifierCustom,
+                            insertItemsDonationViewModel
+                        )
+                    }
+                }
             }
         } else {
             LoadIndicator(modifierCustom)
         }
     }
-
 }

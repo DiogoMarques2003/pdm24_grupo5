@@ -5,6 +5,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.firebase.firestore.ListenerRegistration
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
@@ -16,6 +17,7 @@ import com.kotlin.socialstore.data.repository.CategoryRepository
 import com.kotlin.socialstore.data.repository.StockRepository
 import com.kotlin.socialstore.data.repository.StoresRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
@@ -34,6 +36,8 @@ class StockViewModel(
     val allStock = stockRepository.allStock
     val allCategories = categoriesRepository.allCategories
     val allStores = storesRepository.allStores
+
+    var isLoading = MutableStateFlow(false)
 
     fun addStock(
         description: String,
@@ -107,6 +111,29 @@ class StockViewModel(
             null,
             { updateStoresListener(it) },
             { Toast.makeText(context, "Erro", Toast.LENGTH_SHORT).show() })
+    }
+
+    fun onDelete(item: Stock) {
+        viewModelScope.launch {
+            try {
+                FirebaseObj.deleteData(DataConstants.FirebaseCollections.stock, item.id)
+            } catch (e: Exception) {
+                Toast.makeText(context, "Erro ao apagar o produto", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    fun editProduct(id: String, stock: Map<String, Any>) {
+        viewModelScope.launch {
+            isLoading.value = true
+            try {
+                FirebaseObj.updateData(DataConstants.FirebaseCollections.stock, id, stock)
+            } catch (e: Exception) {
+                Toast.makeText(context, "Erro ao editar o produto", Toast.LENGTH_LONG).show()
+            } finally {
+                isLoading.value = false
+            }
+        }
     }
 
     private fun updateCategoriesListener(categoriesList: List<Map<String, Any>>?) {

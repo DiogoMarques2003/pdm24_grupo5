@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.data.repository
 
+import com.google.firebase.firestore.auth.User
 import com.kotlin.socialstore.data.dao.UsersDao
 import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.data.entity.Users

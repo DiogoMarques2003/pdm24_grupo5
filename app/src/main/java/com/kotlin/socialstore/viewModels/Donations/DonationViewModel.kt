@@ -104,7 +104,7 @@ class DonationViewModel(context: Context, val navController: NavController) : Vi
             )
 
             // Create Donation
-            FirebaseObj.insertData(
+            val donationId = FirebaseObj.insertData(
                 DataConstants.FirebaseCollections.donations,
                 donation.toFirebaseMap()
             )
@@ -113,7 +113,7 @@ class DonationViewModel(context: Context, val navController: NavController) : Vi
             _donationItems.value.forEach { item ->
                 val donationItem = DonationsItems(
                     id = "",
-                    donationID = newID,
+                    donationID = donationId!!,
                     categoryID = item.categoryID,
                     picture = item.picture,
                     state = item.state,

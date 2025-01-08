@@ -28,6 +28,7 @@
     <string name="back_button">Voltar</string>
     <string name="error_generate_qrcode">Falha ao gerar o código QR</string>
     <string name="item_added_success">Item adicionado com sucesso!</string>
+    <string name="item_updated_success">Item atualizado com sucesso!</string>
     <string name="item_added_error">Ocorreu um erro na criação. Tente novamente por favor.</string>
     <string-array name="nationalities">
         <item>Afegão|AF</item>
@@ -231,4 +232,32 @@
     <string name="donation_details_page_title">Detalhes da doação</string>
     <string name="donation_schedule_not_found">Não foi possível encontrar o calendário de doações</string>
     <string name="choose_date">Choose Date</string>
+    <string name="qty">Qtd:</string>
+    <string name="name">Nome</string>
+    <string name="aprove">Aprovar</string>
+    <string name="decline">Recusar</string>
+    <string name="contact_details">Dados de contacto</string>
+    <string name="schedule">Horário:</string>
+    <string name="location">Localização:</string>
+    <string name="identifier">Identificador:</string>
+    <string name="information">Informação</string>
+    <string name="donation_delivered">Doação entregue</string>
+    <string name="donation_updated">Doação alterada com sucesso</string>
+    <string name="donation_not_updated">Ocorreu um erro ao alterar o estado da doação</string>
+    <string name="yes">Sim</string>
+    <string name="no">Não</string>
+    <string name="insert_donation_item">Quer inserir os artigos da doação no stock?</string>
+    <string name="insert_donation_items_page_title">Insert donation items</string>
+    <string name="cancel">Cancel</string>
+    <string name="category">Category</string>
+    <string name="store">Store</string>
+    <string name="default_store">Default store</string>
+    <string name="insert_stock">Add item in stock</string>
+    <string name="add_item">Add Item</string>
+    <string name="fill_category">Fill the cartegory</string>
+    <string name="fill_state">Fill the condition</string>
+    <string name="fill_description">Fill in the description</string>
+    <string name="fill_store">Fill in the item\'s store or default</string>
+    <string name="item_inserted_stock">Items inserted on stock</string>
+    <string name="condition">Condição</string>
 </resources>

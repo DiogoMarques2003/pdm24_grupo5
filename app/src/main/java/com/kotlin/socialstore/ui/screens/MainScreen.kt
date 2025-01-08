@@ -1,5 +1,6 @@
 package com.kotlin.socialstore.ui.screens
 
+import ScrollableRowList
 import androidx.compose.material3.Text
 import UiConstants
 import androidx.compose.foundation.clickable
@@ -202,18 +203,31 @@ fun MainScreen(
                     Modifier.clickable { navController.navigate("products_screen") },
                     fontSize = UiConstants.titleTextSize
                 )
-                LazyRow(modifier = Modifier.fillMaxWidth()) {
-                    items(productsData) { item ->
-                        ProductCard(
-                            item,
-                            (categoriesData.find { it.id == item.categoryID }?.nome
-                                ?: "").toString(),
-                            200.dp,
-                            150.dp,
-                            false
-                        )
-                    }
-                }
+                ScrollableRowList(
+                    items = productsData,
+                    itemContent = { product ->
+                        Column(modifier = Modifier.padding(8.dp)) {
+                            Text(
+                                text = (categoriesData.find { it.id == product.categoryID }?.nome
+                                    ?: "").toString(),
+                                fontWeight = FontWeight.Bold
+                            )
+                            if (!product.size.isNullOrEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.product_size) + product.size.toString()
+                                )
+                            }
+                            Text(
+                                text = stringResource(R.string.product_state) + " " + stringResource(
+                                    DataConstants.mapProductCondition[product.state]
+                                        ?: R.string.product_state_default
+                                )
+                            )
+                        }
+                    },
+                    pictureProvider = { it.picture ?: R.drawable.product_image_not_found },
+                    onItemClick = { }
+                )
             }
 
             Spacer(Modifier.size(UiConstants.defaultPadding))
@@ -235,7 +249,7 @@ fun MainScreen(
             } else {
                 Text(
                     stringResource(R.string.donations),
-                    Modifier.clickable { navController.navigate("main_screen") },
+                    Modifier.clickable { navController.navigate("list_donations_screen") },
                     fontSize = UiConstants.titleTextSize
                 )
                 LazyRow(modifier = Modifier.fillMaxWidth()) {

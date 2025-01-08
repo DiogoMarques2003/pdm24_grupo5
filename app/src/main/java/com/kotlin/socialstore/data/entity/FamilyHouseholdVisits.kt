@@ -13,7 +13,6 @@ data class FamilyHouseholdVisits(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "id" to id,
             "familyHouseholdId" to familyHouseholdId,
             "date" to date.time // Converte a data para timestamp (milissegundos)
         )

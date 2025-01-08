@@ -14,15 +14,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-data class NationalitiesDashboardData(
-    val total: Int = 0,
-    val nationalities: Map<String, Int> = emptyMap()
-)
-
-data class DonationsDashboardData(
-    val donationsByMonth: Map<String, Int> = emptyMap()
-)
-
 class DashboardViewModel(
     context: Context, val navController: NavController
 ) : ViewModel() {
@@ -94,3 +85,12 @@ class DashboardViewModel(
         }
     }
 }
+
+data class NationalitiesDashboardData(
+    val total: Int = 0,
+    val nationalities: Map<String, Int> = emptyMap()
+)
+
+data class DonationsDashboardData(
+    val donationsByMonth: Map<String, Int> = emptyMap()
+)

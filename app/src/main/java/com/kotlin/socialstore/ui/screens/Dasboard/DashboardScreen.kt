@@ -1,3 +1,4 @@
+import TopBar
 import android.provider.ContactsContract.Data
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -13,7 +14,6 @@ import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.ui.elements.PopBackButton
-import com.kotlin.socialstore.ui.elements.TitleTextElement
 
 @Composable
 fun DashboardPage(
@@ -29,20 +29,7 @@ fun DashboardPage(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = UiConstants.defaultPadding),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            PopBackButton(navController)
-            Row(
-                Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-            ) {
-                TitleTextElement(text = "Dashboard")
-            }
-        }
+        TopBar(navController, "Dashboard", true)
 
         Spacer(modifier = Modifier.height(8.dp))
 

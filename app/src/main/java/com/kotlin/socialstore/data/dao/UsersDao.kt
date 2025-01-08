@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.google.android.gms.common.internal.AccountType
+import com.google.firebase.firestore.auth.User
 import com.kotlin.socialstore.data.entity.Users
 import kotlinx.coroutines.flow.Flow
 

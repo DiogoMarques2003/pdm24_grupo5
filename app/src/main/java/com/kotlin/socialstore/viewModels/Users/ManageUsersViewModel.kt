@@ -137,4 +137,9 @@ class ManageUsersViewModel(
         }
 
     }
+
+    fun stopListeners() {
+        usersListener?.remove()
+        usersListener = null
+    }
 }

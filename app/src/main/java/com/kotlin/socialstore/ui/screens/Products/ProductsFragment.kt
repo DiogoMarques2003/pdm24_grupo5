@@ -23,7 +23,7 @@ import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 
 @Composable
-fun ProductsPopUp(stock: Stock, showProductPopUp: MutableState<Boolean>) {
+fun ProductsPopUp(stock: Stock, productClicked: MutableState<String?>) {
     Dialog(onDismissRequest = {}) {
         Card(
             modifier = Modifier
@@ -50,7 +50,7 @@ fun ProductsPopUp(stock: Stock, showProductPopUp: MutableState<Boolean>) {
                     trailingIcon = {}
                 )
                 Spacer(Modifier.size(UiConstants.itemSpacing))
-                ButtonElement("Back", { showProductPopUp.value = false }, Modifier.fillMaxWidth())
+                ButtonElement("Back", { productClicked.value = null }, Modifier.fillMaxWidth())
             }
         }
     }
