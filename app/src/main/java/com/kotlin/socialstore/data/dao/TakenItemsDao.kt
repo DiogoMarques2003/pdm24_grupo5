@@ -3,6 +3,7 @@ package com.kotlin.socialstore.data.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kotlin.socialstore.data.entity.FamilyHouseholdVisits
 import com.kotlin.socialstore.data.entity.TakenItems
@@ -11,10 +12,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TakenItemsDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(takenItems: TakenItems)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun inserList(takenItems: List<TakenItems>)
 
     @Query("SELECT * FROM takenItems")

@@ -1,8 +1,8 @@
 package com.kotlin.socialstore.ui.screens
 
+import RowList
 import TopBar
 import UiConstants
-import android.icu.text.SimpleDateFormat
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -54,15 +54,12 @@ import java.util.Locale
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -76,8 +73,7 @@ import com.kotlin.socialstore.data.entity.Stores
 import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.data.entity.VolunteerSchedule
 import com.kotlin.socialstore.ui.elements.DatePickerElement
-import com.kotlin.socialstore.ui.elements.DropDownBox
-import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
+import com.kotlin.socialstore.ui.elements.dropDown.DropDownBox
 import com.kotlin.socialstore.ui.elements.TimePickerWithDialog
 import convertStringToDate
 
@@ -196,39 +192,24 @@ fun SchedulePage(
         }
         HorizontalDivider()
         Spacer(Modifier.size(UiConstants.defaultPadding))
-        LazyColumn() {
-            items(filteredSchedules) { item ->
-                val vol = allVolunteers.firstOrNull() { it.id == item.userID }
-
-                ElevatedCard(Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(10.dp)) {
-                        Row {
-                            SubcomposeAsyncImage(
-                                model = vol?.profilePic ?: R.drawable.product_image_not_found,
-                                contentDescription = null,
-                                loading = { CircularProgressIndicator() },
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .size(80.dp)
-                                    .align(Alignment.CenterVertically),
-                                contentScale = ContentScale.Crop
-                            )
-                            Spacer(Modifier.size(UiConstants.itemSpacing))
-                            Column {
-                                if (vol != null) {
-                                    Text(vol.name, fontWeight = FontWeight.Bold)
-                                }
-                                val storeName =
-                                    allStores.firstOrNull { it.id == item.localId }?.name
-                                Text(item.workFunction ?: "N/A")
-                                Text("${stringResource(R.string.store)}: $storeName")
-                                Text("${item.startTime} ${stringResource(R.string.to)} ${item.endTime}")
-                            }
-                        }
-                    }
-                }
+        RowList(items = filteredSchedules, itemContent = { item ->
+            val vol = allVolunteers.firstOrNull() { it.id == item.userID }
+            if (vol != null) {
+                Text(vol.name, fontWeight = FontWeight.Bold)
             }
-        }
+            val storeName =
+                allStores.firstOrNull { it.id == item.localId }?.name
+            if (!item.workFunction.isNullOrEmpty()){
+                Text("${stringResource(R.string.function)}: ${item.workFunction}")
+            }
+            Text("${stringResource(R.string.store)}: $storeName")
+            Text("${item.startTime} ${stringResource(R.string.to)} ${item.endTime}")
+        },
+            onItemClick = {},
+            pictureProvider = { item ->
+                val vol = allVolunteers.firstOrNull() { it.id == item.userID }
+                vol?.profilePic ?: R.drawable.product_image_not_found
+            })
     }
     Box(modifier.fillMaxSize()) {
         FloatingActionButton(
@@ -258,13 +239,13 @@ fun SchedulePage(
                     selectStoreId = selectedStoreId,
                     expandedStore = expandedStore
                 ) {
-                    val dateConv = convertStringToDate(selectedDate.value)
-                    if (dateConv != null) {
+                    val dateConvToDate = convertStringToDate(selectedDate.value)
+                    if (dateConvToDate != null) {
                         scheduleViewModel.insertNewSchedule(
                             VolunteerSchedule(
                                 id = "",
                                 accepted = false,
-                                day = dateConv,
+                                day = dateConvToDate,
                                 startTime = selectedInTime.value,
                                 endTime = selectedOutTime.value,
                                 localId = selectedStoreId.value,

@@ -3,6 +3,7 @@ package com.kotlin.socialstore.data.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.google.android.gms.common.internal.AccountType
 import com.google.firebase.firestore.auth.User
@@ -11,10 +12,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UsersDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(users: Users)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertList(users: List<Users>)
 
     @Query("SELECT * FROM users")

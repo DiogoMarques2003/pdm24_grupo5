@@ -31,7 +31,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
 import com.kotlin.socialstore.ui.elements.LoadIndicator
-import com.kotlin.socialstore.ui.elements.NationalityDropdown
+import com.kotlin.socialstore.ui.elements.dropDown.NationalityDropdown
 import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.viewModels.RegisterViewModel
 

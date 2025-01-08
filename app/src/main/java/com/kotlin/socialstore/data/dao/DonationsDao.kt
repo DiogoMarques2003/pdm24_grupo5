@@ -3,16 +3,17 @@ package com.kotlin.socialstore.data.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.kotlin.socialstore.data.entity.Donations
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DonationsDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(donations: Donations)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertList(donations: List<Donations>)
 
     @Query("SELECT * FROM donations ORDER BY creationDate DESC")

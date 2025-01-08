@@ -68,7 +68,13 @@ class ScheduleViewModel(context: Context) : ViewModel() {
             ) ?: return@launch
 
             //Convert volunteers
-            val volunteersConv = volunteers.map { Users.firebaseMapToClass(it) }
+            val volunteersConv = volunteers.map {
+                val vol = Users.firebaseMapToClass(it)
+                if (vol.profilePic != null) {
+                    vol.profilePic = FirebaseObj.getImageUrl(vol.profilePic!!)
+                }
+                vol
+            }
 
             //Delete volunteers local data
             usersRepository.deleteByTypeAccount(DataConstants.AccountType.volunteer)
