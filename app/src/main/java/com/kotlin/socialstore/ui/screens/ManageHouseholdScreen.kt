@@ -23,7 +23,7 @@ import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.viewModels.ManageHouseholdViewModel
 import kotlinx.coroutines.tasks.await
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 
 
 @Composable
@@ -47,7 +47,7 @@ fun ManageHousehold(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Manage Household",
+            stringResource(R.string.Manage_Household),
             style = MaterialTheme.typography.headlineMedium
         )
 
@@ -57,10 +57,10 @@ fun ManageHousehold(
                 viewModel.initialize(currentUserId)
             }
         } else {
-            Text(
-                text = "Household ID: $householdId",
-                style = MaterialTheme.typography.bodyLarge
-            )
+         //   Text(
+         //       text = "Household ID: $householdId",
+         //       style = MaterialTheme.typography.bodyLarge
+          //  )
 
             val storage = FirebaseStorage.getInstance()
             val storageReference = storage.reference
@@ -188,9 +188,6 @@ fun ManageHousehold(
                     }
                 )
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
             Button(onClick = { navController.popBackStack() }) {
                 Text(text = "Back")
             }

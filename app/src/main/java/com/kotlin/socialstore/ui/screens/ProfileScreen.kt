@@ -3,6 +3,8 @@ package com.kotlin.socialstore.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -29,6 +31,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.ButtonElement
@@ -43,6 +46,8 @@ fun ProfileScreen(
     profileViewModel: ProfileViewModel
 ) {
     val userInfo by profileViewModel.userData.collectAsState(null)
+    val takenItems by profileViewModel.takenItems.collectAsState(emptyList())
+    val categories by profileViewModel.categories.collectAsState(emptyList())
     val showQrCodePopup = remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -55,7 +60,7 @@ fun ProfileScreen(
     } else {
 
         Box(modifier = modifier.fillMaxSize()) {
-            // Fundo
+
             BackgroundImageElement()
 
             Column(
@@ -95,123 +100,111 @@ fun ProfileScreen(
                     text = stringResource(R.string.edit_profile_button),
                 )
 
-                Spacer(modifier = Modifier.height(5.dp))
+                if (userInfo!!.accountType == DataConstants.AccountType.benefiaryy) {
 
-                // "Household"
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column {
-                        Text(
-                            text = "Household",
-                            style = TextStyle(
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.Black
-                            )
-                        )
-                        Text(
-                            text = "Manage your household",
-                            style = TextStyle(fontSize = 14.sp, color = Color.Gray)
-                        )
-                    }
 
-                    IconButton(onClick = {navController.navigate("manage_household")}) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowForward,
-                            contentDescription = "Arrow Forward"
-                        )
-                    }
-                }
+                    Spacer(modifier = Modifier.height(5.dp))
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                //  "Taken Items"
-                Text(
-                    text = "Taken Items",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black
-                    ),
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                //              Spacer(modifier = Modifier.height(16.dp))
-
-                // Lista de itens
-                val items = listOf(
-                    "Hoodie - Quantity: 3",
-                    "Jeans - Quantity: 2",
-                    "T-Shirt - Quantity: 1"
-                )
-
-                items.forEach { item ->
-                    Card(
+                    // "Household"
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 6.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFE3F2FD)
-                        ),
-                        shape = MaterialTheme.shapes.medium,
-                        elevation = CardDefaults.elevatedCardElevation(4.dp)
+                            .padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
+                        Column {
+                            Text(
+                                text = "Household",
+                                style = TextStyle(
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Black
+                                )
+                            )
+                            Text(
+                                text = "Manage your household",
+                                style = TextStyle(fontSize = 14.sp, color = Color.Gray)
+                            )
+                        }
+
+                        IconButton(onClick = { navController.navigate("manage_household") }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowForward,
+                                contentDescription = "Arrow Forward"
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    //  "Taken Items"
+                    Text(
+                        text = "Taken Items",
+                        style = TextStyle(
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        ),
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    //              Spacer(modifier = Modifier.height(16.dp))
+
+
+                    LazyColumn(Modifier.weight(1f)) {
+                        items(takenItems) { item ->
+                            val categoryName =
+                                categories.firstOrNull { it.id == item.categoryID }?.nome ?: "N/A"
+
+                            Card(
                                 modifier = Modifier
-                                    .size(40.dp)
-                                    .clip(CircleShape)
-                                    .background(Color(0xFFBBDEFB)),
-                                contentAlignment = Alignment.Center
+                                    .fillMaxWidth()
+                                    .padding(vertical = 6.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = Color(0xFFE3F2FD)
+                                ),
+                                shape = MaterialTheme.shapes.medium,
+                                elevation = CardDefaults.elevatedCardElevation(4.dp)
                             ) {
-                                Text(
-                                    text = item.first().toString(),
-                                    style = TextStyle(color = Color.White, fontSize = 18.sp)
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.width(16.dp))
-
-                            Column {
-                                Text(
-                                    text = item.substringBefore(" - "),
-                                    style = TextStyle(
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = Color.Black
-                                    )
-                                )
-                                Text(
-                                    text = item.substringAfter(" - "),
-                                    style = TextStyle(fontSize = 14.sp, color = Color.Gray)
-                                )
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Column {
+                                        Text(
+                                            text = categoryName,
+                                            style = TextStyle(
+                                                fontSize = 16.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                color = Color.Black
+                                            )
+                                        )
+                                        Text(
+                                            text = "Quantity: ${item.quantity}",
+                                            style = TextStyle(fontSize = 14.sp, color = Color.Gray)
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                // Botão QR Code
-                Button(
-                    onClick = { showQrCodePopup.value = true },
-                    modifier = Modifier.fillMaxWidth(0.5f)
-                ) {
-                    Text(text = "QR Code")
-                }
+                    // Botão QR Code
+                    Button(
+                        onClick = { showQrCodePopup.value = true },
+                        modifier = Modifier.fillMaxWidth(0.5f)
+                    ) {
+                        Text(text = "QR Code")
+                    }
 
+                }
             }
-        }
 
-        if (showQrCodePopup.value) {
-            QrCodePopup(userInfo!!.id, showQrCodePopup)
+            if (showQrCodePopup.value) {
+                QrCodePopup(userInfo!!.id, showQrCodePopup)
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ object DataConstants {
         val stores = "stores"
         val familyHouseholdVisits = "familyHouseholdVisits"
         val takenItems = "takenItems"
+        val volunteerSchedule = "volunteerSchedule"
         val familyHousehold = "familyHousehold"
     }
 

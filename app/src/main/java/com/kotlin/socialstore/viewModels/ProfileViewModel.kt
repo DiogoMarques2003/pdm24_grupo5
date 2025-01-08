@@ -23,22 +23,34 @@ import com.google.firebase.firestore.auth.User
 import com.google.firebase.storage.FirebaseStorage
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
+import com.kotlin.socialstore.data.entity.Category
+import com.kotlin.socialstore.data.entity.TakenItems
+import com.kotlin.socialstore.data.entity.TakenItemsCategoryCount
 import com.kotlin.socialstore.data.entity.Users
 import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebaseEmail
 import com.kotlin.socialstore.data.firebase.FirebaseObj.updateFirebasePassword
+import com.kotlin.socialstore.data.repository.CategoryRepository
+import com.kotlin.socialstore.data.repository.TakenItemsRepository
 import com.kotlin.socialstore.data.repository.UsersRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
     private var userListener: ListenerRegistration? = null
+    private var takenItemsListener: ListenerRegistration? = null
     private val userRepository = UsersRepository(database.usersDao())
+    private val takenItemsRepository = TakenItemsRepository(database.takenItemsDao())
+    private val categoryRepository = CategoryRepository(database.categoryDao())
     private val currUser = FirebaseAuth.getInstance().currentUser
 
     val userData = userRepository.getById(currUser!!.uid)
     val userToEditAsAdmin = userRepository.getById(userID ?: "")
+    var takenItems = takenItemsRepository.getTakenItemsByHousehold(currUser!!.uid)
+    val categories = categoryRepository.allCategories
 
     fun getUserInfo(context: Context) {
         userListener = FirebaseObj.listenToData(
@@ -49,6 +61,21 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
                 Toast.makeText(context, "Erro ao carregar dados do usuário", Toast.LENGTH_SHORT)
                     .show()
             })
+
+        takenItemsListener = FirebaseObj.listenToData(
+            DataConstants.FirebaseCollections.takenItems,
+            null,
+            { updateTakenItems(it) },
+            { Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show() }
+        )
+
+        viewModelScope.launch {
+            val categories =
+                FirebaseObj.getData(DataConstants.FirebaseCollections.category) ?: return@launch
+            val categoriesClass = categories.map { Category.firebaseMapToClass(it) }
+            categoryRepository.deleteAll()
+            categoryRepository.insertList(categoriesClass)
+        }
     }
 
     private fun updateUserInfo(users: List<Map<String, Any>>?) {
@@ -63,6 +90,19 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
             }
 
             userRepository.insert(userConv)
+        }
+    }
+
+    private fun updateTakenItems(takenItemsList: List<Map<String, Any>>?) {
+        viewModelScope.launch {
+            if (takenItemsList == null) {
+                return@launch takenItemsRepository.deleteAll()
+            }
+
+            val takenItemsClass = takenItemsList.map { TakenItems.firebaseMapToClass(it) }
+
+            takenItemsRepository.deleteAll()
+            takenItemsRepository.insertList(takenItemsClass)
         }
     }
 

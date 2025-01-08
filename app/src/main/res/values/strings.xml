@@ -234,6 +234,7 @@
     <string name="donation_items_not_found">Can\'t find donation items</string>
     <string name="donation_details_page_title">Donation Details</string>
     <string name="donation_schedule_not_found">Can\'t find donation schedule</string>
+    <string name="choose_date">Choose Date</string>
     <string name="qty">Qty:</string>
     <string name="name">Name</string>
     <string name="aprove">Aprove</string>
@@ -249,6 +250,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="insert_donation_item">Do you want to put the donation items in stock?</string>
+    <string name="Manage_Household">Manage Household</string>
+    <string name="profile_page_screen">Profile</string>
     <string name="insert_donation_items_page_title">Insert donation items</string>
     <string name="cancel">Cancel</string>
     <string name="category">Category</string>
@@ -262,4 +265,11 @@
     <string name="fill_store">Fill in the item\'s store or default</string>
     <string name="item_inserted_stock">Items inserted on stock</string>
     <string name="condition">Condition</string>
+    <string name="select_time">Select time</string>
+    <string name="ok">Ok</string>
+    <string name="start_time">Start time</string>
+    <string name="end_time">End time</string>
+    <string name="store_Sched">Store</string>
+    <string name="create_new_schedule">Create new schedule</string>
+    <string name="error_creating_schedule">Error creating new schedule</string>
 </resources>

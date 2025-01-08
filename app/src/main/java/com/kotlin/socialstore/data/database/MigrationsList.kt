@@ -83,3 +83,24 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
         """.trimIndent())
     }
 }
+
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        // Drop the old volunteerSchedule table if it exists
+        database.execSQL("DROP TABLE IF EXISTS volunteerSchedule")
+
+        // Create the volunteerSchedule table with the required schema
+        database.execSQL("""
+            CREATE TABLE volunteerSchedule (
+                id TEXT NOT NULL PRIMARY KEY,
+                userID TEXT NOT NULL,
+                day INTEGER NOT NULL,
+                startTime TEXT NOT NULL,
+                endTime TEXT NOT NULL,
+                accepted INTEGER NOT NULL DEFAULT 0,
+                localId TEXT,
+                workFunction TEXT
+            )
+        """.trimIndent())
+    }
+}

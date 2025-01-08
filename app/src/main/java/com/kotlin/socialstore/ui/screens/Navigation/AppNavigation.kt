@@ -4,11 +4,13 @@ import DashboardPage
 import DashboardViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationViewModel
 import ForgotPasswordPage
+import android.os.Build
 import ManageUsersPage
 import ManageUsersViewModel
 import com.kotlin.socialstore.viewModels.Products.StockViewModel
 import android.widget.Toast
 import androidx.annotation.OptIn
+import androidx.annotation.RequiresApi
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -51,6 +53,8 @@ import com.kotlin.socialstore.ui.screens.ProfileScreen
 import com.kotlin.socialstore.ui.screens.QRCodeReaderScreen
 import com.kotlin.socialstore.ui.screens.RegisterPage
 import com.kotlin.socialstore.ui.screens.Users.EditUserAsAdminScreen
+import com.kotlin.socialstore.ui.screens.SchedulePage
+import com.kotlin.socialstore.ui.screens.SettingsScreen
 import com.kotlin.socialstore.viewModels.AwaitingApprovalViewModel
 import com.kotlin.socialstore.viewModels.Donations.DonationDetailsViewModel
 import com.kotlin.socialstore.viewModels.Donations.InsertItemsDonationViewModel
@@ -61,8 +65,11 @@ import com.kotlin.socialstore.viewModels.ManageHouseholdViewModel
 import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
 import com.kotlin.socialstore.viewModels.ProfileViewModel
 import com.kotlin.socialstore.viewModels.RegisterViewModel
+import com.kotlin.socialstore.viewModels.ScheduleViewModel
 import kotlinx.coroutines.flow.firstOrNull
 
+//@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun AppNavigation() {
@@ -167,6 +174,11 @@ fun AppNavigation() {
                     val profileViewModel = ProfileViewModel(LocalContext.current)
                     ProfileScreen(navController, modifierCustom, profileViewModel)
                 }
+
+                composable("settings_screen"){
+                    SettingsScreen(navController = navController)
+                }
+
                 composable("edit_profile_screen") {
                     val profileViewModel = ProfileViewModel(context)
                     EditProfileScreen(navController, modifierCustom, profileViewModel)
@@ -248,6 +260,10 @@ fun AppNavigation() {
                         )
                     }
                 }
+                composable("schedule_screen") {
+                    val scheduleViewModel = ScheduleViewModel(context)
+                    SchedulePage(modifierCustom, navController, scheduleViewModel)
+                }
 
                 composable("donation_insert_product/{donationId}") { backstageEntry ->
                     val donationId = backstageEntry.arguments?.getString("donationId")
@@ -271,7 +287,6 @@ fun AppNavigation() {
                             insertItemsDonationViewModel
                         )
                     }
-
                 }
             }
         } else {
