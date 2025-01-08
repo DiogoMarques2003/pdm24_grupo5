@@ -253,26 +253,23 @@ object FirebaseObj {
         }
     }
 
-    fun updateFirebaseEmail(newEmail: String, onComplete: (Boolean, String?) -> Unit) {
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            user.verifyBeforeUpdateEmail(newEmail)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Log.d("UpdateEmail", "User email address updated.")
-                        onComplete(true, null)
-                    } else {
-                        Log.w("UpdateEmail", "Failed to update email", task.exception)
-                        onComplete(false, task.exception?.message)
-                    }
-                }
+    suspend fun updateFirebaseEmail(newEmail: String): Boolean {
+        val user = getCurrentUser()
+        return if (user != null) {
+            return try {
+                user.verifyBeforeUpdateEmail(newEmail).await()
+                true
+            } catch (e: Exception) {
+                Log.e("FirebaseAuth", "Erro ao enviar e-mail de verificação", e)
+                false
+            }
         } else {
-            onComplete(false, "User not logged in.")
+            false
         }
     }
 
     fun updateFirebasePassword(newPassword: String, onComplete: (Boolean, String?) -> Unit) {
-        val user = FirebaseAuth.getInstance().currentUser
+        val user = getCurrentUser()
         if (user != null) {
             user.updatePassword(newPassword)
                 .addOnCompleteListener { task ->

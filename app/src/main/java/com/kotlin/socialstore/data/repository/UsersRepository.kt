@@ -11,10 +11,7 @@ class UsersRepository(private val usersDao: UsersDao) {
     val allUsers: Flow<List<Users>> = usersDao.getAll()
 
     suspend fun insert(users: Users) {
-        // Validar se o user existe, se existir apagar
-        if (usersDao.existsById(users.id)) {
-            usersDao.delete(users)
-        }
+        usersDao.deleteById(users.id)
 
         // Inserir o utilizador atualizado
         usersDao.insert(users)

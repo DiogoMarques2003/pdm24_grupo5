@@ -175,7 +175,7 @@ fun AppNavigation() {
                 }
 
                 composable("settings_screen"){
-                    SettingsScreen(navController = navController)
+                    SettingsScreen(modifierCustom, navController)
                 }
 
                 composable("edit_profile_screen") {

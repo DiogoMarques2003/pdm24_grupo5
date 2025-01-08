@@ -3,6 +3,8 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import java.sql.Date
 
 
@@ -17,11 +19,20 @@ data class TakenItems(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "familyHouseholdId" to familyHouseholdID,
-            "categoryId" to categoryID,
+            "familyHouseholdId" to FirebaseObj.getReferenceById(
+                DataConstants.FirebaseCollections.familyHousehold,
+                familyHouseholdID
+            ),
+            "categoryId" to FirebaseObj.getReferenceById(
+                DataConstants.FirebaseCollections.category,
+                categoryID
+            ),
             "quantity" to quantity,
             "date" to date.time, // Converte a data para timestamp
-            "voluntierId" to voluntierID
+            "voluntierId" to FirebaseObj.getReferenceById(
+                DataConstants.FirebaseCollections.users,
+                voluntierID
+            )
         )
     }
 

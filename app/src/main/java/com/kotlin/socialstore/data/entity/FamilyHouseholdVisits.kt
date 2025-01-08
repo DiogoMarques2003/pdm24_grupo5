@@ -3,6 +3,8 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import java.sql.Date
 
 @Entity(tableName = "familyHouseholdVisits")
@@ -13,7 +15,10 @@ data class FamilyHouseholdVisits(
 ) {
     fun toFirebaseMap(): Map<String, Any?> {
         return mapOf(
-            "familyHouseholdId" to familyHouseholdId,
+            "familyHouseholdId" to FirebaseObj.getReferenceById(
+                DataConstants.FirebaseCollections.familyHousehold,
+                familyHouseholdId
+            ),
             "date" to date.time // Converte a data para timestamp (milissegundos)
         )
     }
