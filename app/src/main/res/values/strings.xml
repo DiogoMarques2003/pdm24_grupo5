@@ -245,6 +245,8 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="insert_donation_item">Do you want to put the donation items in stock?</string>
+    <string name="Manage_Household">Manage Household</string>
+    <string name="profile_page_screen">Profile</string>
     <string name="insert_donation_items_page_title">Insert donation items</string>
     <string name="cancel">Cancel</string>
     <string name="category">Category</string>

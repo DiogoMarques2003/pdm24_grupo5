@@ -22,7 +22,6 @@ class ManageHouseholdViewModel(context: Context) : ViewModel() {
     private val familyHouseholdCollection = firestore.collection("familyHousehold")
 
     val _householdId = MutableStateFlow<String?>(null)
-   // val householdId: StateFlow<String?> = _householdId
 
     private val _householdMembers = MutableStateFlow<List<Map<String, Any>>>(emptyList())
     val householdMembers: StateFlow<List<Map<String, Any>>> = _householdMembers
