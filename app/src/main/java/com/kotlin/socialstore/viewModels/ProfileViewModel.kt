@@ -12,6 +12,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -21,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.auth.User
 import com.google.firebase.storage.FirebaseStorage
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.database.AppDatabase
 import com.kotlin.socialstore.data.entity.Category
@@ -38,6 +40,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+
 class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     private val database = AppDatabase.getDatabase(context)
     private var userListener: ListenerRegistration? = null
@@ -47,9 +50,11 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     private val categoryRepository = CategoryRepository(database.categoryDao())
     private val currUser = FirebaseAuth.getInstance().currentUser
 
-    val userData = userRepository.getById(currUser!!.uid)
+
+    val userData = userRepository.getById(currUser?.uid ?: "")
+    var takenItems = takenItemsRepository.getTakenItemsByHousehold(currUser?.uid ?: "")
     val userToEditAsAdmin = userRepository.getById(userID ?: "")
-    var takenItems = takenItemsRepository.getTakenItemsByHousehold(currUser!!.uid)
+
     val categories = categoryRepository.allCategories
 
     fun getUserInfo(context: Context) {
@@ -112,13 +117,16 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
         password: String,
         phoneNumber: String,
         nationality: String,
-        context: Context
+        context: Context,
+        navController: NavController
     ) {
         viewModelScope.launch {
             try {
+                val userDataDB = userData.first()
+                val logoutUser = mutableStateOf(false)
+
                 val updatedData = mapOf(
                     "name" to name,
-                    "email" to email,
                     "phoneNumber" to phoneNumber,
                     "nationality" to nationality
                 )
@@ -128,16 +136,35 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
                     .update(updatedData)
                     .await()
 
-                updateFirebaseEmail(email) { emailSuccess, emailError ->
-                    if (!emailSuccess) {
-                        Log.e("ProfileUpdate", "Failed to update email: $emailError")
+                if (email.isNotEmpty() && email != userDataDB.email) {
+                    val success = updateFirebaseEmail(email)
+                    if (success) {
+                        logoutUser.value = true
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.Please_verify_your_email),
+                            Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.Failed_to_update_email),
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
 
-                updateFirebasePassword(password) { passwordSuccess, passwordError ->
-                    if (!passwordSuccess) {
-                        Log.e("ProfileUpdate", "Failed to update password: $passwordError")
+                if (password.isNotEmpty()) {
+                    updateFirebasePassword(password) { passwordSuccess, passwordError ->
+                        if (!passwordSuccess) {
+                            Log.e("ProfileUpdate", "Failed to update password: $passwordError")
+                        }
                     }
+                }
+
+                if (logoutUser.value) {
+                    logoutUser(navController)
+                } else {
+                    navController.popBackStack()
                 }
 
             } catch (e: Exception) {
@@ -149,7 +176,7 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
     fun logoutUser(navController: NavController) {
         viewModelScope.launch {
             userRepository.deleteById(currUser!!.uid)
-            FirebaseAuth.getInstance().signOut()
+            FirebaseObj.logoutAccount()
             navController.navigate("login_screen") {
                 popUpTo(0) { inclusive = true }
             }
@@ -173,7 +200,10 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
                     .update("profilePic", imagePath)
                     .await()
 
-                Toast.makeText(context, "Profile picture updated successfully.", Toast.LENGTH_SHORT)
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.picture_updated_successfully),
+                    Toast.LENGTH_SHORT)
                     .show()
             } catch (e: Exception) {
                 Log.e("ProfilePicture", "Error uploading profile picture: ${e.message}", e)
@@ -198,7 +228,10 @@ class ProfileViewModel(context: Context, userID: String? = null) : ViewModel() {
             }
 
         } catch (e: Exception) {
-            Toast.makeText(context, "Failed to update user info", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                context.getString(R.string.failed_to_update_user_info),
+                Toast.LENGTH_SHORT)
                 .show()
         }
 

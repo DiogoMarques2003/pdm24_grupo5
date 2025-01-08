@@ -33,6 +33,7 @@ fun DashboardPage(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        //BackgroundImageElement()
         TopBar(navController, "Dashboard", true)
 
         Spacer(modifier = Modifier.height(8.dp))

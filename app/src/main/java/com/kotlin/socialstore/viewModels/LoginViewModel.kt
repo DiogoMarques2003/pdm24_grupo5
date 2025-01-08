@@ -49,7 +49,7 @@ class LoginViewModel(context: Context, val navController: NavController, val use
                 var userId: String? = FirebaseObj.loginAccount(email, password)
                     ?: return@launch Toast.makeText(
                         context,
-                        "Authentication failed.",
+                        context.getString(R.string.authentication_failed),
                         Toast.LENGTH_SHORT,
                     ).show()
 
@@ -58,13 +58,24 @@ class LoginViewModel(context: Context, val navController: NavController, val use
                     FirebaseObj.getData(DataConstants.FirebaseCollections.users, userId)
                         ?: return@launch Toast.makeText(
                             context,
-                            "Authentication failed.",
+                            context.getString(R.string.authentication_failed),
                             Toast.LENGTH_SHORT,
                         ).show()
 
                 // Converter o user da firebase para a class
                 val usersConverted = firebaseUser.map { Users.firebaseMapToClass(it) }
                 val user = usersConverted.first()
+
+                // Check if auth user is changed
+                val authEmail = FirebaseObj.getCurrentUser()?.email
+                if (!authEmail.isNullOrBlank() && authEmail != user.email) {
+                    user.email = authEmail
+                    FirebaseObj.updateData(
+                        DataConstants.FirebaseCollections.users,
+                        user.id,
+                        user.toFirebaseMap()
+                    )
+                }
 
                 // Inserir na base de dados local
                 usersRepository.insert(user)

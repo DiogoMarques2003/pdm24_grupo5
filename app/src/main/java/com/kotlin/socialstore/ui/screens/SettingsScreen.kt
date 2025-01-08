@@ -1,7 +1,8 @@
 package com.kotlin.socialstore.ui.screens
 
+import TopBar
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Home
@@ -12,69 +13,56 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.kotlin.socialstore.R
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 
 
 @Composable
-fun SettingsScreen(navController: NavController) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Settings") },
-            )
-        }
+fun SettingsScreen(modifier: Modifier = Modifier, navController: NavController) {
 
-    ) { innerPadding ->
-        BackgroundImageElement()
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+    BackgroundImageElement()
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        TopBar(navController, stringResource(R.string.contactus))
+
+        ContactItem(
+            icon = Icons.Default.Home,
+            text = "Edifício Pé Alado, Largo Carlos Amarante 181, 4700-308 Braga"
+        )
+        ContactItem(
+            icon = Icons.Default.Phone,
+            text = "+351 253 217 234"
+        )
+        ContactItem(
+            icon = Icons.Default.Email,
+            text = "freguesia@saolazaro-braga.com.pt"
+        )
+
+        // Informações de horário
+        ScheduleItem(
+            dayOfWeek = "Saturday",
+            hours = "14h-16h",
+            location = "Braga",
+            iconLabel = "SAT"
+        )
+        ScheduleItem(
+            dayOfWeek = "Sunday",
+            hours = "9h-11h",
+            location = "Braga",
+            iconLabel = "SUN"
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Button(
+            onClick = { navController.navigate("profile_page_screen") },
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Text(
-                text = "Contact us",
-                style = MaterialTheme.typography.headlineSmall
-            )
-
-            ContactItem(
-                icon = Icons.Default.Home,
-                text = "Edifício Pé Alado, Largo Carlos Amarante 181, 4700-308 Braga"
-            )
-            ContactItem(
-                icon = Icons.Default.Phone,
-                text = "+351 253 217 234"
-            )
-            ContactItem(
-                icon = Icons.Default.Email,
-                text = "freguesia@saolazaro-braga.com.pt"
-            )
-
-            // Informações de horário
-            ScheduleItem(
-                dayOfWeek = "Saturday",
-                hours = "14h-16h",
-                location = "Braga",
-                iconLabel = "SAT"
-            )
-            ScheduleItem(
-                dayOfWeek = "Sunday",
-                hours = "9h-11h",
-                location = "Braga",
-                iconLabel = "SUN"
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Button(
-                onClick = { navController.navigate("profile_page_screen") },
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(text = "Manage Profile")
-            }
+            Text(text = "Manage Profile")
         }
     }
 }

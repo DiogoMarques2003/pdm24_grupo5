@@ -172,42 +172,42 @@ fun EditProfileScreen(
 
                 Button(
                     onClick = {
-                        if (email.value.isNotBlank() && email.value != userInfo?.email) {
-                            updateFirebaseEmail(email.value) { success, message ->
-                                if (success) {
-                                    FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
-                                    Toast.makeText(
-                                        context,
-                                        "Please verify your email. Changes will apply after verification.",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Failed to update email: $message",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        }
-
-                        if (password.value.isNotBlank()) {
-                            updateFirebasePassword(password.value) { success, message ->
-                                if (success) {
-                                    Toast.makeText(
-                                        context,
-                                        "Password updated successfully.",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Failed to update password: $message",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        }
+//                        if (email.value.isNotBlank() && email.value != userInfo?.email) {
+//                            updateFirebaseEmail(userInfo?.email ?: email.value) { success, message ->
+//                                if (success) {
+//                                    FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
+//                                    Toast.makeText(
+//                                        context,
+//                                        "Please verify your email. Changes will apply after verification.",
+//                                        Toast.LENGTH_LONG
+//                                    ).show()
+//                                } else {
+//                                    Toast.makeText(
+//                                        context,
+//                                        "Failed to update email: $message",
+//                                        Toast.LENGTH_LONG
+//                                    ).show()
+//                                }
+//                            }
+//                        }
+//
+//                        if (password.value.isNotBlank()) {
+//                            updateFirebasePassword(password.value) { success, message ->
+//                                if (success) {
+//                                    Toast.makeText(
+//                                        context,
+//                                        "Password updated successfully.",
+//                                        Toast.LENGTH_SHORT
+//                                    ).show()
+//                                } else {
+//                                    Toast.makeText(
+//                                        context,
+//                                        "Failed to update password: $message",
+//                                        Toast.LENGTH_LONG
+//                                    ).show()
+//                                }
+//                            }
+//                        }
 
                         profileViewModel.updateUserInfo(
                             name = name.value,
@@ -215,18 +215,18 @@ fun EditProfileScreen(
                             password = password.value,
                             phoneNumber = phoneNumber.value,
                             nationality = nationality.value,
-                            context = context
+                            context = context,
+                            navController
                         )
 
-                        if (credencialchanged) {
-                            FirebaseAuth.getInstance().signOut()
-                            profileViewModel.logoutUser(navController)
-                        }
-
-                        navController.navigate("login_screen") {
-                            popUpTo(0) { inclusive = true }
-                        }
-
+//                        if (credencialchanged) {
+//                            FirebaseAuth.getInstance().signOut()
+//                            profileViewModel.logoutUser(navController)
+//
+//                            navController.navigate("login_screen") {
+//                                popUpTo(0) { inclusive = true }
+//                            }
+//                        }
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {

@@ -3,11 +3,13 @@ package com.kotlin.socialstore.data.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.firebase.firestore.DocumentReference
+import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 
 @Entity(tableName = "users")
-data class Users (
+data class Users(
     @PrimaryKey(autoGenerate = false) val id: String,
-    val email: String,
+    var email: String,
     val accountType: String,
     val active: Boolean = false,
     val name: String,
@@ -34,14 +36,18 @@ data class Users (
             "reference" to reference,
             "notes" to notes,
             "warningsLevel" to warningsLevel,
-            "familyHouseholdID" to familyHouseholdID,
+            "familyHouseholdID" to if (familyHouseholdID.isNullOrEmpty()) null
+            else FirebaseObj.getReferenceById(
+                DataConstants.FirebaseCollections.familyHousehold,
+                familyHouseholdID
+            ),
             "familyHouseholdVerified" to familyHouseholdVerified
         )
     }
 
     companion object {
         fun firebaseMapToClass(data: Map<String, Any?>): Users {
-            val familyHouseholdReference= data["familyHouseholdID"] as? DocumentReference
+            val familyHouseholdReference = data["familyHouseholdID"] as? DocumentReference
 
             return Users(
                 id = data["id"] as String,
