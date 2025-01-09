@@ -32,6 +32,7 @@ import androidx.navigation.NavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
+import com.kotlin.socialstore.data.firebase.FirebaseObj
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.ButtonElement
@@ -197,6 +198,16 @@ fun ProfileScreen(
                         Text(text = "QR Code")
                     }
 
+                }
+
+                Button(
+                    onClick = {
+                        FirebaseObj.logoutAccount()
+                        navController.navigate("home_screen")
+                    },
+                    modifier = Modifier.fillMaxWidth(0.5f)
+                ) {
+                    Text(text = "Logout")
                 }
             }
 
