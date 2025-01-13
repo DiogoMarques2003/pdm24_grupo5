@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.entity.DonationsItems
+import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.togitech.ccp.component.TogiCountryCodePicker
@@ -45,6 +46,7 @@ fun SubmitDonationPage(
     val donationItems = viewModel.donationItems.collectAsState(initial = emptyList())
     val locations by viewModel.allLocations.collectAsState(initial = emptyList())
 
+    BackgroundImageElement()
 
     Column(
         modifier = modifier

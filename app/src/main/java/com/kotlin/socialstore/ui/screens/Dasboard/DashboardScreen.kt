@@ -24,13 +24,15 @@ fun DashboardPage(
 ) {
     var selectedOption by remember { mutableStateOf("") }
 
+    BackgroundImageElement()
+
     Column(
         modifier = modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        //BackgroundImageElement()
+
         TopBar(navController, "Dashboard", true)
 
         Spacer(modifier = Modifier.height(8.dp))

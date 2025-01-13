@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
+import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.OutlinedTextfieldElement
 import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.viewModels.ProfileViewModel
@@ -68,6 +69,8 @@ fun EditUserAsAdminScreen(
         }
     }
 
+    BackgroundImageElement()
+
     if (userInfo == null) {
         //CircularProgressIndicator(modifier = Modifier.fillMaxSize())
     } else {
@@ -89,7 +92,7 @@ fun EditUserAsAdminScreen(
                 // User image
                 Row(modifier = Modifier) {
                     SubcomposeAsyncImage(
-                        model = userInfo?.profilePic ?: R.drawable.product_image_not_found,
+                        model = userInfo?.profilePic ?: R.drawable.profile_image_not_found,
                         contentDescription = null,
                         loading = { CircularProgressIndicator() },
                         modifier = Modifier

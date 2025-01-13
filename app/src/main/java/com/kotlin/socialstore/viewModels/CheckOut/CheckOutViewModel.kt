@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.internal.toImmutableList
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -35,54 +36,18 @@ class CheckOutViewModel(
 ) : ViewModel() {
 
     private val database = AppDatabase.getDatabase(context)
-    private val userRepository = UsersRepository(database.usersDao())
-    private var categoryListener: ListenerRegistration? = null
-    private var productsListener: ListenerRegistration? = null
     private val categoriesRepository = CategoryRepository(database.categoryDao())
     private val productsRepository = StockRepository(database.stockDao())
-    private val currUser = FirebaseObj.getCurrentUser()
+    private val userRepository = UsersRepository(database.usersDao())
 
+    private var categoryListener: ListenerRegistration? = null
+    private var productsListener: ListenerRegistration? = null
     private var userListener: ListenerRegistration? = null
 
-    val userData = userRepository.getById(userID)
+    val beneficiaryData = userRepository.getById(userID)
+    val adminData = FirebaseObj.getCurrentUser()?.let { userRepository.getById(it.uid) }
     val allCategories = categoriesRepository.allCategories
     val allStock = productsRepository.allStock
-
-    private val _selectedItems = MutableStateFlow<Map<String, Int>>(emptyMap())
-    val selectedItems = _selectedItems.asStateFlow()
-
-    private val _isConfirmEnabled = MutableStateFlow(false)
-    val isConfirmEnabled: StateFlow<Boolean> = _isConfirmEnabled
-
-    fun isItemSelected(itemId: String): Boolean {
-        return _selectedItems.value.containsKey(itemId)
-    }
-
-    // Toggle item selection with quantity management
-    fun toggleItemSelection(itemId: String) {
-        _selectedItems.update { currentItems ->
-            if (currentItems.containsKey(itemId)) {
-                currentItems - itemId // Remove item
-            } else {
-                currentItems + (itemId to 1) // Add item with default quantity 1
-            }
-        }
-        updateConfirmButtonState()
-    }
-
-    // Update item quantity
-    fun updateItemQuantity(itemId: String, quantity: Int) {
-        if (quantity <= 0) {
-            _selectedItems.update { it - itemId }
-        } else {
-            _selectedItems.update { it + (itemId to quantity) }
-        }
-        updateConfirmButtonState()
-    }
-
-    private fun updateConfirmButtonState() {
-        _isConfirmEnabled.value = _selectedItems.value.isNotEmpty()
-    }
 
     fun getData(context: Context) {
         categoryListener = FirebaseObj.listenToData(
@@ -106,8 +71,6 @@ class CheckOutViewModel(
             { Toast.makeText(context, "Error loading user info", Toast.LENGTH_SHORT).show() }
         )
     }
-
-
 
     private fun updateUserInfo(users: List<Map<String, Any>>?) {
         viewModelScope.launch {
@@ -151,8 +114,8 @@ class CheckOutViewModel(
 
             val productsConv = productsList.map {
                 val stock = Stock.firebaseMapToClass(it)
-                if (stock.picture != null){
-                    stock.picture =  FirebaseObj.getImageUrl(stock.picture!!)
+                if (stock.picture != null) {
+                    stock.picture = FirebaseObj.getImageUrl(stock.picture!!)
                 }
                 stock
             }
@@ -164,36 +127,74 @@ class CheckOutViewModel(
         }
     }
 
-    fun onCheckOut() {
+    fun onCheckOut(itemsAdded: List<Stock>, context: Context) {
         viewModelScope.launch {
-            val currentUser = userData.first() ?: return@launch
+            data class ItemsByCategory(
+                val categoryID: String,
+                var quantity: Int,
+                var stockList: List<String>
+            )
 
-            _selectedItems.value.forEach { (stockId, quantity) ->
-                val stockItem = allStock.first().find { it.id == stockId } ?: return@forEach
+            val itemsByCategoryList = mutableListOf<ItemsByCategory>()
+            val admin = adminData?.first()
+            val beneficiary = beneficiaryData.first()
 
-                val takenItem = currentUser.familyHouseholdID?.let {
-                    TakenItems(
-                        id = "",
-                        voluntierID = currentUser.id,
-                        familyHouseholdID = it,
-                        categoryID = stockItem.categoryID,
-                        quantity = quantity,
-                        date = Date(System.currentTimeMillis())
+//            for (stock in itemsAdded) {
+//                var rowcategory =
+//                    itemsByCategoryList.filter { it.categoryID == stock.categoryID }.firstOrNull()
+//                if (rowcategory != null) {
+//                    val quantity = rowcategory.quantity
+//                    rowcategory.quantity = quantity + 1
+//                    rowcategory.stockList += stock.id
+//                } else {
+//                    itemsByCategoryList +=
+//                        ItemsByCategory(
+//                            categoryID = stock.categoryID,
+//                            quantity = 1,
+//                            stockList = listOf(stock.id)
+//                        )
+//                }
+//            }
+
+            itemsAdded.groupBy { it.categoryID }.forEach { (categoryId, stocks) ->
+                val existingCategory = itemsByCategoryList.find { it.categoryID == categoryId }
+
+                if (existingCategory != null) {
+                    existingCategory.apply {
+                        quantity += stocks.size
+                        stockList = stockList + stocks.map { it.id }
+                    }
+                } else {
+                    itemsByCategoryList += ItemsByCategory(
+                        categoryID = categoryId,
+                        quantity = stocks.size,
+                        stockList = stocks.map { it.id }
                     )
-                }
 
-                if (takenItem != null) {
-                    FirebaseObj.insertData(
-                        DataConstants.FirebaseCollections.takenItems,
-                        takenItem.toFirebaseMap()
-                    )
                 }
-
-                FirebaseObj.deleteData(DataConstants.FirebaseCollections.stock, stockId)
             }
 
-            _selectedItems.value = emptyMap()
-            updateConfirmButtonState()
+            itemsByCategoryList.forEach { item ->
+                val takenItems = TakenItems(
+                    id = "",
+                    familyHouseholdID = beneficiary.familyHouseholdID ?: "",
+                    voluntierID = admin?.id ?: "",
+                    categoryID = item.categoryID,
+                    quantity = item.quantity,
+                    date = Date(System.currentTimeMillis())
+                )
+
+                FirebaseObj.insertData(
+                    DataConstants.FirebaseCollections.takenItems,
+                    takenItems.toFirebaseMap()
+                )
+
+                item.stockList.forEach { stockID ->
+                    FirebaseObj.deleteData(DataConstants.FirebaseCollections.stock, stockID)
+                }
+            }
+
+
         }
     }
 

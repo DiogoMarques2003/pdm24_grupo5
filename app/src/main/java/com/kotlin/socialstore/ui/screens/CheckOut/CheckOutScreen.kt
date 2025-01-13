@@ -1,8 +1,9 @@
 package com.kotlin.socialstore.ui.screens.Products
 
+import AddOrDeleteStateHolder
 import CheckOutViewModel
+import DynamicColumnsGridList
 import TopBar
-import TwoColumnGridList
 import UiConstants
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -34,24 +35,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.entity.Stock
 import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.ButtonElement
-import com.kotlin.socialstore.ui.elements.PopBackButton
 import com.kotlin.socialstore.ui.elements.ProductItemContent
-import com.kotlin.socialstore.ui.elements.ProductsGrid
-import com.kotlin.socialstore.viewModels.Products.ProductsCatalogViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 fun CheckOutScreen(
@@ -59,16 +51,16 @@ fun CheckOutScreen(
     modifier: Modifier = Modifier,
     viewModel: CheckOutViewModel
 ) {
-    val userData by viewModel.userData.collectAsState(null)
+    val userData by viewModel.beneficiaryData.collectAsState(null)
     val allCategories by viewModel.allCategories.collectAsState(emptyList())
     val allProducts by viewModel.allStock.collectAsState(emptyList())
     val context = LocalContext.current
-    val isConfirmEnabled by viewModel.isConfirmEnabled.collectAsState(false)
 
     var selectedCategory by remember { mutableStateOf<String?>(null) }
     var displayProducts by remember { mutableStateOf<List<Stock>>(emptyList()) }
 
     var firstLastNameUser by remember { mutableStateOf("") }
+    val addOrDeleteListState = remember { AddOrDeleteStateHolder<Stock>(showAddOrDeleteButton = true) }
 
     DisposableEffect(Unit) {
         onDispose {
@@ -155,7 +147,7 @@ fun CheckOutScreen(
             ) {
                 Column(modifier = modifier.fillMaxSize()) {
                     Box(modifier = Modifier.weight(1f)) {
-                        TwoColumnGridList(
+                        DynamicColumnsGridList(
                             items = displayProducts,
                             itemContent = { product ->
                                 val category = allCategories.find { it.id == product.categoryID }?.nome ?: ""
@@ -171,20 +163,16 @@ fun CheckOutScreen(
                             pictureProvider = { it.picture ?: R.drawable.product_image_not_found },
                             modifier = Modifier.fillMaxSize(),
                             columns = 3,
-                            showAddButton = true,
-                            onAddButtonClick = { item ->
-                                viewModel.toggleItemSelection(item.id)
-                            },
-                            isItemSelected = { item ->
-                                viewModel.isItemSelected(item.id)
-                            }
+                            addOrDeleteStateHolder = addOrDeleteListState
                         )
                     }
 
                     ButtonElement(
-                        onClick = {viewModel.onCheckOut() },
+                        onClick = {
+                            val itemsAdded = addOrDeleteListState.getAddedItems()
+                            viewModel.onCheckOut(itemsAdded, context) },
                         text = "Confirm",
-                        enabled = isConfirmEnabled,
+                        enabled = addOrDeleteListState.getAddedItems().isNotEmpty(),
                         modifier = Modifier
                             .fillMaxWidth()
                     )

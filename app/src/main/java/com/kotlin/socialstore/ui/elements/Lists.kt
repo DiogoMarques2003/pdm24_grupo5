@@ -18,28 +18,20 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,26 +39,44 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.kotlin.socialstore.ui.screens.Products.SelectionBehavior
 
+class AddOrDeleteStateHolder<T>(
+    val showAddOrDeleteButton: Boolean = false
+) {
+    private var _addedItems by mutableStateOf<List<T>>(emptyList())
+
+    fun getAddedItems(): List<T> = _addedItems
+
+    fun addItem(item: T) {
+        _addedItems+= item
+    }
+
+    fun removeItem(item: T) {
+        _addedItems-= item
+    }
+
+    fun containsItem(item: T): Boolean {
+        return _addedItems.contains(item)
+    }
+}
+
+
 @Composable
-fun <T> TwoColumnGridList(
+fun <T> DynamicColumnsGridList(
     items: List<T>,
     itemContent: @Composable (T) -> Unit,
     pictureProvider: (T) -> Any?,
     onItemClick: (T) -> Unit,
     modifier: Modifier = Modifier,
     columns: Int = 2,
-    showAddButton: Boolean = false,
-    onAddButtonClick: (T) -> Unit = {},
-    isItemSelected: (T) -> Boolean
+    addOrDeleteStateHolder: AddOrDeleteStateHolder<T> = AddOrDeleteStateHolder()
 ) {
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
         modifier = Modifier.fillMaxSize()
@@ -94,7 +104,7 @@ fun <T> TwoColumnGridList(
                             )
                         }
 
-                        if (showAddButton) {
+                        if (addOrDeleteStateHolder.showAddOrDeleteButton) {
                             Box(
                                 modifier = Modifier
                                     .align(Alignment.BottomEnd)
@@ -104,21 +114,26 @@ fun <T> TwoColumnGridList(
                                     .background(MaterialTheme.colorScheme.primary)
                             ) {
                                 IconButton(
-                                    onClick = { onAddButtonClick(item) },
+                                    onClick = {
+                                        if(addOrDeleteStateHolder.containsItem(item))
+                                            addOrDeleteStateHolder.removeItem(item)
+                                        else
+                                            addOrDeleteStateHolder.addItem(item)
+                                    },
                                     modifier = Modifier.size(100.dp)
                                 ) {
                                     Icon(
-                                        imageVector = if (isItemSelected(item)) {
+                                        imageVector = if (addOrDeleteStateHolder.getAddedItems().contains(item)) {
                                             Icons.Default.Delete
                                         } else {
                                             Icons.Default.Add
                                         },
-                                        contentDescription = if (isItemSelected(item)) {
+                                        contentDescription = if (addOrDeleteStateHolder.containsItem(item)) {
                                             "Remove item"
                                         } else {
                                             "Add item"
                                         },
-                                        tint = Color.White,
+                                        tint = White,
                                         modifier = Modifier.size(25.dp)
                                     )
                                 }

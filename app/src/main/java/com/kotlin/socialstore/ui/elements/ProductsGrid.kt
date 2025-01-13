@@ -1,6 +1,6 @@
 package com.kotlin.socialstore.ui.elements
 
-import TwoColumnGridList
+import DynamicColumnsGridList
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,7 +28,7 @@ import com.kotlin.socialstore.ui.screens.Products.ProductsPopUp
 fun ProductsGrid(stock: List<Stock>, categories: List<Category>) {
     val productID = remember { mutableStateOf<String?>(null) }
 
-    TwoColumnGridList(
+    DynamicColumnsGridList(
         items = stock,
         itemContent = { product ->
             val category = categories.find { it.id == product.categoryID }?.nome ?: ""
@@ -42,8 +42,7 @@ fun ProductsGrid(stock: List<Stock>, categories: List<Category>) {
             productID.value = product.id
         },
         pictureProvider = { it.picture ?: R.drawable.product_image_not_found },
-        modifier = Modifier.fillMaxSize(),
-        isItemSelected = { _ -> false }
+        modifier = Modifier.fillMaxSize()
     )
 }
 

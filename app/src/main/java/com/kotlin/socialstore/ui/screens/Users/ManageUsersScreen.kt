@@ -31,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import TopBar
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,6 +52,8 @@ fun ManageUsersPage(
             viewModel.stopListeners()
         }
     }
+
+    BackgroundImageElement()
 
     Column(
         modifier = modifier

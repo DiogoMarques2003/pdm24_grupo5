@@ -44,6 +44,7 @@ import androidx.navigation.NavController
 import com.kotlin.socialstore.R
 import com.kotlin.socialstore.data.DataConstants
 import com.kotlin.socialstore.data.entity.Stock
+import com.kotlin.socialstore.ui.elements.BackgroundImageElement
 import com.kotlin.socialstore.ui.elements.ButtonElement
 import com.kotlin.socialstore.ui.elements.LoadIndicator
 import com.kotlin.socialstore.ui.elements.ProductsGrid
@@ -77,6 +78,8 @@ fun ManageStockPage(
     if (isLoading.value) {
         LoadIndicator(modifier)
     }
+
+    BackgroundImageElement()
 
     Box(
         modifier = Modifier
