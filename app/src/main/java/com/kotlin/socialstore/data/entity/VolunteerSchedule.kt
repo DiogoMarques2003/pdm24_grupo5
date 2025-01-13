@@ -26,7 +26,7 @@ data class VolunteerSchedule(
                 DataConstants.FirebaseCollections.users,
                 userID
             ),
-            "day" to day.time, // Converte a data para timestamp
+            "day" to Timestamp(day.time), // Converte a data para timestamp
             "startTime" to startTime.toString(), // Converte Time para String
             "endTime" to endTime.toString(), // Converte Time para String
             "accepted" to accepted,
