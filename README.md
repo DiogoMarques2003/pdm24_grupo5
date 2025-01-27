@@ -33,9 +33,6 @@ The primary goal of the project is to simplify and digitize the workflow of a so
 - The system generates detailed reports on donations, stock usage, and the overall social impact of the store.
 - Administrators can access performance metrics to improve decision-making and planning.
 
-### 7. **Notifications**
-- Automated notifications for donation approvals, reminders for scheduled deliveries, and alerts for low stock levels.
-
 ---
 
 ## 🎯 **Project Objectives**
