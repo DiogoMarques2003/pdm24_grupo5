@@ -4,16 +4,16 @@ Development of the SocialStore application focused on optimizing the management 
 
 The implemented features were designed to meet the needs of donors, beneficiaries, volunteers and administrators:​
 ​
-User Profiles​
+--> User Profiles​
 
-Product Catalog​
+--> Product Catalog​
 
-Donation Management​
+--> Donation Management​
 
-Stock Management
+--> Stock Management
 
-Statistics​
+--> Statistics​
 
-Volunteer Management​
+--> Volunteer Management​
 
-Household Management
+--> Household Management
